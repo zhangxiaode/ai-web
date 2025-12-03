@@ -1,18 +1,25 @@
 <template>
-  <div class="header fixed">
-    <div class="header-content flex jc-between ai-normal ">
-      <div class="headerL flex ai-center">
-        <img class="logo cursor-pointer" src="../assets/logo.png" alt="" @click="goHome()" />
-        <!-- <div class="flex flex-column jc-between ai-normal">
-          <div class="flex jc-between ai-center">
-            <div class="title">丞尧</div>
-          </div>
-        </div> -->
-      </div>
-      <div class="headerR">
-        <div class="tabs flex ai-center">
-          <div v-for="(item, index) in tabs" :key="index" :class="['tab cursor-pointer', { 'actived relative': current === index }]" @click="handleTab(item.path)">{{ item.name }}</div>
+  <div class="header fixed flex jc-between ai-normal">
+    <div class="headerL flex ai-center">
+      <img class="logo cursor-pointer" src="../assets/logo.png" alt="" @click="goHome()" />
+      <div class="flex flex-column jc-between ai-normal">
+        <div class="flex jc-between ai-center">
+          <div class="title">丞尧智芯</div>
         </div>
+      </div>
+      <div class="tabs flex ai-center">
+        <div v-for="(item, index) in tabs" :key="index" :class="['tab cursor-pointer', { 'actived relative': current === index }]" @click="handleTab(item.path)">{{ item.name }}</div>
+      </div>
+    </div>
+    <div class="headerR">
+      <div class="recharge flex jc-center ai-center">
+        <img src="" alt="" class="icon">
+        <span class="txt">金币充值</span>
+      </div>
+      <div class="balance">金币余额: {{  }}</div>
+      <div class="userinfo flex jc-center ai-center">
+        <img src="" alt="" class="avatar">
+        <span class="nickname">{{  }}</span>
       </div>
     </div>
   </div>
@@ -30,12 +37,24 @@ const tabs = ref([
     path: '/layout/home'
   },
   {
-    name: '企业介绍',
-    path: '/layout/introduction'
+    name: '免费工具',
+    path: '/layout/tools'
   },
   {
-    name: '产品介绍',
-    path: '/layout/product'
+    name: '素材管理',
+    path: '/layout/assets'
+  },
+  {
+    name: '项目管理',
+    path: '/layout/project'
+  },
+  {
+    name: '充值',
+    path: '/layout/recharge'
+  },
+  {
+    name: '个人中心',
+    path: '/layout/account'
   },
   {
     name: '关于我们',
@@ -62,10 +81,6 @@ const goHome = () => {
   z-index: 999;
   color: rgba(255, 255, 255, .8);
   background: rgba(22, 22, 23, .8);
-  .header-content {
-    width: 1024px;
-    margin: 0 auto;
-  }
   .headerL {
     .logo {
       width: 36px;
@@ -78,8 +93,6 @@ const goHome = () => {
       font-size: 16;
       font-weight: bold;
     }
-  }
-  .headerR {
     .tab {
       font-size: 12px;
       color: #ccc;
@@ -102,6 +115,14 @@ const goHome = () => {
           margin-left: -18px;
           background: #fff;
         }
+      }
+    }
+  }
+  .headerR {
+    .recharge {
+      .icon {
+        width: 32px; 
+        height: 32px;
       }
     }
   }

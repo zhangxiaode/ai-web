@@ -4,16 +4,14 @@ import router from "./router"
 import { createPinia } from 'pinia'
 const pinia = createPinia()
 import NaiveUI from "naive-ui";
-import { DatePicker, Popup } from "vant"
 
+import "normalize.css/normalize.css";
+import "virtual:uno.css";
 import "@/styles/index.scss";
-import 'vant/lib/index.css';
 const app = createApp(App);
   app.use(pinia)
   .use(router)
   .use(NaiveUI)
-  .use(DatePicker)
-  .use(Popup)
   .mount("#app");
 
 

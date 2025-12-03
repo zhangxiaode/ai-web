@@ -2,6 +2,8 @@ import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import viteCompression from 'vite-plugin-compression';
 import path from 'path';
+import UnoCSS from "unocss/vite";
+
 export default ({ mode }) => {
   return defineConfig({
     plugins: [
@@ -13,11 +15,8 @@ export default ({ mode }) => {
         threshold: 502400, //压缩前最小文件大小
         algorithm: 'gzip', //压缩算法
         ext: '.gz', //文件类型
-      })
-      // 部署测试
-      // styleImport({
-      //   resolves: [VantResolve()]
-      // })
+      }),
+      UnoCSS()
     ],
     resolve: {
       alias: {
