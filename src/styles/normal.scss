@@ -1,0 +1,190 @@
+@import './iconfont.css';
+@font-face {
+    font-family: 'iconfont';
+    src: url('./iconfont.ttf?t=1701396742288') format('truetype');
+}
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.flex {
+    display: flex;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.jc-between {
+    justify-content: space-between;
+}
+
+.jc-around {
+    justify-content: space-around;
+}
+
+.jc-center {
+    justify-content: center;
+}
+
+.jc-end {
+    justify-content: flex-end;
+}
+
+.ai-start {
+    align-items: flex-start;
+}
+
+.ai-end {
+    align-items: flex-end;
+}
+
+.ai-center {
+    align-items: center;
+}
+
+.ai-normal {
+    align-items: normal;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.text-align-left {
+    text-align: left;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.overflow-hidden {
+    overflow: hidden
+}
+
+.overflow-auto {
+    overflow: auto
+}
+
+.line-through {
+    text-decoration: line-through;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+.mh-100 {
+    max-height: 100%;
+}
+
+.ml-10 {
+    margin-left: 10px;
+}
+
+.bs-bb {
+    box-sizing: border-box;
+}
+
+.fb {
+    font-weight: bold;
+}
+
+.pager {
+    margin: 20px auto;
+}
+
+.w-120 {
+    width: 120px !important;
+}
+
+.w-140 {
+    width: 140px !important;
+}
+
+.w-150 {
+    width: 150px !important;
+}
+
+.w-180 {
+    width: 180px !important;
+}
+
+.w-240 {
+    width: 240px !important;
+}
+
+.w-300 {
+  width: 300px !important;
+}
+
+.form {
+  padding: 20px;
+  max-height: 500px; 
+  overflow: auto;
+}
+
+.textarea {
+  width: 300px !important;
+  height: 100px;
+  text-align: left;
+}
+
+.main-pad {
+    .search-form {
+        background: #fff;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        padding: 24px 24px 0;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .cont {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px;
+    }
+}

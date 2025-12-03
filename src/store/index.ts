@@ -1,0 +1,1 @@
+export const baseStore = import.meta.globEager('./base.ts')['./base.ts'].default
