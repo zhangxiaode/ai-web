@@ -1,10 +1,14 @@
 export const baseUrl = "./";
-export const staticUrl = "http://27.223.73.38:7020/api" // 静态资源文件路径
+export const staticUrl = "https://ai.chengyaokj.com/data" // 静态资源文件路径
 
 const formatNumber = (n: number) => {
   const num: string = n.toString();
   return num[1] ? num : "0" + num;
 };
+
+export function formatZhNumber(num: number) {
+  return new Intl.NumberFormat('zh-CN').format(num);
+}
 
 export function formatAmount(num: number) {
 	num = Number(num);
@@ -59,36 +63,3 @@ export function hasMobile () {
   return isMobile
 }
 
-// 转换select选择框
-export const formatSelectOptions = (data: any, label: any, value: any) => {
-  // label一般是desc, value一般是id
-  return data.map((item: any) => {
-    return {
-      label: item[label],
-      value: item[value],
-      monitor_url: item.monitor_url
-    }
-  })
-}
-// 转换select选择框增强-选择快应用
-export const formatSelectOptions2 = (data: any) => {
-  return data.map((item: any) => {
-    return {
-      label: item.desc,
-      value: item.id,
-      content_platform: item.content_platform,
-      put_type: item.put_type
-    }
-  })
-}
-// 转换select选择框增强-选择公众号
-export const formatSelectOptions3 = (data: any) => {
-  return data.map((item: any) => {
-    return {
-      label: item.name,
-      value: item.id,
-      content_platform: item.content_platform,
-      content_type: item.content_type
-    }
-  })
-}

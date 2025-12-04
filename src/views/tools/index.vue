@@ -1,32 +1,42 @@
 <template>
-  <div class="introduction">
+  <div class="h-100% flex flex-col justify-between items-normal">
+    <!-- <div class="px-8px">
+      <div class="inline-flex items-center bg-[rgba(147,51,234,0.5)] h-30px p-6px rounded-21px">
+        <div v-for="(item, index) in tabs" :key="index" :class="['h-30px leading-30px px-16px c-#ccc text-12px cursor-pointer rounded-15px', { 'c-#fff bg-#9333ea': current === index }]" @click="handleTab(item.path)">{{ item.name }}</div>
+      </div>
+    </div> -->
+    <div class="flex-1">
+      <router-view />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
+import { ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+const router = useRouter()
+const route = useRoute()
+const tabs = ref([
+  {
+    name: '音频提取',
+    path: '/layout/tools/audio_extraction'
+  },
+  {
+    name: '视频剪辑',
+    path: '/layout/tools/video_editing'
+  },
+  {
+    name: '格式工厂',
+    path: '/layout/tools/format_factory'
+  },
+])
+const current = computed(() => {
+  return route.path.includes('/layout/tools/format_factory') ? 2 : tabs.value.findIndex(item => item.path === route.path)
+});
+const handleTab = (path: string) => {
+  router.push(path)
+}
 </script>
 
 <style lang="scss" scoped>
-.introduction {
-  width: 1024px;
-  min-height: 600px;
-  margin: 0 auto;
-  line-height: 2;
-  padding: 24px 0;
-  .title {
-    font-size: 24px;
-    line-height: 3;
-  }
-  .h2 {
-    font-size: 20px;
-    line-height: 3;
-  }
-  .h3 {
-    font-size: 18px;
-    line-height: 3;
-  }
-  .p {
-    font-size: 14px;
-    text-indent: 2em;
-  }
-}
 </style>

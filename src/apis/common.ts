@@ -6,11 +6,17 @@ export function getConfig() {
     method: "get"
   });
 }
-// 新增创作者
-export function addCreator(data: any) {
+// 文件批量上传
+export function uploadFile(data: any, progress: Function) {
   return request({
-    url: `/pc/system/creator/add`,
+    url: `/file`,
     method: "post",
     data,
+    onUploadProgress(progressEvent: any) {
+      console.log(111111, progressEvent)
+      const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      console.log(222222, percentCompleted)
+      progress({ percent: percentCompleted })
+    }
   });
 }

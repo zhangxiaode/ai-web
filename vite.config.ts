@@ -1,22 +1,16 @@
-import { defineConfig, loadEnv } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import viteCompression from 'vite-plugin-compression';
+import { defineConfig, loadEnv } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import gzip from 'rollup-plugin-gzip';
 import path from 'path';
 import UnoCSS from "unocss/vite";
 
 export default ({ mode }) => {
+  console.log(321, mode, loadEnv(mode, process.cwd()))
   return defineConfig({
     plugins: [
       vue(),
-      viteCompression({
-        verbose: true, // 默认即可
-        disable: false, // 开启压缩(不禁用)，默认即可
-        deleteOriginFile: false, //删除源文件
-        threshold: 502400, //压缩前最小文件大小
-        algorithm: 'gzip', //压缩算法
-        ext: '.gz', //文件类型
-      }),
-      UnoCSS()
+      UnoCSS(),
+      gzip()
     ],
     resolve: {
       alias: {
@@ -29,13 +23,6 @@ export default ({ mode }) => {
       minify: 'terser', // 开启压缩
       sourcemap: false, // 不生成 sourceMap 文件
       chunkSizeWarningLimit: 1500, // 打包文件大小超过150k报警
-      terserOptions: {
-        // 清除console和debugger
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-        },
-      },
       rollupOptions: {
         treeshake: true, // 开启 Tree Shaking，消除未使用的代码，减小最终的包大小
         input: {
@@ -56,12 +43,11 @@ export default ({ mode }) => {
     server: {
       host: "0.0.0.0",
       port: 8888,
-      https: false,
       open: false,
       hmr: true,
       proxy: {
         "/ai/apis": {
-          target:  loadEnv(mode, process.cwd()).VITE_BASE_API,
+          target: loadEnv(mode, process.cwd()).VITE_BASE_API,
           ws: false,
           changeOrigin: true,
         }

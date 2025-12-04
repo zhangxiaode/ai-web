@@ -1,10 +1,10 @@
 <template>
-  <div class="layout">
-    <PageHeader />
-    <div class="main">
+  <div class="h-100% flex flex-col justify-between items-normal bg-#141414">
+    <!-- <PageHeader /> -->
+    <div class="flex-1 p-24px">
       <router-view />
-      <PageFooter />
     </div>
+    <!-- <PageFooter /> -->
   </div>
 </template>
 
@@ -12,8 +12,4 @@
 import PageHeader from "./pageHeader.vue";
 import PageFooter from "./pageFooter.vue";
 </script>
-<style lang="scss" scoped>
-.main {
-  margin-top: 44px;
-}
-</style>
+<style lang="scss" scoped></style>

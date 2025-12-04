@@ -160,6 +160,11 @@ const routes = [
         ]
     },
     {
+        path: "/login",
+        name: "login",
+        component: () => import("../views/login.vue")
+    },
+    {
         path: "/error",
         name: "error",
         component: () => import("../views/error.vue")
