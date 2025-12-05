@@ -5,7 +5,6 @@ import path from 'path';
 import UnoCSS from "unocss/vite";
 
 export default ({ mode }) => {
-  console.log(321, mode, loadEnv(mode, process.cwd()))
   return defineConfig({
     plugins: [
       vue(),

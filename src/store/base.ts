@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
-const baseStore = defineStore({    
-  id: "base",    
+const baseStore = defineStore('base', {    
   state() {
     return {
     }
