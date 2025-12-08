@@ -13,10 +13,16 @@ export function uploadFile(data: any, progress: Function) {
     method: "post",
     data,
     onUploadProgress(progressEvent: any) {
-      console.log(111111, progressEvent)
       const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      console.log(222222, percentCompleted)
       progress({ percent: percentCompleted })
     }
+  });
+}
+// 获取视频文件详情
+export function getVideoDetail(params: any) {
+  return request({
+    url: `/file/detail`,
+    method: "get",
+    params
   });
 }

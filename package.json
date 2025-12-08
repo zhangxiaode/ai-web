@@ -53,6 +53,11 @@
     "videojs-contrib-hls": "^5.15.0",
     "vite": "^7.2.6",
     "vue-tsc": "^0.34.7",
-    "weixin-js-sdk": "^1.6.5"
+    "weixin-js-sdk": "^1.6.5",
+    "xgplayer": "^3.0.23",
+    "xgplayer-flv": "^3.0.23",
+    "xgplayer-hls": "^3.0.23",
+    "xgplayer-mp4": "^3.0.23",
+    "xgplayer-subtitles": "^3.0.23"
   }
 }

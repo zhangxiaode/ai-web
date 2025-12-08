@@ -43,3 +43,12 @@ export function conversionVideoFormat(data: any) {
     data
   });
 }
+
+// 文件下载
+export function downloadFile(params: any) {
+  return request({
+    url: `/file/download`,
+    method: "get",
+    params
+  });
+}

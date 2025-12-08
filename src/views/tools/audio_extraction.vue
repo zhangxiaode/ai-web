@@ -1,6 +1,6 @@
 <template>
-  <div class="audio_extraction">
-    音频提取
+  <div class="audio_extraction p-32px">
+    <!-- 音频提取 -->
     <n-upload
       ref="upload"
       multiple
@@ -38,8 +38,8 @@ import { uploadFile, getVideoAudio } from '@/apis/index';
 const message = useMessage()
 const video_url = ref(null)
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
-  if (options.file.file?.type !== 'image/png') { // image/png
-    message.error('只能上传png格式的图片文件，请重新上传')
+  if(!options.file.file?.type.includes('video')) {
+    message.error('只能上传视频格式的视频文件，请重新上传')
     return false
   }
   if(options.file.file && options.file.file.size > 1024 * 1024 * 1024) {
@@ -71,10 +71,9 @@ const customRequest = async ({
 const handleGetAudio = async () => {
   // const res: any = await getVideoAudio(video_url.value, 'demo/小丑.mp3')
   const res: any = await getVideoAudio({
-    video_path: video_url, // 'demo/小丑.mp4',
+    video_path: video_url.value,
     audio_path: 'demo/小丑.mp3'
   })
-  console.log(123, res)
 }
 </script>
 

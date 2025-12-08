@@ -1,10 +1,10 @@
 <template>
   <div class="h-100% flex flex-col justify-between items-normal">
-    <div class="px-8px my-12px">
+    <!-- <div class="px-8px my-12px">
       <div class="tabs inline-flex items-center bg-[rgba(147,51,234,0.4)] h-24px p-6px rounded-18px">
         <div v-for="(item, index) in tabs" :key="index" :class="['h-24px leading-24px px-16px c-#ccc text-12px cursor-pointer rounded-12px', { 'c-#fff bg-#9333ea': current === index }]" @click="handleTab(item.path)">{{ item.name }}</div>
       </div>
-    </div>
+    </div> -->
     <div class="flex-1">
       <router-view />
     </div>

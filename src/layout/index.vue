@@ -1,10 +1,10 @@
 <template>
   <div class="h-100% flex flex-col justify-between items-normal bg-#141414">
-    <PageHeader />
-    <div class="flex-1 p-24px">
+    <!-- <PageHeader /> -->
+    <div class="flex-1 p-24px overflow-hidden">
       <router-view />
     </div>
-    <PageFooter />
+    <!-- <PageFooter /> -->
   </div>
 </template>
 

@@ -1,9 +1,8 @@
 export const baseUrl = "./";
 export const staticUrl = "https://ai.chengyaokj.com/data" // 静态资源文件路径
 
-const formatNumber = (n: number) => {
-  const num: string = n.toString();
-  return num[1] ? num : "0" + num;
+const formatNumber = (time: number) => {
+  return time < 10 ? "0" + time : time;
 };
 
 export function formatZhNumber(num: number) {
@@ -15,6 +14,20 @@ export function formatAmount(num: number) {
   return num.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, function(_$0, $1) {
 		return $1 + ',';
 	})
+}
+
+export const formatVideoDuration = (duration: number) => {
+  let hours = Math.floor(duration / 3600);
+  let minutes = Math.floor((duration % 3600) / 60);
+  let seconds = Math.floor(duration % 60);
+
+  let formattedHours = formatNumber(hours);
+  let formattedMinutes = formatNumber(minutes);
+  let formattedSeconds = formatNumber(seconds);
+
+  let formattedDuration = formattedHours + ":" + formattedMinutes + ":" + formattedSeconds;
+
+  return formattedDuration;
 }
 
 export function formatDateTime(date: Date) {
@@ -50,6 +63,8 @@ export const copyToClip = (content: any) => {
   document.execCommand("copy");
   document.body.removeChild(aux);
 }
+
+export const filenameWithoutExt = (filename: string) => filename.lastIndexOf('.') <= 0 ? filename : filename.slice(0, filename.lastIndexOf('.'));
 
 // 是否为移动端
 export function hasMobile () {

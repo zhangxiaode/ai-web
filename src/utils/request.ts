@@ -47,7 +47,7 @@ service.interceptors.response.use(
     return response?.data;
   },
   (error: any) => {
-    if(error.response.status === 401) {
+    if(error?.response?.status === 401) {
       removeToken()
       message.error("用户身份已失效，请重新登录", {
         onAfterLeave: () => {
@@ -84,7 +84,8 @@ function apiAxios(httpDefault: AxiosRequestConfig) {
       })
       .catch((error: any) => {
         message.error(error?.response?.data?.message || "error");
-        reject(error);
+        console.log(123, error)
+        reject(new Object());
       })
       .finally(() => {
         loadingBar.finish();
