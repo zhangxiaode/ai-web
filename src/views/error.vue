@@ -1,5 +1,5 @@
 <template>
-  <div class="error h-100 flex flex-column jc-center ai-center">
+  <div class="error h-100% flex flex-column jc-center ai-center bg-#141414">
     <div v-if="qs?.redirect_url" class="msg">{{ qs.msg }}</div>
     <n-empty v-else-if="qs?.no_permission" description="暂无权限，请联系管理员开通权限！" />
     <n-empty v-else description="404" />

@@ -15,17 +15,17 @@ service.interceptors.request.use(
   (config: any) => {
     localStorage.setItem('mode', import.meta.env.MODE)
     config.headers['Accept'] = '*/*'
-    // const token = getToken();
-    // if (token) {
-    //   config.headers["Authorization"] = `Bearer ${token}`;
-    // } else if (location.pathname !== '/login'){
-    //   location.href = `/login?redirect=${window.location.pathname + window.location.search}`;
-    // }
-    // config.onUploadProgress = (progressEvent: any) => {
-    //   const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-    //   console.log(`Upload Progress: ${percentCompleted}%`);
-    //   // 在这里可以处理进度条或 UI 更新
-    // };
+    const token = getToken();
+    if (token) {
+      config.headers["Authorization"] = token;
+    } else if (location.pathname !== '/login'){
+      location.href = `/login?redirect=${window.location.pathname + window.location.search}`;
+    }
+    config.onUploadProgress = (progressEvent: any) => {
+      const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      console.log(`Upload Progress: ${percentCompleted}%`);
+      // 在这里可以处理进度条或 UI 更新
+    };
     return config;
   },
   (error: any) => {

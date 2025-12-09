@@ -84,7 +84,7 @@ export function validaLength(str: string, min: number, max: number) {
 }
 
 /* 输入短信验证码控制*/
-export function validaMsg(str: string) {
-    const reg = /^[A-Za-z0-9]{6}$/;
-    return reg.test(str.trim());
+export function validaMsg(str: number) {
+    const reg = /^[0-9]{6}$/;
+    return reg.test(String(str));
 }

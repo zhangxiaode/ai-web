@@ -38,7 +38,7 @@
 import { ref, computed } from 'vue';
 import { useMessage } from 'naive-ui';
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
-import { uploadFile, conversionVideoFormat, downloadFile } from '@/apis/index';
+import { uploadFile, conversionVideoFormat } from '@/apis/index';
 import { filenameWithoutExt } from '@/utils/index';
 
 const message = useMessage()

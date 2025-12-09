@@ -36,6 +36,7 @@
     "@unocss/eslint-config": "^66.5.10",
     "@vicons/ionicons5": "^0.13.0",
     "@vitejs/plugin-vue": "^6.0.2",
+    "@vueuse/core": "^14.1.0",
     "axios": "^1.13.2",
     "cross-env": "^10.1.0",
     "gulp": "^5.0.1",

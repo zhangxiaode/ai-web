@@ -19,6 +19,7 @@ const routes = [
                 path: "tools",
                 name: "tools",
                 component: () => import("../views/tools/index.vue"),
+                redirect: "/layout/tools/audio_extraction",
                 children: [
                     {
                         path: "audio_extraction",
@@ -34,6 +35,7 @@ const routes = [
                         path: "format_factory",
                         name: "format_factory",
                         component: () => import("../views/tools/format_factory.vue"),
+                        redirect: "/layout/tools/format_factory/format_image",
                         children: [
                             {
                                 path: "format_image",
@@ -58,20 +60,21 @@ const routes = [
                 path: "assets",
                 name: "assets",
                 component: () => import("../views/assets/index.vue"),
+                redirect: "/layout/assets/voice",
                 children: [
                     {
                         path: "voice",
-                        name: "voice",
+                        name: "assets_voice",
                         component: () => import("../views/assets/voice.vue")
                     },
                     {
                         path: "sound",
-                        name: "sound",
+                        name: "assets_sound",
                         component: () => import("../views/assets/sound.vue")
                     },
                     {
                         path: "thing",
-                        name: "thing",
+                        name: "assets_thing",
                         component: () => import("../views/assets/thing.vue")
                     },
                 ]
@@ -80,30 +83,31 @@ const routes = [
                 path: "project",
                 name: "project",
                 component: () => import("../views/project/index.vue"),
+                redirect: "/layout/project/character",
                 children: [
                     {
                         path: "character",
-                        name: "character",
+                        name: "project_character",
                         component: () => import("../views/project/character.vue")
                     },
                     {
                         path: "scene",
-                        name: "scene",
+                        name: "project_scene",
                         component: () => import("../views/project/scene.vue")
                     },
                     {
                         path: "thing",
-                        name: "thing",
+                        name: "project_thing",
                         component: () => import("../views/project/thing.vue")
                     },
                     {
                         path: "chapter",
-                        name: "chapter",
+                        name: "project_chapter",
                         component: () => import("../views/project/chapter.vue"),
                         children: [
                             {
                                 path: "shot",
-                                name: "shot",
+                                name: "project_chapter_shot",
                                 component: () => import("../views/project/shot.vue")
                             },
                         ]
@@ -119,6 +123,7 @@ const routes = [
                 path: "account",
                 name: "account",
                 component: () => import("../views/account/index.vue"),
+                redirect: "/layout/account/topup",
                 children: [
                     {
                         path: "topup",

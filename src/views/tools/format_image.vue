@@ -30,11 +30,12 @@
         <n-select class="w-200px" v-model:value="format" :options="format_options" placeholder="请选择转换图片格式" />
       </div>
       <div v-if="image_url" class="w-150px h-50px leading-50px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleFormat()">格式转换</div>
+      <div v-if="image_url" class="w-150px h-50px leading-50px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleDownload()">下载</div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useMessage } from 'naive-ui';
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { uploadFile, conversionImageFormat } from '@/apis/index';
@@ -44,6 +45,7 @@ const message = useMessage()
 const image_url: any = ref('')
 const file_name: any = ref('')
 const format = ref(null)
+const output_path = computed(() => `demo/${file_name.value}.${format.value}`)
 const format_options = ref([
   { label: 'png', value: 'png' },
   { label: 'jpg', value: 'jpg' },
@@ -91,9 +93,12 @@ const customRequest = async ({
 const handleFormat = async () => {
   const res: any = await conversionImageFormat({
     input_path: image_url.value.replace('/Users/zxd/ai/', ''),
-    output_path: `demo/${file_name.value}.${format.value}`,
+    output_path: output_path.value,
   })
   console.log(123, res)
+}
+const handleDownload = () => {
+  window.open(`/ai/apis/file/download?file_url=${output_path.value}`)
 }
 </script>
 

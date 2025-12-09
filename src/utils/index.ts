@@ -78,3 +78,25 @@ export function hasMobile () {
   return isMobile
 }
 
+/**
+ * 获取运行时 id
+ * tips：每次调用都返回一个运行时内唯一的 id，用于各种需要在运行时内临时生成互斥 id 的场景
+ * @method runtimeId
+ * @return {Number} 运行时 id
+ */
+let currentRuntimeId = 10000; // tips：默认从 10000 开始
+export const runtimeId = () => String(currentRuntimeId++);
+
+// 节流
+let repeat: any = false;
+export const debouncing = (action: Function, message: any, delay: number, params?: any) => {
+    if (repeat) {
+        message && message.warning && message.warning('请勿重复点击')
+    } else {
+        action(params)
+        repeat = true
+    }
+    setTimeout(() => {
+        repeat = false
+    }, delay)
+};

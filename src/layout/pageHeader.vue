@@ -55,7 +55,7 @@ const tabs = ref([
   }
 ])
 const current = computed(() => {
-  return tabs.value.findIndex(item => item.path === route.path)
+  return tabs.value.findIndex(item => route.path.includes(item.path))
 });
 const handleTab = (path: string) => {
   router.push(path)
