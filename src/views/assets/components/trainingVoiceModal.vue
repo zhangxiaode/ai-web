@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 600px;" @update:show="onClose">
     <template #header>
-      <slot name="header">新增音色</slot>
+      <slot name="header">训练音色</slot>
     </template>
     <slot>
       <div class="new-content">
@@ -16,36 +16,6 @@
           require-mark-placement="right-hanging"
           size="medium"
         >
-          <n-form-item label="音色名称:" path="name">
-            <n-input v-model:value="form.name" placeholder="请输入音色名称" />
-          </n-form-item>
-          <n-form-item label="音色平台:" path="platform">
-            <n-select
-              v-model:value="form.platform"
-              placeholder="请选择音色平台"
-              :options="platform_opts"
-              clearable
-            />
-          </n-form-item>
-          <n-form-item label="音色性别:" path="gender">
-            <n-select
-              v-model:value="form.gender"
-              placeholder="请选择音色性别"
-              :options="gender_opts"
-              clearable
-            />
-          </n-form-item>
-          <!-- <n-form-item label="三方配音音色ID:" path="voice_id">
-            <n-input v-model:value="form.voice_id" placeholder="请输入三方配音音色ID" />
-          </n-form-item> -->
-          <n-form-item label="配音语言:" path="language">
-            <n-select
-              v-model:value="form.language"
-              placeholder="请选择配音语言"
-              :options="language_opts"
-              clearable
-            />
-          </n-form-item>
           <n-form-item label="训练音频:" path="training_path">
             <n-upload
               ref="upload"
@@ -72,9 +42,6 @@
               </n-upload-dragger>
             </n-upload>
           </n-form-item>
-          <!-- <n-form-item label="资源地址:" path="resource_path">
-            <n-input v-model:value="form.resource_path" placeholder="请输入资源地址" />
-          </n-form-item> -->
         </n-form>
       </div>
     </slot>
@@ -93,28 +60,21 @@ import { FormInst, useMessage } from 'naive-ui';
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { splitFilename, debouncing } from '@/utils/index';
-import { language_opts, gender_opts, platform_opts } from '@/constants/index';
-import { uploadFileToOBS, getVoiceDetail, postThirdVoice, postVoice, putVoice } from "@/apis/index";
+import { uploadFileToOBS, trainingVoice } from "@/apis/index";
 
 const emit = defineEmits(["save"]);
-const { visible, payload, hideModal } = useModal('new-voice-modal');
+const { visible, payload, hideModal } = useModal('training-voice-modal');
 const message = useMessage()
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const form = ref({
   id: null,
-  name: '',
   platform: null,
-  gender: null,
-  voice_id: '',
-  language: null,
-  training_path: '',
-  resource_path: ''
+  training_path: ''
 });
 const rules = {
-  name: {required: true, message: "音色名称不能为空", trigger: ['blur', 'change']},
-  platform: {required: true, type: "number", message: "音色平台不能为空", trigger: ['blur', 'change']}
+  training_path: {required: true, message: "训练音频不能为空", trigger: ['blur', 'change']}
 };
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
   if(!options.file.file?.type.includes('audio')) {
@@ -151,32 +111,16 @@ const customRequest = async ({
 const onSubmit = async () => {
   disabled.value = true
   let params = {
-    name: form.value.name,
-    platform: form.value.platform,
-    gender: form.value.gender,
-    voice_id: form.value.voice_id,
-    language: form.value.language,
-    training_path: form.value.training_path,
-    resource_path: form.value.resource_path
-  }
-  let f = postVoice
-  if(form.value.id) {
-    f = putVoice
-    params['id'] = form.value.id
+    id: form.value.id,
+    training_path: form.value.training_path
   }
   try {
-    const res: any = await f(params)
+    const res: any = await trainingVoice(params)
     if (res.code == 200 || res.code == 0) {
       onClose()
       emit('save', {
         id: res?.data?.id,
-        name: res?.data?.name,
-        platform: res?.data?.platform,
-        gender: res?.data?.gender,
-        voice_id: res?.data?.voice_id,
-        language: res?.data?.language,
-        training_path: res?.data?.training_path,
-        resource_path: res?.data?.resource_path
+        training_path: res?.data?.training_path
       })
     }
   } catch (error) {
@@ -187,34 +131,15 @@ const onSubmit = async () => {
 const onClose = () => {
   hideModal();
 }
-const getVoiceInfo = async () => {
-  const res: any = await getVoiceDetail({
-    id: payload.value.id
-  })
-  form.value.id = res.data.id
-  form.value.name = res.data.name
-  form.value.platform = res.data.platform
-  form.value.gender = res.data.gender
-  form.value.voice_id = res.data.voice_id
-  form.value.language = res.data.language
-  form.value.training_path = res.data.training_path
-  form.value.resource_path = res.data.resource_path
-}
 watch(visible, (newValue: any) => {
   if(newValue) {
-    if(payload.value?.id) {
-      getVoiceInfo()
-    }
+    form.value.id = payload.value.id
+    form.value.platform = payload.value.platform
   } else {
     form.value = {
       id: null,
-      name: '',
       platform: null,
-      gender: null,
-      voice_id: '',
-      language: null,
       training_path: '',
-      resource_path: ''
     }
   }
 });

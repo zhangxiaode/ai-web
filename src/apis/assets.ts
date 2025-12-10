@@ -34,6 +34,15 @@ export function postVoice(data: any) {
   });
 }
 
+// 训练音色
+export function trainingVoice(data: any) {
+  return request({
+    url: `/voice/training`,
+    method: "put",
+    data
+  });
+}
+
 // 更新音色
 export function putVoice(data: any) {
   return request({

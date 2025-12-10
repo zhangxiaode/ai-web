@@ -11,7 +11,7 @@
         :data="{}"
         :max="1"
         method="post"
-        accept="image/*"
+        accept="image/png, image/jpg, image/jpeg, image/ico, image/gif, image/bmp, image/tif, image/tga, image/apng, image/pcx"
         :on-before-upload="beforeUpload"
         :custom-request="(e: any) => customRequest(e)"
       >
@@ -22,6 +22,9 @@
           <div class="flex flex-column justify-center items-center">
             <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
               将文件拖至此区域,或<span class="c-#53d8fe">点击上传</span>
+            </n-text>
+            <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
+              支持的文件类型：png, jpg, jpeg, ico, gif, bmp, tif, tga, apng, pcx
             </n-text>
           </div>
         </n-upload-dragger>

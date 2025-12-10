@@ -84,7 +84,7 @@ function apiAxios(httpDefault: AxiosRequestConfig) {
       })
       .catch((error: any) => {
         message.error(error?.response?.data?.message || "error");
-        console.log(123, error)
+        console.log(error)
         reject(new Object());
       })
       .finally(() => {

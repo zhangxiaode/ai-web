@@ -64,7 +64,29 @@ export const copyToClip = (content: any) => {
   document.body.removeChild(aux);
 }
 
+// 提取文件名
 export const filenameWithoutExt = (filename: string) => filename.lastIndexOf('.') <= 0 ? filename : filename.slice(0, filename.lastIndexOf('.'));
+
+/**
+ * 提取文件名和后缀
+ * @param {string} filename 完整文件名（如 "16_1_林弦.wav"）
+ * @returns {Object} { name: 主文件名, ext: 后缀名（含.） }
+ */
+export const splitFilename = (filename: string): any => {
+  const lastDotIndex = filename.lastIndexOf('.');
+  if (lastDotIndex === -1) {
+    return {
+      name: filename,
+      ext: ''
+    };
+  }
+  // 分割主文件名和后缀（后缀包含.，如 .wav）
+  return {
+    name: filename.substring(0, lastDotIndex), // 16_1_林弦
+    ext: filename.substring(lastDotIndex)      // .wav
+  };
+}
+
 
 // 是否为移动端
 export function hasMobile () {
