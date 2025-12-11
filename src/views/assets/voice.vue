@@ -52,47 +52,47 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 flex flex-wrap overflow-auto">
-      <div v-for="(item, index) in voice_list" :key="index" class="w-200px h-60px m-16px px-12px py-24px rounded-8px bg-#252525 flex flex-col items-normal">
+    <div class="flex-1 overflow-auto">
+      <div v-for="(item, index) in voice_list" :key="index" class="h-30px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
+        <div class="flex-1 flex flex-col justify-center items-normal">
+          <div class="flex items-center">
+            <div class="text-14px c-#fff mr-12px">{{ item.name }}</div>
+            <div class="text-14px c-#fff mx-12px">({{ item.gender === 1 ? "男" : item.gender === 2 ? "女" : "-" }})</div>
+            <div class="text-12px c-#ccc mx-12px">({{ item.platform === 1 ? "豆包" : item.platform === 2 ? "千问" : "-" }})</div>
+            <div class="text-12px c-#666 ml-12px">({{ item.language === 'zh' ? "中文" : item.language === 'en' ? "英文" : "" }})</div>
+          </div>
+        </div>
         <div class="flex justify-between items-center">
-          <div class="flex-1 text-14px c-#fff">{{ item.name }} ({{ item.gender === 1 ? "男" : item.gender === 2 ? "女" : "-" }})</div>
-          <n-popover trigger="hover">
-            <template #trigger>
-              <n-icon size="18" class="c-#fff cursor-pointer ml-24px">
-                <EllipsisVertical />
+          <n-button class="mx-6px" type="primary" size="tiny"  @click="handleEdit(item)">
+            <template #icon>
+              <n-icon>
+                <CreateOutline />
               </n-icon>
             </template>
-            <div class="flex justify-between items-center">
-              <n-button class="mx-6px" type="primary" size="tiny"  @click="handleEdit(item)">
-                <template #icon>
-                  <n-icon>
-                    <CreateOutline />
-                  </n-icon>
-                </template>
-                编辑
-              </n-button>
-              <n-button class="mx-6px" type="primary" size="tiny"  @click="handleTraining(item)">
-                <template #icon>
-                  <n-icon>
-                    <CreateOutline />
-                  </n-icon>
-                </template>
-                训练
-              </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="handleDelete(item)">
-                <template #icon>
-                  <n-icon>
-                    <TrashOutline />
-                  </n-icon>
-                </template>
-                删除
-              </n-button>
-            </div>
-          </n-popover>
-        </div>
-        <div class="flex justify-between items-center mt-16px">
-          <div class="text-12px c-#ccc">{{ item.platform === 1 ? "豆包" : item.platform === 2 ? "千问" : "-" }}</div>
-          <div class="text-12px c-#666">{{ item.language === 'zh' ? "中文" : item.language === 'en' ? "英文" : "" }}</div>
+            编辑
+          </n-button>
+          <n-button class="mx-6px" type="primary" size="tiny"  @click="handleTraining(item)">
+            <template #icon>
+              <n-icon>
+                <CreateOutline />
+              </n-icon>
+            </template>
+            训练
+          </n-button>
+          <n-button class="mx-6px" type="error" size="tiny"  @click="handleDelete(item)">
+            <template #icon>
+              <n-icon>
+                <TrashOutline />
+              </n-icon>
+            </template>
+            删除
+          </n-button>
+          <n-button class="mx-6px" type="error" size="tiny">
+            <template #icon>
+              <AudioPlayer :size="14" color="#ff0000" :src="item.resource_path" />
+            </template>
+            试听
+          </n-button>
         </div>
       </div>
     </div>
@@ -115,8 +115,9 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useModal } from "@/hooks";
-import { Search, Repeat, AddSharp, EllipsisVertical, CreateOutline, TrashOutline } from '@vicons/ionicons5';
+import { Search, Repeat, AddSharp, CreateOutline, TrashOutline } from '@vicons/ionicons5';
 import { getVoiceList, deleteVoice } from '@/apis/index';
+import AudioPlayer from '@/components/audioPlayer.vue';
 import NewVoiceModal from './components/newVoiceModal.vue';
 import TrainingVoiceModal from './components/trainingVoiceModal.vue';
 
