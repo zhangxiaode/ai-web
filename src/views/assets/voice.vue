@@ -89,7 +89,7 @@
           </n-button>
           <n-button class="mx-6px" type="error" size="tiny">
             <template #icon>
-              <AudioPlayer :size="14" color="#ff0000" :src="item.resource_path" />
+              <AudioPlayer :src="item.resource_path" />
             </template>
             试听
           </n-button>

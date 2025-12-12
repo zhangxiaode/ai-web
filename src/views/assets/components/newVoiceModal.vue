@@ -93,8 +93,10 @@ import { FormInst, useMessage } from 'naive-ui';
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { splitFilename, debouncing } from '@/utils/index';
+import { getUser } from "@/utils/auth";
 import { language_opts, gender_opts, platform_opts } from '@/constants/index';
-import { uploadFileToOBS, getVoiceDetail, postThirdVoice, postVoice, putVoice } from "@/apis/index";
+import { uploadFileToOBS, getVoiceDetail, postVoice, putVoice } from "@/apis/index";
+// postThirdVoice
 
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-voice-modal');
@@ -138,7 +140,8 @@ const customRequest = async ({
     const { name, ext } = splitFilename(file.name)
     const formData: any = new FormData();
     formData.append('file', file.file);
-    formData.append('file_path', `${form.value.platform === 1 ? 'invoice/doubao' : 'invoice/qwen'}/${name}_${Date.now()}${ext}`);
+    const user: any = await getUser()
+    formData.append('file_path', `${form.value.platform === 1 ? 'invoice/doubao' : 'invoice/qwen'}/${user.id}/${name}_${Date.now()}${ext}`);
     const res: any = await uploadFileToOBS(formData, onProgress)
     form.value.training_path = res.data
     file.status = 'finished'

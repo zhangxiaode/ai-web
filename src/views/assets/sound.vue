@@ -8,19 +8,6 @@
       <n-form-item path="name" label="音效名称">
         <n-input v-model:value="searchForm.name" size="small" placeholder="请输入音效名称" @keyup.enter.native="getList" />
       </n-form-item>
-      <n-form-item path="platform" label="音效平台">
-        <n-select
-          v-model:value="searchForm.platform"
-          class="w-150"
-          size="small"
-          placeholder="请选择音效平台"
-          :options="[
-            { label: '豆包', value: 1 },
-            { label: '千问', value: 2 }
-          ]"
-          clearable
-        />
-      </n-form-item>
       <n-form-item>
         <n-button class="btn" type="primary" size="small"  @click="getList">
           <template #icon>
@@ -53,38 +40,35 @@
       </n-form-item>
     </n-form>
     <div class="flex-1 flex flex-wrap overflow-auto">
-      <div v-for="(item, index) in sound_list" :key="index" class="w-200px h-60px m-16px px-12px py-24px rounded-8px bg-#252525 flex flex-col items-normal">
+      <div v-for="(item, index) in sound_list" :key="index" class="h-30px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
+        <div class="flex-1 flex flex-col justify-center items-normal">
+          <div class="flex items-center">
+            <div class="text-14px c-#fff mr-12px">{{ item.name }}</div>
+          </div>
+        </div>
         <div class="flex justify-between items-center">
-          <div class="flex-1 text-14px c-#fff">{{ item.name }} ({{ item.gender === 1 ? "男" : item.gender === 2 ? "女" : "-" }})</div>
-          <n-popover trigger="hover">
-            <template #trigger>
-              <n-icon size="18" class="c-#fff cursor-pointer ml-24px">
-                <EllipsisVertical />
+          <n-button class="mx-6px" type="primary" size="tiny"  @click="handleEdit(item)">
+            <template #icon>
+              <n-icon>
+                <CreateOutline />
               </n-icon>
             </template>
-            <div class="flex justify-between items-center">
-              <n-button class="mx-6px" type="primary" size="tiny"  @click="handleEdit(item)">
-                <template #icon>
-                  <n-icon>
-                    <CreateOutline />
-                  </n-icon>
-                </template>
-                编辑
-              </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="handleDelete(item)">
-                <template #icon>
-                  <n-icon>
-                    <TrashOutline />
-                  </n-icon>
-                </template>
-                删除
-              </n-button>
-            </div>
-          </n-popover>
-        </div>
-        <div class="flex justify-between items-center mt-16px">
-          <div class="text-12px c-#ccc">{{ item.platform === 1 ? "豆包" : item.platform === 2 ? "千问" : "-" }}</div>
-          <div class="text-12px c-#666">{{ item.language === 'zh' ? "中文" : item.language === 'en' ? "英文" : "" }}</div>
+            编辑
+          </n-button>
+          <n-button class="mx-6px" type="error" size="tiny"  @click="handleDelete(item)">
+            <template #icon>
+              <n-icon>
+                <TrashOutline />
+              </n-icon>
+            </template>
+            删除
+          </n-button>
+          <n-button class="mx-6px" type="error" size="tiny">
+            <template #icon>
+              <AudioPlayer :src="item.resource_path" />
+            </template>
+            试听
+          </n-button>
         </div>
       </div>
     </div>
@@ -106,12 +90,12 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { useModal } from "@/hooks";
-import { Search, Repeat, AddSharp, EllipsisVertical, CreateOutline, TrashOutline } from '@vicons/ionicons5';
+import { Search, Repeat, AddSharp, CreateOutline, TrashOutline } from '@vicons/ionicons5';
 import { getSoundList, deleteSound } from '@/apis/index';
+import AudioPlayer from '@/components/audioPlayer.vue';
 import NewSoundModal from './components/newSoundModal.vue';
 
 let searchForm: any = ref({
-  platform: null,
   name: ''
 });
 const page = ref(1)
@@ -128,7 +112,6 @@ const handleNewModalComplete = (res: any) => {
 };
 const handleReset = () => {
   searchForm.value = {
-    platform: null,
     name: ''
   };
   getList()
@@ -148,7 +131,6 @@ const getList = async () => {
     const res: any = await getSoundList({
       page: page.value,
       size: size.value,
-      platform: searchForm.value.platform,
       name: searchForm.value.name
     })
     total.value = res.data.total

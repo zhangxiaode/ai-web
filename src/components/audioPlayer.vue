@@ -1,8 +1,8 @@
 <template>
-  <div :class="['audio flex justify-center items-center rounded-full border-0px border-style-solid bg-transparent', `border-color-${color} w-${size}px`, `h-${size}px`]" @click="handlePlay()">
-    <div :class="['bar bar1 bg-#fff', `bg-${color} w-${size / 6}px h-${size / 4}px rounded-${size / 12}px rounded-tr-${size / 4}px rounded-br-${size / 4}px mx-${size / 10}px`, { playing }]"></div>
-    <div :class="['bar bar2 bg-#fff', `bg-${color} w-${size / 6}px h-${size * 2 / 4}px rounded-${size / 12}px rounded-tr-${size * 2 / 4}px rounded-br-${size * 2 / 4}px mx-${size / 10}px`, { playing }]"></div>
-    <div :class="['bar bar3 bg-#fff', `bg-${color} w-${size / 6}px h-${size * 3 / 4}px rounded-${size / 12}px rounded-tr-${size * 3 / 4}px rounded-br-${size * 3 / 4}px mx-${size / 10}px`, { playing }]"></div>
+  <div class="audio flex justify-center items-center rounded-full border-0px border-style-solid bg-transparent border-color-#fff w-12px h-12px" @click="handlePlay()">
+    <div :class="['bar bar1 bg-#fff w-2px h-3px rounded-2px rounded-tr-3px rounded-br-3px mx-1px', { playing }]"></div>
+    <div :class="['bar bar2 bg-#fff w-2px h-6px rounded-2px rounded-tr-6px rounded-br-6px mx-1px', { playing }]"></div>
+    <div :class="['bar bar3 bg-#fff w-2px h-9px rounded-2px rounded-tr-9px rounded-br-9px mx-1px', { playing }]"></div>
   </div>
 </template>
 
@@ -10,8 +10,6 @@
 import { ref } from 'vue';
 
 const props = defineProps({
-  size: { type: Number, default: 14 },
-  color: { type: String, default: '#ffffff' },
   src: { type: String, default: '' },
 })
 const playing = ref(false)

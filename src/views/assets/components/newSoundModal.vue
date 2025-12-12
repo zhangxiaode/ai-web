@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 600px;" @update:show="onClose">
     <template #header>
-      <slot name="header">新增音色</slot>
+      <slot name="header">新增音效</slot>
     </template>
     <slot>
       <div class="new-content">
@@ -16,38 +16,34 @@
           require-mark-placement="right-hanging"
           size="medium"
         >
-          <n-form-item label="音色名称:" path="name">
-            <n-input v-model:value="form.name" placeholder="请输入音色名称" />
+          <n-form-item label="音效名称:" path="name">
+            <n-input v-model:value="form.name" placeholder="请输入音效名称" />
           </n-form-item>
-          <n-form-item label="音色平台:" path="platform">
-            <n-select
-              v-model:value="form.platform"
-              placeholder="请选择音色平台"
-              :options="platform_opts"
-              clearable
-            />
-          </n-form-item>
-          <n-form-item label="音色性别:" path="gender">
-            <n-select
-              v-model:value="form.gender"
-              placeholder="请选择音色性别"
-              :options="gender_opts"
-              clearable
-            />
-          </n-form-item>
-          <n-form-item label="三方配音音色ID:" path="voice_id">
-            <n-input v-model:value="form.voice_id" placeholder="请输入三方配音音色ID" />
-          </n-form-item>
-          <n-form-item label="配音语言:" path="language">
-            <n-select
-              v-model:value="form.language"
-              placeholder="请选择配音语言"
-              :options="language_opts"
-              clearable
-            />
-          </n-form-item>
-          <n-form-item label="资源地址:" path="resource_path">
-            <n-input v-model:value="form.resource_path" placeholder="请输入资源地址" />
+          <n-form-item label="上传音效:" path="resource_path">
+            <n-upload
+              ref="upload"
+              multiple
+              directory-dnd
+              action=""
+              :headers="{}"
+              :data="{}"
+              :max="1"
+              method="post"
+              accept="audio/*"
+              :on-before-upload="beforeUpload"
+              :custom-request="(e: any) => customRequest(e)"
+            >
+              <n-upload-dragger class="flex flex-col justify-center items-center bg-#a5a5a5 rounded-14px border-1px border-color-[transparent] border-style-dashed hover:bg-#494949 hover:border-color-#666">
+                <div style="margin-bottom: 12px">
+                  <img src="../../../assets/upload.png" class="w-120px h-120px" alt="">
+                </div>
+                <div class="flex flex-column justify-center items-center">
+                  <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
+                    将文件拖至此区域,或<span class="c-#53d8fe">点击上传</span>
+                  </n-text>
+                </div>
+              </n-upload-dragger>
+            </n-upload>
           </n-form-item>
         </n-form>
       </div>
@@ -64,10 +60,11 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { FormInst, useMessage } from 'naive-ui';
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
-import { debouncing } from '@/utils/index';
-import { language_opts, gender_opts, platform_opts } from '@/constants/index';
-import { getVoiceDetail, postThirdVoice, postVoice, putVoice } from "@/apis/index";
+import { splitFilename, debouncing } from '@/utils/index';
+import { getUser } from "@/utils/auth";
+import { uploadFileToOBS, getSoundDetail, postSound, putSound } from "@/apis/index";
 
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
@@ -78,29 +75,54 @@ const formRef = ref<FormInst | null>(null)
 const form = ref({
   id: null,
   name: '',
-  platform: null,
-  gender: null,
-  voice_id: '',
-  language: null,
   resource_path: ''
 });
 const rules = {
   name: {required: true, message: "音色名称不能为空", trigger: ['blur', 'change']},
-  platform: {required: true, message: "音色平台不能为空", trigger: ['blur', 'change']}
+  resource_path: {required: true, message: "音效不能为空", trigger: ['blur', 'change']}
 };
+const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
+  if(!options.file.file?.type.includes('audio')) {
+    message.error('只能上传音频格式的音频文件，请重新上传')
+    return false
+  }
+  if(options.file.file && options.file.file.size > 300 * 1024 * 1024) {
+    message.error('大小限制300MB以下')
+    return false
+  } else {
+    return true
+  }
+}
+const customRequest = async ({
+  file,
+  onFinish,
+  onError,
+  onProgress
+}: UploadCustomRequestOptions) => {
+  try {
+    const { name, ext } = splitFilename(file.name)
+    const formData: any = new FormData();
+    formData.append('file', file.file);
+    const user: any = await getUser()
+    formData.append('file_path', `sound/${user.id}/${name}_${Date.now()}${ext}`);
+    const res: any = await uploadFileToOBS(formData, onProgress)
+    form.value.resource_path = res.data
+    file.status = 'finished'
+    onFinish()
+  } catch (error: any) {
+    file.status = 'error'
+    onError()
+  }
+}
 const onSubmit = async () => {
   disabled.value = true
   let params = {
     name: form.value.name,
-    platform: form.value.platform,
-    gender: form.value.gender,
-    voice_id: form.value.voice_id,
-    language: form.value.language,
     resource_path: form.value.resource_path
   }
-  let f = postThirdVoice
+  let f = postSound
   if(form.value.id) {
-    f = putVoice
+    f = putSound
     params['id'] = form.value.id
   }
   try {
@@ -110,10 +132,6 @@ const onSubmit = async () => {
       emit('save', {
         id: res?.data?.id,
         name: res?.data?.name,
-        platform: res?.data?.platform,
-        gender: res?.data?.gender,
-        voice_id: res?.data?.voice_id,
-        language: res?.data?.language,
         resource_path: res?.data?.resource_path
       })
     }
@@ -126,15 +144,11 @@ const onClose = () => {
   hideModal();
 }
 const getVoiceInfo = async () => {
-  const res: any = await getVoiceDetail({
+  const res: any = await getSoundDetail({
     id: payload.value.id
   })
   form.value.id = res.data.id
   form.value.name = res.data.name
-  form.value.platform = res.data.platform
-  form.value.gender = res.data.gender
-  form.value.voice_id = res.data.voice_id
-  form.value.language = res.data.language
   form.value.resource_path = res.data.resource_path
 }
 watch(visible, (newValue: any) => {
@@ -146,10 +160,6 @@ watch(visible, (newValue: any) => {
     form.value = {
       id: null,
       name: '',
-      platform: null,
-      gender: null,
-      voice_id: '',
-      language: null,
       resource_path: ''
     }
   }

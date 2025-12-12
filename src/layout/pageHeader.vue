@@ -12,19 +12,20 @@
         <img src="../assets/cash.png" alt="" class="w-16px h-16px">
         <span class="text-14px c-#fff ml-3px">金币充值</span>
       </div>
-      <div class="mx-12px c-#ef4444 text-14px">金币余额: {{ formatZhNumber(123123) }}</div>
+      <div class="mx-12px c-#ef4444 text-14px">金币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
       <div class="userinfo flex justify-center items-center mr-12px">
-        <img src="../assets/default_avatar.png" alt="" class="w-32px h-32px rounded-16px">
-        <span class="c-#fff text-14px mx-12px">{{ 123 }}</span>
+        <img :src="user_info?.avatarurl" alt="" class="w-32px h-32px rounded-16px">
+        <span class="c-#fff text-14px mx-12px">{{ user_info?.nickname }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { formatZhNumber } from "@/utils/index";
+import { getUser } from "@/utils/auth";
 
 const router = useRouter()
 const route = useRoute()
@@ -57,12 +58,21 @@ const tabs = ref([
 const current = computed(() => {
   return tabs.value.findIndex(item => route.path.includes(item.path))
 });
+const user_info: any = ref(null)
 const handleTab = (path: string) => {
   router.push(path)
 }
 const goHome = () => {
   router.push('/')
 }
+const getUserInfo = async () => {
+  const user: any = await getUser()
+  user_info.value = user
+  console.log(user)
+}
+onMounted(() => {
+  getUserInfo()
+})
 </script>
 
 <style lang="scss" scoped>
