@@ -114,3 +114,57 @@ export function deleteSound(params: any) {
     params
   });
 }
+
+
+// 音效列表
+export function getThingList(params: any) {
+  return request({
+    url: `/thing`,
+    method: "get",
+    params
+  });
+}
+// 音效详情
+export function getThingDetail(params: any) {
+  return request({
+    url: `/thing/${params.id}`,
+    method: "get",
+    params
+  });
+}
+
+// 创建三方已有音效
+export function postThirdThing(data: any) {
+  return request({
+    url: `/thing/third`,
+    method: "post",
+    data
+  });
+}
+
+// 创建音效
+export function postThing(data: any) {
+  return request({
+    url: `/thing`,
+    method: "post",
+    data
+  });
+}
+
+// 更新音效
+export function putThing(data: any) {
+  return request({
+    url: `/thing`,
+    method: "put",
+    data
+  });
+}
+
+// 删除音效
+export function deleteThing(params: any) {
+  return request({
+    url: `/thing/${params.id}`,
+    method: "delete",
+    params
+  });
+}

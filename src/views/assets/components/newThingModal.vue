@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 600px;" @update:show="onClose">
     <template #header>
-      <slot name="header">新增音效</slot>
+      <slot name="header">新增物品</slot>
     </template>
     <slot>
       <div class="new-content">
@@ -16,10 +16,10 @@
           require-mark-placement="right-hanging"
           size="medium"
         >
-          <n-form-item label="音效名称:" path="name">
-            <n-input v-model:value="form.name" placeholder="请输入音效名称" />
+          <n-form-item label="物品名称:" path="name">
+            <n-input v-model:value="form.name" placeholder="请输入物品名称" />
           </n-form-item>
-          <n-form-item label="上传音效:" path="resource_path">
+          <n-form-item label="上传物品:" path="resource_path">
             <n-upload
               ref="upload"
               multiple
@@ -64,7 +64,7 @@ import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { splitFilename, debouncing } from '@/utils/index';
 import { getUser } from "@/utils/auth";
-import { uploadFileToOBS, getSoundDetail, postSound, putSound } from "@/apis/index";
+import { uploadFileToOBS, getThingDetail, postThing, putThing } from "@/apis/index";
 
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
@@ -78,8 +78,8 @@ const form = ref({
   resource_path: ''
 });
 const rules = {
-  name: {required: true, message: "音效名称不能为空", trigger: ['blur', 'change']},
-  resource_path: {required: true, message: "音效不能为空", trigger: ['blur', 'change']}
+  name: {required: true, message: "物品名称不能为空", trigger: ['blur', 'change']},
+  resource_path: {required: true, message: "物品不能为空", trigger: ['blur', 'change']}
 };
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
   if(!options.file.file?.type.includes('audio')) {
@@ -104,7 +104,7 @@ const customRequest = async ({
     const formData: any = new FormData();
     formData.append('file', file.file);
     const user: any = await getUser()
-    formData.append('file_path', `sound/${user.id}/${name}_${Date.now()}${ext}`);
+    formData.append('file_path', `thing/${user.id}/${name}_${Date.now()}${ext}`);
     const res: any = await uploadFileToOBS(formData, onProgress)
     form.value.resource_path = res.data
     file.status = 'finished'
@@ -120,9 +120,9 @@ const onSubmit = async () => {
     name: form.value.name,
     resource_path: form.value.resource_path
   }
-  let f = postSound
+  let f = postThing
   if(form.value.id) {
-    f = putSound
+    f = putThing
     params['id'] = form.value.id
   }
   try {
@@ -144,7 +144,7 @@ const onClose = () => {
   hideModal();
 }
 const getVoiceInfo = async () => {
-  const res: any = await getSoundDetail({
+  const res: any = await getThingDetail({
     id: payload.value.id
   })
   form.value.id = res.data.id

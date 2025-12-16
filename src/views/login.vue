@@ -15,15 +15,15 @@
 			<div v-if="loginType == 0" class="login-form flex-col">
 				<!-- 验证码登录 -->
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-20px">
-					<n-input-number round :bordered="false" :show-button="false" size="large" :value="phone" width="318rpx" height="40rpx" confirmType='done' :showClear="true" placeholder="请输入您的手机号" @focus="" @confirm="" @update:value="handleInputPhone" />
+					<n-input-number class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" round :bordered="false" :show-button="false" size="large" :value="phone" width="318rpx" height="40rpx" confirmType='done' :showClear="true" placeholder="请输入您的手机号" @focus="" @confirm="" @update:value="handleInputPhone" />
 				</div>
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-20px pr-0px flex justify-between items-center overflow-hidden">
 					<img class="flex-1 h-40px bg-#666 cursor-pointer" :src="captcha_img" @click="getCaptchaData()" />
 					<div class="w-1px h-18px bg-#252525"></div>
-					<n-input-number :bordered="false" :show-button="false" size="large" :value="captcha_code" width="200rpx" height="40rpx" confirmType='done' :showClear="false" placeholder="请输入图形验证码" @focus="" @confirm="" @update:value="handleInputCaptchaCode" />
+					<n-input-number class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" :bordered="false" :show-button="false" size="large" :value="captcha_code" width="200rpx" height="40rpx" confirmType='done' :showClear="false" placeholder="请输入图形验证码" @focus="" @confirm="" @update:value="handleInputCaptchaCode" />
 				</div>
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-20px pr-0px flex justify-between items-center">
-					<n-input-number :bordered="false" :show-button="false" size="large" :value="code" width="210rpx" height="40rpx" :maxlength="6" confirmType='done' :showClear="false" placeholder="请输入验证码" @focus="" @confirm="" @update:value="handleInputCode" />
+					<n-input-number class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" :bordered="false" :show-button="false" size="large" :value="code" width="210rpx" height="40rpx" :maxlength="6" confirmType='done' :showClear="false" placeholder="请输入验证码" @focus="" @confirm="" @update:value="handleInputCode" />
 					<div class="w-1px h-18px bg-#252525"></div>
 					<div class="w-108px h-40px leading-40px rounded-20px bg-#252525 flex justify-center items-center" @click="handleSendCode(0)">
 						<span v-if="second == 0" class="span-14px c-#fff leading-40px cursor-pointer">获取验证码</span>
@@ -40,10 +40,10 @@
 			<div v-else-if="loginType == 1" class="login-form flex-col">
 				<!-- 密码登录 -->
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-40px">
-					<n-input-number round :bordered="false" :show-button="false" size="large" :value="phone" width="318rpx" height="40rpx" confirmType='done' :showClear="true" placeholder="请输入您的手机号" @focus="" @confirm="" @update:value="handleInputPhone" />
+					<n-input-number class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" round :bordered="false" :show-button="false" size="large" :value="phone" width="318rpx" height="40rpx" confirmType='done' :showClear="true" placeholder="请输入您的手机号" @focus="" @confirm="" @update:value="handleInputPhone" />
 				</div>
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-40px">
-					<n-input :value="password" round size="large" width="318rpx" height="40rpx" type='password' confirmType='done' :showClear="true" placeholder="请输入密码" @focus="" @confirm="" @update:value="handleInputPassword" />
+					<n-input class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" :value="password" round size="large" width="318rpx" height="40rpx" type='password' confirmType='done' :showClear="true" placeholder="请输入密码" @focus="" @confirm="" @update:value="handleInputPassword" />
 				</div>
 				<div class="w-335px h-18px mx-20px my-6px">
 					<span v-if="tips" class="w-350px span-12px c-#666 h-18px">{{ tips }}</span>
@@ -55,15 +55,15 @@
 			<div v-else-if="loginType == 2" class="login-form flex-col">
 				<!-- 注册 -->
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-40px">
-					<n-input-number :bordered="false" :show-button="false" round size="large" :value="phone" width="318rpx" height="40rpx" confirmType='done' :showClear="true" placeholder="请输入您的手机号" @focus="" @confirm="" @update:value="handleInputPhone" />
+					<n-input-number class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" :bordered="false" :show-button="false" round size="large" :value="phone" width="318rpx" height="40rpx" confirmType='done' :showClear="true" placeholder="请输入您的手机号" @focus="" @confirm="" @update:value="handleInputPhone" />
 				</div>
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-40px pr-0px flex justify-between items-center overflow-hidden">
 					<img class="flex-1 h-40px bg-#666 cursor-pointer" :src="captcha_img" @click="getCaptchaData()" />
 					<div class="w-1px h-18px bg-#252525"></div>
-					<n-input-number :bordered="false" :show-button="false" size="large" :value="captcha_code" width="200rpx" height="40rpx" confirmType='done' :showClear="false" placeholder="请输入图形验证码" @focus="" @confirm="" @update:value="handleInputCaptchaCode" />
+					<n-input-number class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" :bordered="false" :show-button="false" size="large" :value="captcha_code" width="200rpx" height="40rpx" confirmType='done' :showClear="false" placeholder="请输入图形验证码" @focus="" @confirm="" @update:value="handleInputCaptchaCode" />
 				</div>
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-40px pr-0px flex justify-between items-center">
-					<n-input-number :bordered="false" :show-button="false" size="large" :value="code" width="422rpx" height="80rpx" :maxlength="6" confirmType='done' :showClear="false" placeholder="请输入验证码" @focus="" @confirm="" @update:value="handleInputCode" />
+					<n-input-number class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" :bordered="false" :show-button="false" size="large" :value="code" width="422rpx" height="80rpx" :maxlength="6" confirmType='done' :showClear="false" placeholder="请输入验证码" @focus="" @confirm="" @update:value="handleInputCode" />
 					<div class="w-1px h-18px bg-#252525"></div>
 					<div class="w-108px h-40px leading-40px rounded-20px bg-#252525 flex justify-center items-center" @click="handleSendCode(1)">
 						<span v-if="second == 0" class="span-14px c-#fff leading-16px cursor-pointer">获取验证码</span>
@@ -71,7 +71,7 @@
 					</div>
 				</div>
 				<div class="w-335px h-40px mx-20px my-8px bg-#252525 rounded-40px">
-					<n-input :value="password" round width="318rpx" height="40rpx" size="large" type='password' confirmType='done' :showClear="true" placeholder="请输入密码" @focus="" @confirm="" @update:value="handleInputPassword" />
+					<n-input class="border-1 border-[rgba(255,255,255,0.3)] rounded-20px border-solid bg-[rgba(0,0,0,0.3)] bg-[transparent] text-20px leading-40px active:bg-[rgba(0,0,0,0.3)]" :value="password" round width="318rpx" height="40rpx" size="large" type='password' confirmType='done' :showClear="true" placeholder="请输入密码" @focus="" @confirm="" @update:value="handleInputPassword" />
 				</div>
 				<div class="w-335px h-18px mx-20px my-6px">
 					<span v-if="tips" class="w-350px span-12px c-#666 h-18px">{{ tips }}</span>
@@ -334,5 +334,9 @@ onMounted(() => {
   &:active {
     background: transparent;
   }
+}
+:deep(.search .n-input:not(.n-input--disabled).n-input--focus) {
+  background: transparent !important;
+  box-shadow: 0 0 0 2px transparent !important;
 }
 </style>
