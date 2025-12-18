@@ -22,8 +22,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import { formatZhNumber } from "@/utils/index";
 import { getUser } from "@/utils/auth";
 
@@ -68,7 +66,6 @@ const goHome = () => {
 const getUserInfo = async () => {
   const user: any = await getUser()
   user_info.value = user
-  console.log(user)
 }
 onMounted(() => {
   getUserInfo()

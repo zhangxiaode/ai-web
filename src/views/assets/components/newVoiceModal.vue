@@ -61,7 +61,7 @@
               :custom-request="(e: any) => customRequest(e)"
             >
               <n-upload-dragger class="flex flex-col justify-center items-center bg-#a5a5a5 rounded-14px border-1px border-color-[transparent] border-style-dashed hover:bg-#494949 hover:border-color-#666">
-                <div style="margin-bottom: 12px">
+                <div class="mb-12px">
                   <img src="../../../assets/upload.png" class="w-120px h-120px" alt="">
                 </div>
                 <div class="flex flex-column justify-center items-center">
@@ -88,8 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import { FormInst, useMessage } from 'naive-ui';
+import { FormInst } from 'naive-ui';
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { splitFilename, debouncing } from '@/utils/index';

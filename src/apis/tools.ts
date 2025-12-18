@@ -1,4 +1,3 @@
-import request from "@/utils/request";
 // 提取音频
 export function getVideoAudio(data: any) {
   return request({

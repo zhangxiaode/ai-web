@@ -9,7 +9,6 @@
 
 <script lang="ts" setup>
 import queryString from "query-string";
-import { ref } from "vue";
 
 const queryParams: any = queryString.parse(location.search)
 const qs = ref(queryParams)

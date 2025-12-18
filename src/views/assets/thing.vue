@@ -88,10 +88,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
 import { useModal } from "@/hooks";
 import { Search, Repeat, AddSharp, CreateOutline, TrashOutline } from '@vicons/ionicons5';
-import { getThingList, deleteThing } from '@/apis/index';
+import { getThingDetail, getThingList, deleteThing } from '@/apis/index';
 import AudioPlayer from '@/components/audioPlayer.vue';
 import NewThingModal from './components/newThingModal.vue';
 
@@ -148,7 +147,9 @@ const handleCurrentChange = (val: number) => {
   page.value = val;
   getList();
 };
-onMounted(() => {
+onMounted(async () => {
+  const res = await getThingDetail({ id: 1 })
+  console.log(123, res)
   getList()
 })
 </script>

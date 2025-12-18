@@ -88,7 +88,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
 import { useModal } from "@/hooks";
 import { Search, Repeat, AddSharp, CreateOutline, TrashOutline } from '@vicons/ionicons5';
 import { getSoundList, deleteSound } from '@/apis/index';

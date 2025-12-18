@@ -1,4 +1,3 @@
-import request from "@/utils/request";
 // 获取首页信息
 export function getConfig() {
   return request({

@@ -16,10 +16,19 @@
           require-mark-placement="right-hanging"
           size="medium"
         >
+          <n-form-item label="物品类型:" path="type">
+            <n-radio-group v-model:value="form.type" name="radiobuttongroup1">
+              <n-radio-button :value="0" label="AI生成" />
+              <n-radio-button :value="1" label="自定义" />
+            </n-radio-group>
+          </n-form-item>
           <n-form-item label="物品名称:" path="name">
             <n-input v-model:value="form.name" placeholder="请输入物品名称" />
           </n-form-item>
-          <n-form-item label="上传物品:" path="resource_path">
+          <n-form-item label="物品描述:" path="desc">
+            <n-input v-model:value="form.desc" placeholder="请输入物品描述" />
+          </n-form-item>
+          <n-form-item v-if="form.type === 1" label="上传物品:" path="resource_path">
             <n-upload
               ref="upload"
               multiple
@@ -29,12 +38,12 @@
               :data="{}"
               :max="1"
               method="post"
-              accept="audio/*"
+              accept="image/*"
               :on-before-upload="beforeUpload"
               :custom-request="(e: any) => customRequest(e)"
             >
               <n-upload-dragger class="flex flex-col justify-center items-center bg-#a5a5a5 rounded-14px border-1px border-color-[transparent] border-style-dashed hover:bg-#494949 hover:border-color-#666">
-                <div style="margin-bottom: 12px">
+                <div class="mb-12px">
                   <img src="../../../assets/upload.png" class="w-120px h-120px" alt="">
                 </div>
                 <div class="flex flex-column justify-center items-center">
@@ -58,8 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import { FormInst, useMessage } from 'naive-ui';
+import { FormInst } from 'naive-ui';
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { splitFilename, debouncing } from '@/utils/index';
@@ -74,7 +82,9 @@ const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const form = ref({
   id: null,
+  type: 0,
   name: '',
+  desc: '',
   resource_path: ''
 });
 const rules = {
@@ -159,7 +169,9 @@ watch(visible, (newValue: any) => {
   } else {
     form.value = {
       id: null,
+      type: 0,
       name: '',
+      desc: '',
       resource_path: ''
     }
   }

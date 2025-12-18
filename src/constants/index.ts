@@ -28,3 +28,6 @@ export const platform_opts = [
         value: 2
     }
 ]
+export const doubao_seedream_4_0_250828 = [
+ /// qwen-image-plus / wan2.5-t2i-preview / qwen-image-edit-plus / wan2.5-i2i-preview
+]

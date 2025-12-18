@@ -106,9 +106,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from "vue-router";
-import { useMessage, useDialog } from 'naive-ui';
 import { validatPhone, validatPassword, validaMsg } from '@/utils/validate'
 import { getCaptcha, sendCode, login, loginThird, regist } from '@/apis/index'
 import { setToken } from '@/utils/auth'

@@ -1,4 +1,3 @@
-import request from "@/utils/request";
 // 音色列表
 export function getVoiceList(params: any) {
   return request({
@@ -116,7 +115,7 @@ export function deleteSound(params: any) {
 }
 
 
-// 音效列表
+// 物品列表
 export function getThingList(params: any) {
   return request({
     url: `/thing`,
@@ -124,7 +123,7 @@ export function getThingList(params: any) {
     params
   });
 }
-// 音效详情
+// 物品详情
 export function getThingDetail(params: any) {
   return request({
     url: `/thing/${params.id}`,
@@ -133,16 +132,16 @@ export function getThingDetail(params: any) {
   });
 }
 
-// 创建三方已有音效
-export function postThirdThing(data: any) {
+// AI创建物品
+export function createThing(data: any) {
   return request({
-    url: `/thing/third`,
+    url: `/thing/create`,
     method: "post",
     data
   });
 }
 
-// 创建音效
+// 创建物品
 export function postThing(data: any) {
   return request({
     url: `/thing`,
@@ -151,7 +150,7 @@ export function postThing(data: any) {
   });
 }
 
-// 更新音效
+// 更新物品
 export function putThing(data: any) {
   return request({
     url: `/thing`,
@@ -160,7 +159,7 @@ export function putThing(data: any) {
   });
 }
 
-// 删除音效
+// 删除物品
 export function deleteThing(params: any) {
   return request({
     url: `/thing/${params.id}`,

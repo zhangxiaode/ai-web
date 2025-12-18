@@ -11,7 +11,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted } from "vue";
 import AMapLoader from '@amap/amap-jsapi-loader'
 
 const initAMap = () => {

@@ -1,5 +1,3 @@
-import request from "@/utils/request";
-
 // 用户个人信息
 export function getUserDetail() {
   return request({

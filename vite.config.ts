@@ -2,12 +2,36 @@ import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import gzip from 'rollup-plugin-gzip';
 import path from 'path';
+import AutoImport from "unplugin-auto-import/vite";
+import Components from "unplugin-vue-components/vite";
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import UnoCSS from "unocss/vite";
 
 export default ({ mode }) => {
   return defineConfig({
     plugins: [
       vue(),
+      AutoImport({
+        imports: [
+          "vue",
+          {"vue-router": ["createRouter", "createWebHistory", "useRouter", "useRoute", "onBeforeRouteLeave", "onBeforeRouteUpdate"]},
+          {"pinia": ["defineStore", "createPinia"]},
+          {"naive-ui": ["useMessage", "useDialog"]},
+          {
+            "@/utils/request": [["default", "request"]],
+            // "@/common/loading": [["default", "$loading"]],
+            // "@/common/message": [["default", "$message"]],
+            // "@/common/messageBox": [["confirm", "$confirm"]],
+            // "@/common/permission/index": [["default", "$permission"]],
+          },
+        ],
+        resolvers: [NaiveUiResolver()],
+        dts: true,
+      }),
+      Components({
+        resolvers: [NaiveUiResolver()],
+        dts: true,
+      }),
       UnoCSS(),
       gzip()
     ],

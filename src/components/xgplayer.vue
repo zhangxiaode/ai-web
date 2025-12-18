@@ -5,7 +5,6 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount } from 'vue';
 import Player, { Events } from 'xgplayer';
 import HlsPlugin from 'xgplayer-hls'
 import 'xgplayer/dist/index.min.css';
