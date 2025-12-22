@@ -2,10 +2,10 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 600px;" @update:show="onClose">
     <template #header>
-      <slot name="header">新增物品</slot>
+      <slot name="header">创建物品</slot>
     </template>
     <slot>
-      <div class="new-content">
+      <div class="create-content">
         <n-form
           class="form"
           :ref="formRef"
@@ -16,13 +16,34 @@
           require-mark-placement="right-hanging"
           size="medium"
         >
-          <n-form-item label="物品名称:" path="name">
-            <n-input v-model:value="form.name" placeholder="请输入物品名称" />
+          <n-form-item label="模型:" path="model">
+            <n-select
+              v-model:value="form.model"
+              placeholder="请选择AI模型"
+              :options="[
+                { label: '豆包seedream-4-0', value: 'doubao-seedream-4-0-250828' },
+                { label: '千问image-plus', value: 'qwen-image-plus' },
+                { label: '千问image-edit-plus', value: 'qwen-image-edit-plus' },
+                { label: '万象2.5-t2i-preview', value: 'wan2.5-t2i-preview' },
+                { label: '万象2.5-i2i-preview', value: 'wan2.5-i2i-preview' }
+              ]"
+              clearable
+              @undate:value="handleChangeModel()"
+            />
           </n-form-item>
-          <n-form-item label="物品描述:" path="desc">
-            <n-input v-model:value="form.desc" placeholder="请输入物品描述" />
+          <n-form-item label="提示词:" path="msg">
+            <n-input v-model:value="form.msg" type="textarea" placeholder="请输入提示词" />
           </n-form-item>
-          <n-form-item v-if="form.type === 1" label="上传物品:" path="resource_path">
+          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="生成图片数量:" path="output_image_number">
+            <n-input-number v-model:value="form.output_image_number" placeholder="请输入生成图片数量" />
+          </n-form-item>
+          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-plus' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片宽度(像素):" path="output_image_width">
+            <n-input-number v-model:value="form.output_image_width" placeholder="请输入生成图片宽度" />
+          </n-form-item>
+          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-plus' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片高度(像素):" path="output_image_height">
+            <n-input-number v-model:value="form.output_image_height" placeholder="请输入生成图片高度" />
+          </n-form-item>
+          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
             <n-upload
               ref="upload"
               multiple
@@ -66,28 +87,39 @@ import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { splitFilename, debouncing } from '@/utils/index';
 import { getUser } from "@/utils/auth";
-import { uploadFileToOBS, getThingDetail, postThing, putThing } from "@/apis/index";
+import { uploadFileToOBS, createThing, getOptions } from "@/apis/index";
 
 const emit = defineEmits(["save"]);
-const { visible, payload, hideModal } = useModal('new-modal');
+const { visible, hideModal } = useModal('create-modal');
 const message = useMessage()
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
-const form = ref({
-  id: null,
-  type: 0,
-  name: '',
-  desc: '',
-  resource_path: ''
+const form: any = ref({
+  model: null,
+  msg: '',
+  output_image_number: null,
+  output_image_width: null,
+  output_image_height: null,
+  images: []
 });
-const rules = {
-  name: {required: true, message: "物品名称不能为空", trigger: ['blur', 'change']},
-  resource_path: {required: true, message: "物品不能为空", trigger: ['blur', 'change']}
-};
+const rules = computed(() => {
+  return {
+    model: {required: true, message: "模型不能为空", trigger: ['blur', 'change']},
+    msg: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
+    output_image_number: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
+    output_image_width: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
+    output_image_height: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
+    images: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
+  }
+});
+const handleChangeModel = async () => {
+  const res = await getOptions({ model: form.value.model })
+  console.log(form.value, res)
+}
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
-  if(!options.file.file?.type.includes('audio')) {
-    message.error('只能上传音频格式的音频文件，请重新上传')
+  if(!options.file.file?.type.includes('image')) {
+    message.error('只能上传图片格式的文件，请重新上传')
     return false
   }
   if(options.file.file && options.file.file.size > 300 * 1024 * 1024) {
@@ -110,7 +142,7 @@ const customRequest = async ({
     const user: any = await getUser()
     formData.append('file_path', `thing/${user.id}/${name}_${Date.now()}${ext}`);
     const res: any = await uploadFileToOBS(formData, onProgress)
-    form.value.resource_path = res.data
+    form.value.images.push(res.data)
     file.status = 'finished'
     onFinish()
   } catch (error: any) {
@@ -120,24 +152,11 @@ const customRequest = async ({
 }
 const onSubmit = async () => {
   disabled.value = true
-  let params = {
-    name: form.value.name,
-    resource_path: form.value.resource_path
-  }
-  let f = postThing
-  if(form.value.id) {
-    f = putThing
-    params['id'] = form.value.id
-  }
   try {
-    const res: any = await f(params)
+    const res: any = await createThing(form.value)
     if (res.code == 200 || res.code == 0) {
       onClose()
-      emit('save', {
-        id: res?.data?.id,
-        name: res?.data?.name,
-        resource_path: res?.data?.resource_path
-      })
+      emit('save', res)
     }
   } catch (error) {
     console.log(error)
@@ -147,26 +166,16 @@ const onSubmit = async () => {
 const onClose = () => {
   hideModal();
 }
-const getVoiceInfo = async () => {
-  const res: any = await getThingDetail({
-    id: payload.value.id
-  })
-  form.value.id = res.data.id
-  form.value.name = res.data.name
-  form.value.resource_path = res.data.resource_path
-}
 watch(visible, (newValue: any) => {
   if(newValue) {
-    if(payload.value?.id) {
-      getVoiceInfo()
-    }
   } else {
     form.value = {
-      id: null,
-      type: 0,
-      name: '',
-      desc: '',
-      resource_path: ''
+      model: null,
+      msg: '',
+      output_image_number: null,
+      output_image_width: null,
+      output_image_height: null,
+      images: []
     }
   }
 });
@@ -186,7 +195,7 @@ watch(visible, (newValue: any) => {
   font-weight: 500;
 }
 
-.new-content {
+.create-content {
   font-weight: 500;
   border-radius: 16px;
   margin: 58px 0;

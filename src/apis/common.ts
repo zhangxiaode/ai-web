@@ -1,8 +1,9 @@
-// 获取首页信息
-export function getConfig() {
+// 获取字典项
+export function getOptions(params: any) {
   return request({
-    url: `/pc/system/index/config/getDetail`,
-    method: "get"
+    url: `/options`,
+    method: "get",
+    params
   });
 }
 // 上传本地文件到OBS

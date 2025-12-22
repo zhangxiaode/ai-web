@@ -17,7 +17,7 @@
           size="medium"
         >
           <n-form-item label="物品类型:" path="type">
-            <n-radio-group v-model:value="form.type" name="radiobuttongroup1">
+            <n-radio-group v-model:value="form.type" name="form_type">
               <n-radio-button :value="0" label="AI生成" />
               <n-radio-button :value="1" label="自定义" />
             </n-radio-group>
@@ -28,7 +28,10 @@
           <n-form-item label="物品描述:" path="desc">
             <n-input v-model:value="form.desc" placeholder="请输入物品描述" />
           </n-form-item>
-          <n-form-item v-if="form.type === 1" label="上传物品:" path="resource_path">
+          <n-form-item v-if="form.type === 0" label="AI创建:" path="resource_path">
+            <n-button class="btn" type="primary" size="small" @click="debouncing(onCreate, message, 2000)">AI创作</n-button>
+          </n-form-item>
+          <n-form-item v-else label="上传物品:" path="resource_path">
             <n-upload
               ref="upload"
               multiple
@@ -55,6 +58,7 @@
             </n-upload>
           </n-form-item>
         </n-form>
+        <CreateThingModal @save="handleCreateModalComplete" />
       </div>
     </slot>
     <template #action>
@@ -73,10 +77,12 @@ import { useModal } from "@/hooks";
 import { splitFilename, debouncing } from '@/utils/index';
 import { getUser } from "@/utils/auth";
 import { uploadFileToOBS, getThingDetail, postThing, putThing } from "@/apis/index";
+import CreateThingModal from './createThingModal.vue';
 
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
 const message = useMessage()
+const { showModal: showCreateModal } = useModal("create-modal");
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
@@ -124,6 +130,12 @@ const customRequest = async ({
     onError()
   }
 }
+const onCreate = async () => {
+  showCreateModal();
+}
+const handleCreateModalComplete = (res: any) => {
+  console.log(123, res)
+};
 const onSubmit = async () => {
   disabled.value = true
   let params = {
@@ -153,7 +165,7 @@ const onSubmit = async () => {
 const onClose = () => {
   hideModal();
 }
-const getVoiceInfo = async () => {
+const getThingInfo = async () => {
   const res: any = await getThingDetail({
     id: payload.value.id
   })
@@ -164,7 +176,7 @@ const getVoiceInfo = async () => {
 watch(visible, (newValue: any) => {
   if(newValue) {
     if(payload.value?.id) {
-      getVoiceInfo()
+      getThingInfo()
     }
   } else {
     form.value = {
