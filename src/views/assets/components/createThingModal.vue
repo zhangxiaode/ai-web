@@ -1,18 +1,18 @@
 <template>
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
-    style="width: 600px;" @update:show="onClose">
+    style="width: 650px;" @update:show="onClose">
     <template #header>
       <slot name="header">创建物品</slot>
     </template>
     <slot>
       <div class="create-content">
         <n-form
-          class="form"
-          :ref="formRef"
+          class="form max-h-400px overflow-auto"
+          ref="formRef"
           :model="form"
           :rules="rules"
           label-placement="left"
-          label-width="150"
+          label-width="180"
           require-mark-placement="right-hanging"
           size="medium"
         >
@@ -28,46 +28,32 @@
                 { label: '万象2.5-i2i-preview', value: 'wan2.5-i2i-preview' }
               ]"
               clearable
-              @undate:value="handleChangeModel()"
+              @update:value="handleChangeModel()"
             />
           </n-form-item>
           <n-form-item label="提示词:" path="msg">
             <n-input v-model:value="form.msg" type="textarea" placeholder="请输入提示词" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="生成图片数量:" path="output_image_number">
-            <n-input-number v-model:value="form.output_image_number" placeholder="请输入生成图片数量" />
+          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="期望生成图片数量:" path="output_image_number">
+            <n-input-number v-model:value="form.output_image_number" :show-button="false" placeholder="请输入期望生成图片数量" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-plus' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片宽度(像素):" path="output_image_width">
-            <n-input-number v-model:value="form.output_image_width" placeholder="请输入生成图片宽度" />
+          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片宽度(像素):" path="output_image_width">
+            <n-input-number v-model:value="form.output_image_width" :show-button="false" placeholder="请输入生成图片宽度" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-plus' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片高度(像素):" path="output_image_height">
-            <n-input-number v-model:value="form.output_image_height" placeholder="请输入生成图片高度" />
+          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片高度(像素):" path="output_image_height">
+            <n-input-number v-model:value="form.output_image_height" :show-button="false" placeholder="请输入生成图片高度" />
+          </n-form-item>
+          <n-form-item v-if="form.model === 'qwen-image-plus'" label="生成图片分辨率:" path="size">
+            <n-select
+              v-model:value="form.size"
+              placeholder="请选择图片分辨率"
+              :options="form_rules.output_image_size_options"
+              clearable
+              @update:value="handleChangeSize()"
+            />
           </n-form-item>
           <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
-            <n-upload
-              ref="upload"
-              multiple
-              directory-dnd
-              action=""
-              :headers="{}"
-              :data="{}"
-              :max="1"
-              method="post"
-              accept="image/*"
-              :on-before-upload="beforeUpload"
-              :custom-request="(e: any) => customRequest(e)"
-            >
-              <n-upload-dragger class="flex flex-col justify-center items-center bg-#a5a5a5 rounded-14px border-1px border-color-[transparent] border-style-dashed hover:bg-#494949 hover:border-color-#666">
-                <div class="mb-12px">
-                  <img src="../../../assets/upload.png" class="w-120px h-120px" alt="">
-                </div>
-                <div class="flex flex-column justify-center items-center">
-                  <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
-                    将文件拖至此区域,或<span class="c-#53d8fe">点击上传</span>
-                  </n-text>
-                </div>
-              </n-upload-dragger>
-            </n-upload>
+            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -83,85 +69,246 @@
 
 <script lang="ts" setup>
 import { FormInst } from 'naive-ui';
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { useModal } from "@/hooks";
-import { splitFilename, debouncing } from '@/utils/index';
-import { getUser } from "@/utils/auth";
-import { uploadFileToOBS, createThing, getOptions } from "@/apis/index";
+import { debouncing } from '@/utils/index';
+import { createThing, getOptions } from "@/apis/index";
+import Upload from '@/components/upload.vue';
 
 const emit = defineEmits(["save"]);
 const { visible, hideModal } = useModal('create-modal');
 const message = useMessage()
+const dialog = useDialog()
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const form: any = ref({
   model: null,
-  msg: '',
-  output_image_number: null,
-  output_image_width: null,
-  output_image_height: null,
-  images: []
+  msg: '星际穿越，黑洞，黑洞里冲出一辆快支离破碎的复古列车，抢视觉冲击力，电影大片，末日既视感，动感，对比色，oc渲染，光线追踪，动态模糊，景深，超现实主义，深蓝，画面通过细腻的丰富的色彩层次塑造主体与场景，质感真实，暗黑风背景的光影效果营造出氛围，整体兼具艺术幻想感，夸张的广角透视效果，耀光，反射，极致的光影，强引力，吞噬',
+  output_image_number: 2,
+  output_image_width: 1920,
+  output_image_height: 1080,
+  images: [],
+  size: null
 });
+const original_images = ref([])
 const rules = computed(() => {
   return {
     model: {required: true, message: "模型不能为空", trigger: ['blur', 'change']},
-    msg: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
-    output_image_number: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
-    output_image_width: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
-    output_image_height: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
-    images: {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
+    msg: form_rules.value.input_msg_max ? [
+      {required: true, message: "提示词不能为空", trigger: ['blur', 'change']},
+      {max: form_rules.value.input_msg_max, message: `提示词长度限制${form_rules.value.input_msg_max}`, trigger: ['blur', 'change']}
+    ] : [
+      {required: true, message: "提示词不能为空", trigger: ['blur', 'change']}
+    ],
+    output_image_number: form_rules.value.input_output_images_max ? [
+      {required: true, type: "number", message: "生成图片数量不能为空", trigger: ['blur', 'change']},
+      {max: form_rules.value.input_output_images_max - form.value.images.length, type: "number", message: `生成图片数量最大为${form_rules.value.input_output_images_max - form.value.images.length}`, trigger: ['blur', 'change']}
+    ] : form_rules.value.output_images_max ? [
+      {required: true, type: "number", message: "生成图片数量不能为空", trigger: ['blur', 'change']},
+      {max: form_rules.value.output_images_max, type: "number", message: `生成图片数量最大为${form_rules.value.output_images_max}`, trigger: ['blur', 'change']}
+    ] : [],
+    output_image_width: form_rules.value.output_image_width_min && form_rules.value.output_image_width_max ? [
+      {required: true, type: "number", message: "生成图片宽度不能为空", trigger: ['blur', 'change']},
+      {min: form_rules.value.output_image_width_min, type: "number", message: `生成图片宽度不能小于${form_rules.value.output_image_width_min}`, trigger: ['blur', 'change']},
+      {max: form_rules.value.output_image_width_max, type: "number", message: `生成图片宽度不能大于${form_rules.value.output_image_width_max}`, trigger: ['blur', 'change']}
+    ] : [],
+    output_image_height: form_rules.value.output_image_height_min && form_rules.value.output_image_height_max ? [
+      {required: true, message: "生成图片高度不能为空", type: "number", trigger: ['blur', 'change']},
+      {min: form_rules.value.output_image_height_min, type: "number", message: `生成图片高度不能小于${form_rules.value.output_image_height_min}`, trigger: ['blur', 'change']},
+      {max: form_rules.value.output_image_height_max, type: "number", message: `生成图片高度不能大于${form_rules.value.output_image_height_max}`, trigger: ['blur', 'change']}
+    ] : [],
+    images: form.value.model === 'qwen-image-edit-plus' || form.value.model === 'wan2.5-i2i-preview' ? [
+      {required: true, message: "参考图不能为空", trigger: ['blur', 'change']}
+    ] : [],
   }
 });
+const default_rules = ref({
+  input_msg_max: null, // 提示词最大长度
+  input_image_suffix_options: [], // 图片后缀列表
+  input_image_size_max: 10, // 图片最大值
+  input_images_max: null,  // 限制图片上传数量
+  input_output_images_max: null,  // 上传图片+输出图片最大值
+  output_images_max: null, // 输出图片数量限制
+  output_image_width_min: null, // 输出图片宽度最小值
+  output_image_width_max: null, // 输出图片宽度最大值
+  output_image_height_min: null, // 输出图片高度最小值
+  output_image_height_max: null, // 输出图片高度最大值
+  output_image_size_options: null, // 输出图片尺寸下拉列表
+})
+const form_rules = ref(default_rules.value)
+const suffix_accept = computed(() => form_rules.value.input_image_suffix_options?.length > 0 ? form_rules.value.input_image_suffix_options.map((item: any) => `image/${item.value}`).join(', ') : 'image/*')
+
+// const tips1 = {
+//   "input_image_suffix_options": [
+//     {
+//       "label": "jpeg",
+//       "value": "jpeg"
+//     },
+//     {
+//       "label": "png",
+//       "value": "png"
+//     }
+//   ],
+//   "input_image_size_max": 10,
+//   "input_images_max": 10,
+//   "input_output_images_max": 15,
+//   "output_image_width_min": 1280,
+//   "output_image_width_max": 4096,
+//   "output_image_height_min": 720,
+//   "output_image_height_max": 4096
+// }
+// const tips2 = {
+//     "input_msg_max": 800,
+//     "output_image_size_options": [
+//         {
+//             "resolution": "1664*928",
+//             "ratio": "16:9",
+//             "is_default": false
+//         },
+//         {
+//             "resolution": "1472*1140",
+//             "ratio": "4:3",
+//             "is_default": false
+//         },
+//         {
+//             "resolution": "1328*1328",
+//             "ratio": "1:1",
+//             "is_default": true
+//         },
+//         {
+//             "resolution": "1140*1472",
+//             "ratio": "3:4",
+//             "is_default": false
+//         },
+//         {
+//             "resolution": "928*1664",
+//             "ratio": "9:16",
+//             "is_default": false
+//         }
+//     ]
+// }
+// const tips3 = {
+//     "input_msg_max": 800,
+//     "input_image_size_max": 10,
+//     "input_images_max": 3,
+//     "input_image_suffix_options": [
+//         {
+//             "label": "jpg",
+//             "value": "jpg"
+//         },
+//         {
+//             "label": "jpeg",
+//             "value": "jpeg"
+//         },
+//         {
+//             "label": "png",
+//             "value": "png"
+//         },
+//         {
+//             "label": "bmp",
+//             "value": "bmp"
+//         },
+//         {
+//             "label": "tiff",
+//             "value": "tiff"
+//         },
+//         {
+//             "label": "webp",
+//             "value": "webp"
+//         }
+//     ],
+//     "output_images_max": 6,
+//     "output_image_width_min": 512,
+//     "output_image_width_max": 2048,
+//     "output_image_height_min": 512,
+//     "output_image_height_max": 2048
+// }
+// const tips4 = {
+//     "input_msg_max": 2000,
+//     "output_image_width_min": 768,
+//     "output_image_width_max": 1440,
+//     "output_image_height_min": 768,
+//     "output_image_height_max": 1440,
+//     "output_images_max": 4
+// }
+// const tips5 = {
+//     "input_msg_max": 2000,
+//     "input_images_max": 2,
+//     "input_image_suffix_options": [
+//         {
+//             "label": "jpg",
+//             "value": "jpg"
+//         },
+//         {
+//             "label": "jpeg",
+//             "value": "jpeg"
+//         },
+//         {
+//             "label": "png",
+//             "value": "png"
+//         },
+//         {
+//             "label": "bmp",
+//             "value": "bmp"
+//         },
+//         {
+//             "label": "webp",
+//             "value": "webp"
+//         }
+//     ],
+//     "output_images_max": 4
+// }
+
 const handleChangeModel = async () => {
-  const res = await getOptions({ model: form.value.model })
-  console.log(form.value, res)
+  const res: any = await getOptions({ model: form.value.model })
+  if(res.data.output_image_size_options && res.data.output_image_size_options.length > 0) {
+    res.data.output_image_size_options = res.data.output_image_size_options.map((item: any) => ({
+      label: item.resolution,
+      value: item.resolution
+    }))
+  }
+  form_rules.value = {...default_rules, ...res.data }
 }
-const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
-  if(!options.file.file?.type.includes('image')) {
-    message.error('只能上传图片格式的文件，请重新上传')
-    return false
-  }
-  if(options.file.file && options.file.file.size > 300 * 1024 * 1024) {
-    message.error('大小限制300MB以下')
-    return false
-  } else {
-    return true
-  }
-}
-const customRequest = async ({
-  file,
-  onFinish,
-  onError,
-  onProgress
-}: UploadCustomRequestOptions) => {
-  try {
-    const { name, ext } = splitFilename(file.name)
-    const formData: any = new FormData();
-    formData.append('file', file.file);
-    const user: any = await getUser()
-    formData.append('file_path', `thing/${user.id}/${name}_${Date.now()}${ext}`);
-    const res: any = await uploadFileToOBS(formData, onProgress)
-    form.value.images.push(res.data)
-    file.status = 'finished'
-    onFinish()
-  } catch (error: any) {
-    file.status = 'error'
-    onError()
-  }
+const handleChangeSize = async () => {
+  const width_height = form.size.split('*')
+  form.value.output_image_width = width_height[0] || null
+  form.value.output_image_height = width_height[1] || null
 }
 const onSubmit = async () => {
-  disabled.value = true
-  try {
-    const res: any = await createThing(form.value)
-    if (res.code == 200 || res.code == 0) {
-      onClose()
-      emit('save', res)
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      disabled.value = true
+      try {
+        const params: any = JSON.parse(JSON.stringify(form.value))
+        delete params['size'];
+        const res: any = await createThing(params)
+        console.log(666, res)
+        if(res.code == 200 && res?.data && res?.data.length > 0) {
+          let current = 0
+          dialog.warning({
+            title: '选择心仪图片',
+            content: () => h('div', { class: 'overflow-auto max-h-300px' }, {
+              default: () => res?.data?.map((item: any, index: number) => h(NImage, { width: '100px', height: '100px', class: `cursor-pointer rounded-5px border-1px border-color-transparent border-style-solid ${current === index ? 'border-color-#f44' : ''}`, src: item.sign_path }, {}))
+            }),
+            positiveText: '确定',
+            positiveButtonProps: {type: "primary"},
+            showIcon: false,
+            closable: false,
+            onPositiveClick() {
+              emit('save', {
+                original_url: res.data[current].original_url,
+                sign_path: res.data[current].sign_path
+              })
+              onClose()
+            }
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      disabled.value = false
     }
-  } catch (error) {
-    console.log(error)
-  }
-  disabled.value = false
+  })
 }
 const onClose = () => {
   hideModal();
@@ -175,26 +322,14 @@ watch(visible, (newValue: any) => {
       output_image_number: null,
       output_image_width: null,
       output_image_height: null,
-      images: []
+      images: [],
+      size: null
     }
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.skip {
-  top: 12px;
-  right: 12px;
-  width: 70px;
-  height: 30px;
-  line-height: 30px;
-  background: rgba(0, 0, 0, .2);
-  border-radius: 15px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .create-content {
   font-weight: 500;
   border-radius: 16px;

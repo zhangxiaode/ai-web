@@ -8,7 +8,7 @@
       <div class="new-content">
         <n-form
           class="form"
-          :ref="formRef"
+          ref="formRef"
           :model="form"
           :rules="rules"
           label-placement="left"
@@ -151,40 +151,44 @@ const customRequest = async ({
   }
 }
 const onSubmit = async () => {
-  disabled.value = true
-  let params = {
-    name: form.value.name,
-    platform: form.value.platform,
-    gender: form.value.gender,
-    voice_id: form.value.voice_id,
-    language: form.value.language,
-    training_path: form.value.training_path,
-    resource_path: form.value.resource_path
-  }
-  let f = postVoice
-  if(form.value.id) {
-    f = putVoice
-    params['id'] = form.value.id
-  }
-  try {
-    const res: any = await f(params)
-    if (res.code == 200 || res.code == 0) {
-      onClose()
-      emit('save', {
-        id: res?.data?.id,
-        name: res?.data?.name,
-        platform: res?.data?.platform,
-        gender: res?.data?.gender,
-        voice_id: res?.data?.voice_id,
-        language: res?.data?.language,
-        training_path: res?.data?.training_path,
-        resource_path: res?.data?.resource_path
-      })
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      disabled.value = true
+      let params = {
+        name: form.value.name,
+        platform: form.value.platform,
+        gender: form.value.gender,
+        voice_id: form.value.voice_id,
+        language: form.value.language,
+        training_path: form.value.training_path,
+        resource_path: form.value.resource_path
+      }
+      let f = postVoice
+      if(form.value.id) {
+        f = putVoice
+        params['id'] = form.value.id
+      }
+      try {
+        const res: any = await f(params)
+        if (res.code == 200 || res.code == 0) {
+          onClose()
+          emit('save', {
+            id: res?.data?.id,
+            name: res?.data?.name,
+            platform: res?.data?.platform,
+            gender: res?.data?.gender,
+            voice_id: res?.data?.voice_id,
+            language: res?.data?.language,
+            training_path: res?.data?.training_path,
+            resource_path: res?.data?.resource_path
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      disabled.value = false
     }
-  } catch (error) {
-    console.log(error)
-  }
-  disabled.value = false
+  })
 }
 const onClose = () => {
   hideModal();

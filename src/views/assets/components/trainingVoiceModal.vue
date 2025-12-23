@@ -8,7 +8,7 @@
       <div class="new-content">
         <n-form
           class="form"
-          :ref="formRef"
+          ref="formRef"
           :model="form"
           :rules="rules"
           label-placement="left"
@@ -108,24 +108,28 @@ const customRequest = async ({
   }
 }
 const onSubmit = async () => {
-  disabled.value = true
-  let params = {
-    id: form.value.id,
-    training_path: form.value.training_path
-  }
-  try {
-    const res: any = await trainingVoice(params)
-    if (res.code == 200 || res.code == 0) {
-      onClose()
-      emit('save', {
-        id: res?.data?.id,
-        training_path: res?.data?.training_path
-      })
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      disabled.value = true
+      let params = {
+        id: form.value.id,
+        training_path: form.value.training_path
+      }
+      try {
+        const res: any = await trainingVoice(params)
+        if (res.code == 200 || res.code == 0) {
+          onClose()
+          emit('save', {
+            id: res?.data?.id,
+            training_path: res?.data?.training_path
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      disabled.value = false
     }
-  } catch (error) {
-    console.log(error)
-  }
-  disabled.value = false
+  })
 }
 const onClose = () => {
   hideModal();

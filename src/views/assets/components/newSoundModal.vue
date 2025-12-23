@@ -8,7 +8,7 @@
       <div class="new-content">
         <n-form
           class="form"
-          :ref="formRef"
+          ref="formRef"
           :model="form"
           :rules="rules"
           label-placement="left"
@@ -114,30 +114,34 @@ const customRequest = async ({
   }
 }
 const onSubmit = async () => {
-  disabled.value = true
-  let params = {
-    name: form.value.name,
-    resource_path: form.value.resource_path
-  }
-  let f = postSound
-  if(form.value.id) {
-    f = putSound
-    params['id'] = form.value.id
-  }
-  try {
-    const res: any = await f(params)
-    if (res.code == 200 || res.code == 0) {
-      onClose()
-      emit('save', {
-        id: res?.data?.id,
-        name: res?.data?.name,
-        resource_path: res?.data?.resource_path
-      })
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      disabled.value = true
+      let params = {
+        name: form.value.name,
+        resource_path: form.value.resource_path
+      }
+      let f = postSound
+      if(form.value.id) {
+        f = putSound
+        params['id'] = form.value.id
+      }
+      try {
+        const res: any = await f(params)
+        if (res.code == 200 || res.code == 0) {
+          onClose()
+          emit('save', {
+            id: res?.data?.id,
+            name: res?.data?.name,
+            resource_path: res?.data?.resource_path
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      disabled.value = false
     }
-  } catch (error) {
-    console.log(error)
-  }
-  disabled.value = false
+  })
 }
 const onClose = () => {
   hideModal();

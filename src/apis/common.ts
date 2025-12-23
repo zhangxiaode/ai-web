@@ -30,6 +30,14 @@ export function uploadNetworkFileToOBS(data: any, progress: Function) {
     }
   });
 }
+// 获取OBS文件临时地址
+export function getTemporaryUrl(params: any) {
+  return request({
+    url: `/obs/temporary_url`,
+    method: "get",
+    params
+  });
+}
 // 删除OBS文件
 export function deleteObsFile(data: any) {
   return request({

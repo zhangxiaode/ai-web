@@ -69,6 +69,29 @@ export const filenameWithoutExt = (filename: string) => filename.lastIndexOf('.'
 
 /**
  * 提取文件名和后缀
+ * @param {string} path 完整文件路径（如 "https://www.baidu.com/aaa/16_1_林弦.wav?aa=123"）
+ * @returns {Object} { name: 主文件名, ext: 后缀名（含.） }
+ */
+export const splitPath = (path: string): any => {
+  const urlWithoutQuery = path.split('?')[0];
+  
+  const fullFileName: any = urlWithoutQuery.split('/').pop();
+  
+  const lastDotIndex: any = fullFileName.lastIndexOf('.');
+  
+  let name: any = fullFileName;
+  let ext: any = '';
+  
+  if (lastDotIndex !== -1) {
+    name = fullFileName.substring(0, lastDotIndex);
+    ext = fullFileName.substring(lastDotIndex + 1);
+  }
+  
+  return { name, ext };
+}
+
+/**
+ * 提取文件名和后缀
  * @param {string} filename 完整文件名（如 "16_1_林弦.wav"）
  * @returns {Object} { name: 主文件名, ext: 后缀名（含.） }
  */
@@ -86,6 +109,7 @@ export const splitFilename = (filename: string): any => {
     ext: filename.substring(lastDotIndex)      // .wav
   };
 }
+
 
 
 // 是否为移动端

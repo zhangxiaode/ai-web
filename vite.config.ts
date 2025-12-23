@@ -16,7 +16,7 @@ export default ({ mode }) => {
           "vue",
           {"vue-router": ["createRouter", "createWebHistory", "useRouter", "useRoute", "onBeforeRouteLeave", "onBeforeRouteUpdate"]},
           {"pinia": ["defineStore", "createPinia"]},
-          {"naive-ui": ["useMessage", "useDialog"]},
+          {"naive-ui": ["useMessage", "useDialog", "NImage"]},
           {
             "@/utils/request": [["default", "request"]],
             // "@/common/loading": [["default", "$loading"]],
