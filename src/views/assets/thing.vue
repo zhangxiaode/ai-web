@@ -39,8 +39,8 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 flex flex-wrap overflow-auto">
-      <div v-for="(item, index) in thing_list" :key="index" class="h-30px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
+    <div class="flex-1 overflow-auto thing-wrap">
+      <div v-for="(item, index) in thing_list" :key="index" class="h-30px float-left p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex flex-col justify-center items-normal">
           <div class="flex items-center">
             <div class="text-14px c-#fff mr-12px">{{ item.name }}</div>
@@ -149,10 +149,16 @@ const handleCurrentChange = (val: number) => {
 };
 onMounted(async () => {
   const res = await getThingDetail({ id: 1 })
-  console.log(123, res)
   getList()
 })
 </script>
 
 <style lang="scss" scoped>
+.thing-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  align-items: start;
+  grid-auto-rows: min-content;
+}
 </style>

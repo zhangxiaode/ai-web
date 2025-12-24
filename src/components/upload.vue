@@ -61,7 +61,6 @@ const customRequest = async ({
       const { name, ext } = splitFilename(file?.name)
       const formData: any = new FormData();
       formData.append('file', file?.file);
-      console.log(111, user_info.value, `${name}_${Date.now()}${ext}`)
       const file_path = props.get_file_path({
         user_id: user_info.value?.id,
         file_name: `${name}_${Date.now()}${ext}`
@@ -72,16 +71,16 @@ const customRequest = async ({
         const response: any = await getTemporaryUrl({ video_path: res.data })
         if(response.data) {
             resource_path.value = [
-                {
-                    id: file?.id,
-                    name: name,
-                    url: response.data,
-                    original_url: res.data,
-                    status: 'finished'
-                },
+              {
+                id: file?.id,
+                name: name,
+                url: response.data,
+                original_url: res.data,
+                status: 'finished'
+              },
             ]
             emit('change', {
-                resource_path: resource_path.value
+              resource_path: resource_path.value
             })
             file.status = 'finished'
             onFinish()
@@ -94,21 +93,21 @@ const customRequest = async ({
   }
 }
 const setResource = async (list: Array<any>) => {
-    resource_path.value = list.map((item: any) => {
-        const { name } = splitPath(item.sign_path)
-        return {
-            id: Date.now(),
-            name,
-            url: item.sign_path,
-            original_url: item.original_url,
-            status: 'finished'
-        }
-    })
+  resource_path.value = list.map((item: any) => {
+    const { name } = splitPath(item.sign_path)
+    return {
+      id: Date.now(),
+      name,
+      url: item.sign_path,
+      original_url: item.original_url,
+      status: 'finished'
+    }
+  })
 }
 defineExpose({ setResource });
 
 onMounted(async () => {
-    getUserInfo()
+  getUserInfo()
 })
 </script>
   

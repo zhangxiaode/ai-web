@@ -45,7 +45,7 @@
 import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { getThingDetail, postThing, putThing } from "@/apis/index";
+import { getTemporaryUrl, getThingDetail, postThing, putThing } from "@/apis/index";
 import CreateThingModal from './createThingModal.vue';
 import Upload from '@/components/upload.vue';
 
@@ -117,6 +117,13 @@ const getThingInfo = async () => {
   form.value.name = res.data.name
   form.value.desc = res.data.desc
   form.value.resource_path = res.data.resource_path
+  const response: any = await getTemporaryUrl({ video_path: res.data.resource_path })
+  if(response.data) {
+    uploadRef.value?.setResource([{
+      original_url: res.data.resource_path,
+      sign_path: response.data
+    }])
+  }
 }
 watch(visible, (newValue: any) => {
   if(newValue) {

@@ -53,7 +53,7 @@
             />
           </n-form-item>
           <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
+            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -90,7 +90,6 @@ const form: any = ref({
   images: [],
   size: null
 });
-const original_images = ref([])
 const rules = computed(() => {
   return {
     model: {required: true, message: "模型不能为空", trigger: ['blur', 'change']},
@@ -118,7 +117,7 @@ const rules = computed(() => {
       {max: form_rules.value.output_image_height_max, type: "number", message: `生成图片高度不能大于${form_rules.value.output_image_height_max}`, trigger: ['blur', 'change']}
     ] : [],
     images: form.value.model === 'qwen-image-edit-plus' || form.value.model === 'wan2.5-i2i-preview' ? [
-      {required: true, message: "参考图不能为空", trigger: ['blur', 'change']}
+      {required: true, type: 'array', message: "参考图不能为空", trigger: ['blur', 'change']}
     ] : [],
   }
 });
@@ -270,9 +269,9 @@ const handleChangeModel = async () => {
   form_rules.value = {...default_rules, ...res.data }
 }
 const handleChangeSize = async () => {
-  const width_height = form.size.split('*')
-  form.value.output_image_width = width_height[0] || null
-  form.value.output_image_height = width_height[1] || null
+  const width_height = form.value.size.split('*')
+  form.value.output_image_width = Number(width_height[0]) || 1328
+  form.value.output_image_height = Number(width_height[1]) || 1328
 }
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
@@ -282,13 +281,20 @@ const onSubmit = async () => {
         const params: any = JSON.parse(JSON.stringify(form.value))
         delete params['size'];
         const res: any = await createThing(params)
-        console.log(666, res)
         if(res.code == 200 && res?.data && res?.data.length > 0) {
-          let current = 0
+          let current = ref(0)
           dialog.warning({
             title: '选择心仪图片',
             content: () => h('div', { class: 'overflow-auto max-h-300px' }, {
-              default: () => res?.data?.map((item: any, index: number) => h(NImage, { width: '100px', height: '100px', class: `cursor-pointer rounded-5px border-1px border-color-transparent border-style-solid ${current === index ? 'border-color-#f44' : ''}`, src: item.sign_path }, {}))
+              default: () => res?.data?.map((item: any, index: number) => h('img', { 
+                width: '100px', 
+                height: '100px', 
+                class: `cursor-pointer rounded-5px border-1px border-style-solid ${current.value === index ? 'border-color-#f44' : 'border-color-transparent'}`, 
+                src: item.sign_path,
+                onClick() {
+                  current.value = index
+                }
+              }, {}))
             }),
             positiveText: '确定',
             positiveButtonProps: {type: "primary"},
@@ -296,8 +302,8 @@ const onSubmit = async () => {
             closable: false,
             onPositiveClick() {
               emit('save', {
-                original_url: res.data[current].original_url,
-                sign_path: res.data[current].sign_path
+                original_url: res.data[current.value].original_url,
+                sign_path: res.data[current.value].sign_path
               })
               onClose()
             }
@@ -316,15 +322,15 @@ const onClose = () => {
 watch(visible, (newValue: any) => {
   if(newValue) {
   } else {
-    form.value = {
-      model: null,
-      msg: '',
-      output_image_number: null,
-      output_image_width: null,
-      output_image_height: null,
-      images: [],
-      size: null
-    }
+    // form.value = {
+    //   model: null,
+    //   msg: '',
+    //   output_image_number: null,
+    //   output_image_width: null,
+    //   output_image_height: null,
+    //   images: [],
+    //   size: null
+    // }
   }
 });
 </script>

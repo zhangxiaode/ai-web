@@ -54,7 +54,6 @@ const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[
     message.error('只能上传视频格式的视频文件，请重新上传')
     return false
   }
-  console.log(123, options.file)
   if(options.file.file && options.file.file.size > 1024 * 1024 * 1024) {
     message.error('大小限制1G以下')
     return false
@@ -90,7 +89,6 @@ const handleCutVideo = async () => {
     start: duration.value * range.value[0] / 100,
     duration: duration.value * (range.value[1] - range.value[0]) / 100,
   })
-  console.log(123, res)
 }
 </script>
 

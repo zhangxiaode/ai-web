@@ -96,7 +96,6 @@ const handleFormat = async () => {
     input_path: image_url.value.replace('/Users/zxd/ai/', ''),
     output_path: output_path.value,
   })
-  console.log(123, res)
 }
 const handleDownload = () => {
   window.open(`/ai/apis/file/download?file_url=${output_path.value}`)

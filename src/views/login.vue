@@ -186,9 +186,7 @@ const handleCheck = (e: boolean) => {
   agree.value = e
 }
 const handleLogin = async () => {
-  console.log(111)
   if(verifyAgreement() && verifyPhone() && ((loginType.value === 0 && verifyCode()) || (loginType.value === 1 && verifyPassword()))) {
-    console.log(222)
     try {
       const res: any = await login({
         loginType: loginType.value, // 0 验证码 1 密码
@@ -196,11 +194,9 @@ const handleLogin = async () => {
         password: password.value,
         code: code.value
       })
-      console.log(333, res)
       setToken(res.data.token)
       router.go(-1)
     } catch (err: any) {
-      console.log(err)
       message.error(err.msg)
     }
   }
