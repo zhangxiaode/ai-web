@@ -227,19 +227,6 @@ watch(visible, (newValue: any) => {
 </script>
 
 <style lang="scss" scoped>
-.skip {
-  top: 12px;
-  right: 12px;
-  width: 70px;
-  height: 30px;
-  line-height: 30px;
-  background: rgba(0, 0, 0, .2);
-  border-radius: 15px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .new-content {
   font-weight: 500;
   border-radius: 16px;

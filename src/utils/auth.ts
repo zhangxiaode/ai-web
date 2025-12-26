@@ -21,9 +21,9 @@ export function setUser(user: any) {
     Cookies.set('user', JSON.stringify(user))
 }
 
-export async function getUser() {
+export async function getUser(is_cookie:boolean = true) {
     const user: string = Cookies.get('user') || localStorage.getItem("user") as string
-    if(user) {
+    if(user && is_cookie) {
         return JSON.parse(user)
     } else {
         const user_info: any = await getUserDetail()

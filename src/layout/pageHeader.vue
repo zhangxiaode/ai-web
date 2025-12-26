@@ -10,9 +10,9 @@
     <div class="headerR flex items-center min-w-330px">
       <div class="recharge flex justify-center items-center rounded-4px bg-#ef4444 h-32px px-12px cursor-pointer" @click="router.push('/layout/recharge')">
         <img src="../assets/cash.png" alt="" class="w-16px h-16px">
-        <span class="text-14px c-#fff ml-3px">金币充值</span>
+        <span class="text-14px c-#fff ml-3px">尧币充值</span>
       </div>
-      <div class="mx-12px c-#ef4444 text-14px">金币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
+      <div class="mx-12px c-#ef4444 text-14px">尧币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
       <div class="userinfo flex justify-center items-center mr-12px">
         <img :src="user_info?.avatarurl" alt="" class="w-32px h-32px rounded-16px">
         <span class="c-#fff text-14px mx-12px">{{ user_info?.nickname }}</span>

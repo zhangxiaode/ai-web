@@ -5,14 +5,6 @@ export function getUserDetail() {
     method: "GET"
   });
 }
-// 更新用户
-export function updateUser(data: any) {
-  return request({
-    url: `/user`,
-    method: "PUT",
-	  data
-  });
-}
 // 更新昵称
 export function updateNickname(data: any) {
   return request({
@@ -29,7 +21,7 @@ export function updateAvatar(data: any) {
 	  data
   });
 }
-// app登录
+// 登录
 export function login(data: any) {
   return request({
     url: `/login`,
@@ -37,7 +29,7 @@ export function login(data: any) {
 	  data
   });
 }
-// app三方账号登录
+// 三方账号登录
 export function loginThird(data: any) {
   return request({
     url: `/login/third`,
@@ -45,21 +37,21 @@ export function loginThird(data: any) {
 	  data
   });
 }
-// app退出登录
+// 退出登录
 export function logout() {
   return request({
     url: `/logout`,
     method: "POST"
   });
 }
-// app获取图形验证码
+// 获取图形验证码
 export function getCaptcha() {
   return request({
     url: `/captcha`,
     method: "GET",
   });
 }
-// app发送验证码
+// 发送验证码
 export function sendCode(data: any) {
   return request({
     url: `/send/code`,
@@ -67,7 +59,7 @@ export function sendCode(data: any) {
 	  data
   });
 }
-// app注册
+// 注册
 export function regist(data: any) {
   return request({
     url: `/regist`,
@@ -75,7 +67,7 @@ export function regist(data: any) {
 	  data
   });
 }
-// app设置密码
+// 设置密码
 export function settingPassword(data: any) {
   return request({
     url: `/password`,
@@ -83,15 +75,15 @@ export function settingPassword(data: any) {
 	  data
   });
 }
-// app绑定手机号
+// 绑定手机号
 export function bindPhone(data: any) {
   return request({
     url: `/user/phone/bind`,
-    method: "POST",
+    method: "PUT",
 	  data
   });
 }
-// app更换手机号
+// 更换手机号
 export function updatePhone(data: any) {
   return request({
     url: `/user/phone`,

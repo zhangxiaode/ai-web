@@ -140,21 +140,6 @@ const routes = [
                         name: "bind_wechat",
                         component: () => import("../views/account/bind_wechat.vue")
                     },
-                    {
-                        path: "reset_phone",
-                        name: "reset_phone",
-                        component: () => import("../views/account/reset_phone.vue")
-                    },
-                    {
-                        path: "reset_password",
-                        name: "reset_password",
-                        component: () => import("../views/account/reset_password.vue")
-                    },
-                    {
-                        path: "reset_nickname",
-                        name: "reset_nickname",
-                        component: () => import("../views/account/reset_nickname.vue")
-                    },
                 ]
             },
             {

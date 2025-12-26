@@ -75,7 +75,7 @@ function apiAxios(httpDefault: AxiosRequestConfig) {
               resolve(response);
               break;
             default:
-              message.error(response?.message || "error");
+              message.error(response?.msg || "error");
               reject(response);
           }
         } else {
@@ -83,7 +83,7 @@ function apiAxios(httpDefault: AxiosRequestConfig) {
         }
       })
       .catch((error: any) => {
-        message.error(error?.response?.data?.message || "error");
+        message.error(error?.response?.data?.msg || "error");
         console.log(error)
         reject(new Object());
       })

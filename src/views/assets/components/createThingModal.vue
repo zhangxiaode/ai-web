@@ -53,7 +53,7 @@
             />
           </n-form-item>
           <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.url)" />
+            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -136,127 +136,6 @@ const default_rules = ref({
 })
 const form_rules = ref(default_rules.value)
 const suffix_accept = computed(() => form_rules.value.input_image_suffix_options?.length > 0 ? form_rules.value.input_image_suffix_options.map((item: any) => `image/${item.value}`).join(', ') : 'image/*')
-
-// const tips1 = {
-//   "input_image_suffix_options": [
-//     {
-//       "label": "jpeg",
-//       "value": "jpeg"
-//     },
-//     {
-//       "label": "png",
-//       "value": "png"
-//     }
-//   ],
-//   "input_image_size_max": 10,
-//   "input_images_max": 10,
-//   "input_output_images_max": 15,
-//   "output_image_width_min": 1280,
-//   "output_image_width_max": 4096,
-//   "output_image_height_min": 720,
-//   "output_image_height_max": 4096
-// }
-// const tips2 = {
-//     "input_msg_max": 800,
-//     "output_image_size_options": [
-//         {
-//             "resolution": "1664*928",
-//             "ratio": "16:9",
-//             "is_default": false
-//         },
-//         {
-//             "resolution": "1472*1140",
-//             "ratio": "4:3",
-//             "is_default": false
-//         },
-//         {
-//             "resolution": "1328*1328",
-//             "ratio": "1:1",
-//             "is_default": true
-//         },
-//         {
-//             "resolution": "1140*1472",
-//             "ratio": "3:4",
-//             "is_default": false
-//         },
-//         {
-//             "resolution": "928*1664",
-//             "ratio": "9:16",
-//             "is_default": false
-//         }
-//     ]
-// }
-// const tips3 = {
-//     "input_msg_max": 800,
-//     "input_image_size_max": 10,
-//     "input_images_max": 3,
-//     "input_image_suffix_options": [
-//         {
-//             "label": "jpg",
-//             "value": "jpg"
-//         },
-//         {
-//             "label": "jpeg",
-//             "value": "jpeg"
-//         },
-//         {
-//             "label": "png",
-//             "value": "png"
-//         },
-//         {
-//             "label": "bmp",
-//             "value": "bmp"
-//         },
-//         {
-//             "label": "tiff",
-//             "value": "tiff"
-//         },
-//         {
-//             "label": "webp",
-//             "value": "webp"
-//         }
-//     ],
-//     "output_images_max": 6,
-//     "output_image_width_min": 512,
-//     "output_image_width_max": 2048,
-//     "output_image_height_min": 512,
-//     "output_image_height_max": 2048
-// }
-// const tips4 = {
-//     "input_msg_max": 2000,
-//     "output_image_width_min": 768,
-//     "output_image_width_max": 1440,
-//     "output_image_height_min": 768,
-//     "output_image_height_max": 1440,
-//     "output_images_max": 4
-// }
-// const tips5 = {
-//     "input_msg_max": 2000,
-//     "input_images_max": 2,
-//     "input_image_suffix_options": [
-//         {
-//             "label": "jpg",
-//             "value": "jpg"
-//         },
-//         {
-//             "label": "jpeg",
-//             "value": "jpeg"
-//         },
-//         {
-//             "label": "png",
-//             "value": "png"
-//         },
-//         {
-//             "label": "bmp",
-//             "value": "bmp"
-//         },
-//         {
-//             "label": "webp",
-//             "value": "webp"
-//         }
-//     ],
-//     "output_images_max": 4
-// }
 
 const handleChangeModel = async () => {
   const res: any = await getOptions({ model: form.value.model })
