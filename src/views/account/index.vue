@@ -106,16 +106,16 @@ const handleEditPassword = async () => {
   });
 }
 const bindWechat = () => {
-  router.push('/layout/account/bind_wechat')
+  router.push('/layout/bind_wechat')
 };
 const goRecharge = () => {
-  router.push('/layout/account/recharge')
+  router.push('/layout/recharge')
 };
 const goTopup = () => {
-  router.push('/layout/account/topup')
+  router.push('/layout/topup')
 };
 const goConsume = () => {
-  router.push('/layout/account/consume')
+  router.push('/layout/consume')
 };
 onMounted(() => {
   getUserInfo(false)

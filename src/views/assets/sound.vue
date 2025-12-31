@@ -94,6 +94,8 @@ import { getSoundList, deleteSound } from '@/apis/index';
 import AudioPlayer from '@/components/audioPlayer.vue';
 import NewSoundModal from './components/newSoundModal.vue';
 
+const dialog = useDialog()
+const message = useMessage()
 let searchForm: any = ref({
   name: ''
 });
@@ -106,7 +108,7 @@ const { showModal: showNewModal } = useModal("new-modal");
 const onAdd = () => {
   showNewModal();
 };
-const handleNewModalComplete = (res: any) => {
+const handleNewModalComplete = () => {
   getList();
 };
 const handleReset = () => {
@@ -121,8 +123,27 @@ const handleEdit = (item: any) => {
   });
 }
 const handleDelete = async (item: any) => {
-  await deleteSound({
-    id: item.id
+  dialog.warning({
+    title: '确定要删除该音效吗？',
+    content: () => '删除后不可恢复，请谨慎操作！',
+    positiveText: '确定',
+    negativeText: '取消',
+    positiveButtonProps: {type: "primary"},
+    showIcon: false,
+    closable: false,
+    onPositiveClick: async () => {
+      try {
+        await deleteSound({
+          id: item.id
+        })
+        getList()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    onNegativeClick: () => {
+      message.warning('已取消删除')
+    }
   })
 }
 const getList = async () => {

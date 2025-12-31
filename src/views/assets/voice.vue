@@ -120,6 +120,8 @@ import AudioPlayer from '@/components/audioPlayer.vue';
 import NewVoiceModal from './components/newVoiceModal.vue';
 import TrainingVoiceModal from './components/trainingVoiceModal.vue';
 
+const dialog = useDialog()
+const message = useMessage()
 let searchForm: any = ref({
   platform: null,
   name: ''
@@ -134,7 +136,7 @@ const { showModal: showTrainingVoiceModal } = useModal("training-voice-modal");
 const handleAdd = () => {
   showNewVoiceModal();
 };
-const handleNewModalComplete = (res: any) => {
+const handleNewModalComplete = () => {
   getList();
 };
 const handleTraining = (item: any) => {
@@ -159,8 +161,27 @@ const handleEdit = (item: any) => {
   });
 }
 const handleDelete = async (item: any) => {
-  await deleteVoice({
-    id: item.id
+  dialog.warning({
+    title: '确定要删除该音色吗？',
+    content: () => '删除后不可恢复，请谨慎操作！',
+    positiveText: '确定',
+    negativeText: '取消',
+    positiveButtonProps: {type: "primary"},
+    showIcon: false,
+    closable: false,
+    onPositiveClick: async () => {
+      try {
+        await deleteVoice({
+          id: item.id
+        })
+        getList()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    onNegativeClick: () => {
+      message.warning('已取消删除')
+    }
   })
 }
 const getList = async () => {

@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 650px;" @update:show="onClose">
     <template #header>
-      <slot name="header">创建物品</slot>
+      <slot name="header">创建场景</slot>
     </template>
     <slot>
       <div class="create-content">
@@ -53,7 +53,7 @@
             />
           </n-form-item>
           <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
+            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `novel/${route.query.id}/scene/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -71,9 +71,10 @@
 import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { createThing, getOptions } from "@/apis/index";
+import { createCharacter, getOptions } from "@/apis/index";
 import Upload from '@/components/upload.vue';
 
+const route = useRoute()
 const emit = defineEmits(["save"]);
 const { visible, hideModal } = useModal('create-modal');
 const message = useMessage()
@@ -158,8 +159,9 @@ const onSubmit = async () => {
       disabled.value = true
       try {
         const params: any = JSON.parse(JSON.stringify(form.value))
+        params['novel_id'] = route.query.id
         delete params['size'];
-        const res: any = await createThing(params)
+        const res: any = await createCharacter(params)
         if(res.code == 200 && res?.data && res?.data.length > 0) {
           let current = ref(0)
           dialog.warning({

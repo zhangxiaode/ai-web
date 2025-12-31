@@ -43,7 +43,8 @@
       <div v-for="(item, index) in thing_list" :key="index" class="h-30px float-left p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex flex-col justify-center items-normal">
           <div class="flex items-center">
-            <div class="text-14px c-#fff mr-12px">{{ item.name }}</div>
+            <img :src="item.resource_path" class="w-30px h-36px" alt="" />
+            <div class="text-16px c-#fff ml-12px">{{ item.name }}</div>
           </div>
         </div>
         <div class="flex justify-between items-center">
@@ -62,12 +63,6 @@
               </n-icon>
             </template>
             删除
-          </n-button>
-          <n-button class="mx-6px" type="error" size="tiny">
-            <template #icon>
-              <AudioPlayer :src="item.resource_path" />
-            </template>
-            试听
           </n-button>
         </div>
       </div>
@@ -90,10 +85,11 @@
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
 import { Search, Repeat, AddSharp, CreateOutline, TrashOutline } from '@vicons/ionicons5';
-import { getThingDetail, getThingList, deleteThing } from '@/apis/index';
-import AudioPlayer from '@/components/audioPlayer.vue';
+import { getThingList, deleteThing } from '@/apis/index';
 import NewThingModal from './components/newThingModal.vue';
 
+const dialog = useDialog()
+const message = useMessage()
 let searchForm: any = ref({
   name: ''
 });
@@ -106,7 +102,7 @@ const { showModal: showNewModal } = useModal("new-modal");
 const onAdd = () => {
   showNewModal();
 };
-const handleNewModalComplete = (res: any) => {
+const handleNewModalComplete = () => {
   getList();
 };
 const handleReset = () => {
@@ -121,8 +117,27 @@ const handleEdit = (item: any) => {
   });
 }
 const handleDelete = async (item: any) => {
-  await deleteThing({
-    id: item.id
+  dialog.warning({
+    title: '确定要删除该物品吗？',
+    content: () => '删除后不可恢复，请谨慎操作！',
+    positiveText: '确定',
+    negativeText: '取消',
+    positiveButtonProps: {type: "primary"},
+    showIcon: false,
+    closable: false,
+    onPositiveClick: async () => {
+      try {
+        await deleteThing({
+          id: item.id
+        })
+        getList()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    onNegativeClick: () => {
+      message.warning('已取消删除')
+    }
   })
 }
 const getList = async () => {
@@ -147,8 +162,7 @@ const handleCurrentChange = (val: number) => {
   page.value = val;
   getList();
 };
-onMounted(async () => {
-  const res = await getThingDetail({ id: 1 })
+onMounted(() => {
   getList()
 })
 </script>

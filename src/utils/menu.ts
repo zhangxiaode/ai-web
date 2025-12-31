@@ -79,12 +79,41 @@ const routes = [
                     },
                 ]
             },
+            {
+                path: "recharge",
+                name: "recharge",
+                component: () => import("../views/recharge/index.vue")
+            },
+            { // 充值记录、消耗记录、绑定微信、修改手机号修改密码、修改用户名、退出登录
+                path: "account",
+                name: "account",
+                component: () => import("../views/account/index.vue")
+            },
+            {
+                path: "topup",
+                name: "topup",
+                component: () => import("../views/account/topup.vue")
+            },
+            {
+                path: "consume",
+                name: "consume",
+                component: () => import("../views/account/consume.vue")
+            },
+            {
+                path: "bind_wechat",
+                name: "bind_wechat",
+                component: () => import("../views/account/bind_wechat.vue")
+            },
             { // 角色管理、场景管理、物品管理、剧集管理-分镜管理
                 path: "project",
                 name: "project",
-                component: () => import("../views/project/index.vue"),
-                redirect: "/layout/project/character",
+                redirect: "/layout/project/index",
                 children: [
+                    {
+                        path: "index",
+                        name: "project_index",
+                        component: () => import("../views/project/index.vue")
+                    },
                     {
                         path: "character",
                         name: "project_character",
@@ -104,41 +133,11 @@ const routes = [
                         path: "chapter",
                         name: "project_chapter",
                         component: () => import("../views/project/chapter.vue"),
-                        children: [
-                            {
-                                path: "shot",
-                                name: "project_chapter_shot",
-                                component: () => import("../views/project/shot.vue")
-                            },
-                        ]
-                    },
-                ]
-            },
-            {
-                path: "recharge",
-                name: "recharge",
-                component: () => import("../views/recharge/index.vue")
-            },
-            { // 充值记录、消耗记录、绑定微信、修改手机号修改密码、修改用户名、退出登录
-                path: "account",
-                name: "account",
-                component: () => import("../views/account/index.vue"),
-                redirect: "/layout/account/topup",
-                children: [
-                    {
-                        path: "topup",
-                        name: "topup",
-                        component: () => import("../views/account/topup.vue")
                     },
                     {
-                        path: "consume",
-                        name: "consume",
-                        component: () => import("../views/account/consume.vue")
-                    },
-                    {
-                        path: "bind_wechat",
-                        name: "bind_wechat",
-                        component: () => import("../views/account/bind_wechat.vue")
+                        path: "shot",
+                        name: "project_shot",
+                        component: () => import("../views/project/shot.vue")
                     },
                 ]
             },

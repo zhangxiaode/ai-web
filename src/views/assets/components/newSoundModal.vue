@@ -146,7 +146,7 @@ const onSubmit = async () => {
 const onClose = () => {
   hideModal();
 }
-const getVoiceInfo = async () => {
+const getSoundInfo = async () => {
   const res: any = await getSoundDetail({
     id: payload.value.id
   })
@@ -157,7 +157,7 @@ const getVoiceInfo = async () => {
 watch(visible, (newValue: any) => {
   if(newValue) {
     if(payload.value?.id) {
-      getVoiceInfo()
+      getSoundInfo()
     }
   } else {
     form.value = {

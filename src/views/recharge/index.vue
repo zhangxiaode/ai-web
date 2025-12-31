@@ -1,7 +1,7 @@
 <template>
   <div class="c-#fff h-100% overflow-auto">
     <div class="p-32px flex flex-wrap">
-      <div v-for="(item, index) in list" :key="index" :class="['bg-#1f2937 overflow-hidden rounded-12px w-[calc(50%-32px)] h-80px m-16px p-24px box-border border-2px border-style-solid border-color-#4b5563 relative flex justify-between items-center', { 'border-color-#a855f7': item.id === current } ]" @click="changeProduct(item.id)">
+      <div v-for="(item, index) in list" :key="index" :class="['bg-#1f2937 overflow-hidden rounded-12px w-[calc(50%-32px)] h-80px m-16px p-24px box-border border-2px border-style-solid border-color-#4b5563 relative flex justify-between items-center cursor-pointer', { 'border-color-#a855f7': item.id === current } ]" @click="changeProduct(item.id)">
         <div v-if="item.type === 0" class="flex-1 c-#fff px-12px py-8px flex flex-col justify-center">
           <text class="text-16px">{{ item.coin }}尧币</text>
           <text class="text-12px c-#9ca3af" v-if="item.coin_gift > 0">送{{ item.coin_gift }}尧币</text>
@@ -21,7 +21,7 @@
         <div class="text-14px c-#999 leading-1.5em mt-4px">5. 各项目积分消耗在提交任务处有醒目标注，在积分余额处有消耗流水列表。因服务器原因生成失败的返还积分；</div>
         <div class="text-14px c-#999 leading-1.5em mt-4px">6. 使用指导，对公支付，开具发票，购买更多积分，咨询节省计划，请联系商务，邮箱 chengyaokeji@126.com</div>
       </div>
-      <div class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px h-60px leading-60px w-380px text-center c-#fff text-18px font-bold" @click="debouncing(goPay, message, 2000)">立即充值 {{ product?.coin }} 尧币</div>
+      <div class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px h-60px leading-60px w-380px text-center c-#fff text-18px font-bold" @click="debouncing(goPay, message, 2000)">立即充值 {{ product.type === 0 ? product?.coin + ' 尧币' : product.timeFormat }}</div>
     </div>
   </div>
 </template>

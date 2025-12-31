@@ -1,5 +1,6 @@
 <template>
   <div class="bind_wechat">
+    bind_wechat
   </div>
 </template>
 <script lang="ts" setup>
