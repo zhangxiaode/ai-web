@@ -166,3 +166,22 @@ export const character_animal_color_options = [
     { label: '金黄色', value: 'golden_yellow' },
     { label: '橙色', value: 'orange' },
 ]
+export const create_msg = ({ type, gender, people_years_old, people_body, eye_color, hair_color, hair_style, cloth_color, cloth_style, animal_type, animal_body, animal_years_old, animal_color }: any) => {
+    let msg = ''
+    msg += (type ? `绘制对象是: ${character_type_options.find(item => item.value === type)?.label};` : '')
+    msg += (gender ? `绘制对象性别为: ${character_gender_options.find(item => item.value === gender)?.label};` : '')
+    if(type === 1) {
+        msg += (people_years_old ? `绘制对象为: ${character_people_years_old_options.find(item => item.value === people_years_old)?.label};` : '')
+        msg += (people_body ? `绘制对象身材为: ${character_gender_options.find(item => item.value === people_body)?.label};` : '')
+        msg += (eye_color ? `绘制对象眼睛颜色为: ${character_gender_options.find(item => item.value === eye_color)?.label};` : '')
+        msg += (hair_color ? `绘制对象头发颜色为: ${character_gender_options.find(item => item.value === hair_color)?.label};` : '')
+        msg += (hair_style ? `绘制对象发型为: ${character_gender_options.find(item => item.value === hair_style)?.label};` : '')
+        msg += (cloth_color ? `绘制对象衣服颜色为: ${character_gender_options.find(item => item.value === cloth_color)?.label};` : '')
+        msg += (cloth_style ? `绘制对象衣服类型为: ${character_gender_options.find(item => item.value === cloth_style)?.label};` : '')
+    } else if(type === 2) {
+        msg += (animal_type ? `绘制对象种类为: ${character_gender_options.find(item => item.value === animal_type)?.label};` : '')
+        msg += (animal_body ? `绘制对象体型为: ${character_gender_options.find(item => item.value === animal_body)?.label};` : '')
+        msg += (animal_years_old ? `绘制对象年龄为: ${character_gender_options.find(item => item.value === animal_years_old)?.label};` : '')
+        msg += (animal_color ? `绘制对象颜色为: ${character_gender_options.find(item => item.value === animal_color)?.label};` : '')
+    }
+}

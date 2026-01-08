@@ -80,11 +80,14 @@ const { visible, hideModal } = useModal('create-modal');
 const message = useMessage()
 const dialog = useDialog()
 
+const props = defineProps({
+  detail: { type: Object, default: {} },
+})
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const form: any = ref({
   model: null,
-  msg: '星际穿越，黑洞，黑洞里冲出一辆快支离破碎的复古列车，抢视觉冲击力，电影大片，末日既视感，动感，对比色，oc渲染，光线追踪，动态模糊，景深，超现实主义，深蓝，画面通过细腻的丰富的色彩层次塑造主体与场景，质感真实，暗黑风背景的光影效果营造出氛围，整体兼具艺术幻想感，夸张的广角透视效果，耀光，反射，极致的光影，强引力，吞噬',
+  msg: '《山海经・南山经》记载：“又东三百里，曰青丘之山，其阳多玉，其阴多青䨼。有兽焉，其状如狐而九尾，其音如婴儿，能食人，食者不蛊”。此外，《山海经》中的《大荒东经》也有 “有青丘之国，有狐九尾” 的记载，《海外东经》亦提到 “青丘国在其北，有狐四足九尾”。这些记载表明九尾狐居住在青丘之山或青丘国，其形状像狐狸，有九条尾巴，叫声像婴儿啼哭，且能吃人，而吃了九尾狐肉的人可以抵御毒气。',
   output_image_number: 2,
   output_image_width: 1920,
   output_image_height: 1080,
@@ -161,6 +164,8 @@ const onSubmit = async () => {
         const params: any = JSON.parse(JSON.stringify(form.value))
         params['novel_id'] = route.query.id
         delete params['size'];
+        params.msg = `${params.msg}`
+        // props.detail
         const res: any = await createCharacter(params)
         if(res.code == 200 && res?.data && res?.data.length > 0) {
           let current = ref(0)

@@ -1,8 +1,8 @@
 <template>
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
-    style="width: 600px;" @update:show="onClose">
+    style="width: 800px;" @update:show="onClose">
     <template #header>
-      <slot name="header">新增项目</slot>
+      <slot name="header">新增章节</slot>
     </template>
     <slot>
       <div class="new-content">
@@ -16,16 +16,15 @@
           require-mark-placement="right-hanging"
           size="medium"
         >
-          <n-form-item label="项目名称:" path="name">
-            <n-input v-model:value="form.name" placeholder="请输入项目名称" />
+          <n-form-item label="章节序号:" path="index">
+            <n-input-number v-model:value="form.index" class="w-100%" :show-button="false" placeholder="请输入章节序号" />
           </n-form-item>
-          <n-form-item label="项目描述:" path="desc">
-            <n-input v-model:value="form.desc" type="textarea" placeholder="请输入项目描述" />
+          <n-form-item label="章节名称:" path="name">
+            <n-input v-model:value="form.name" placeholder="请输入章节名称" />
           </n-form-item>
-          <n-form-item label="项目封面:" path="poster">
-            <div class="flex flex-col">
-              <Upload ref="uploadRef" accept="image/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `novel/poster/${file_name}`" @change="({ resource_path }) => form.poster = resource_path[0].original_url" />
-            </div>
+          <n-form-item label="章节内容:" path="content">
+            <Editor :value="form.content" :height="500" placeholder="请输入章节内容" @change="val => form.content = val" />
+            <!-- <n-input v-model:value="form.content" type="textarea" placeholder="请输入章节内容" /> -->
           </n-form-item>
         </n-form>
       </div>
@@ -43,8 +42,10 @@
 import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { getTemporaryUrl, getProjectDetail, postProject, putProject } from "@/apis/index";
+import { getChapterDetail, postChapter, putChapter } from "@/apis/index";
+import Editor from "@/components/editor.vue"
 
+const route = useRoute()
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
 const message = useMessage()
@@ -54,39 +55,35 @@ const formRef = ref<FormInst | null>(null)
 const uploadRef: any = ref(null)
 const form = ref({
   id: null,
+  index: null,
   name: '',
-  desc: '',
-  poster: ''
+  content: ''
 });
 const rules = {
-  name: {required: true, message: "项目名称不能为空", trigger: ['blur', 'change']},
-  desc: {required: true, message: "项目描述不能为空", trigger: ['blur', 'change']},
-  poster: {required: true, message: "项目封面不能为空", trigger: ['blur', 'change']}
+  index: {required: true, type: 'number', message: "章节序号不能为空", trigger: ['blur', 'change']},
+  name: {required: true, message: "章节名称不能为空", trigger: ['blur', 'change']},
+  content: {required: true, message: "章节内容不能为空", trigger: ['blur', 'change']}
 };
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       disabled.value = true
       let params = {
+        novel_id: route.query.id,
+        index: form.value.index,
         name: form.value.name,
-        desc: form.value.desc,
-        poster: form.value.poster
+        content: form.value.content,
       }
-      let f = postProject
+      let f = postChapter
       if(form.value.id) {
-        f = putProject
+        f = putChapter
         params['id'] = form.value.id
       }
       try {
         const res: any = await f(params)
         if (res.code == 200 || res.code == 0) {
           onClose()
-          emit('save', {
-            id: res?.data?.id,
-            name: res?.data?.name,
-            desc: res?.data?.desc,
-            poster: res?.data?.poster
-          })
+          emit('save')
         }
       } catch (error) {
         console.log(error)
@@ -98,33 +95,26 @@ const onSubmit = async () => {
 const onClose = () => {
   hideModal();
 }
-const getProjectInfo = async () => {
-  const res: any = await getProjectDetail({
+const getChapterInfo = async () => {
+  const res: any = await getChapterDetail({
     id: payload.value.id
   })
   form.value.id = res.data.id
+  form.value.index = res.data.index
   form.value.name = res.data.name
-  form.value.desc = res.data.desc
-  form.value.poster = res.data.poster
-  const response: any = await getTemporaryUrl({ video_path: res.data.poster })
-  if(response.data) {
-    uploadRef.value?.setResource([{
-      original_url: res.data.poster,
-      sign_path: response.data
-    }])
-  }
+  form.value.content = res.data.content
 }
 watch(visible, (newValue: any) => {
   if(newValue) {
     if(payload.value?.id) {
-      getProjectInfo()
+      getChapterInfo()
     }
   } else {
     form.value = {
       id: null,
+      index: null,
       name: '',
-      desc: '',
-      poster: ''
+      content: ''
     }
   }
 });

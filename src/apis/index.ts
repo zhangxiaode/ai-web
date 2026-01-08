@@ -1,4 +1,5 @@
 export * from "./assets"
+export * from "./chapter"
 export * from "./character"
 export * from "./common"
 export * from "./consume"
