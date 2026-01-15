@@ -101,14 +101,6 @@
                 </template>
                 场景管理
               </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="goShot(item)">
-                <template #icon>
-                  <n-icon>
-                    <TrashOutline />
-                  </n-icon>
-                </template>
-                镜头管理
-              </n-button>
             </div>
           </div>
         </div>
@@ -221,9 +213,6 @@ const goCharacter = (item: any) => {
 };
 const goScene = (item: any) => {
   router.push(`/layout/project/scene?id=${item.id}`)
-};
-const goShot = (item: any) => {
-  router.push(`/layout/project/shot?id=${item.id}`)
 };
 onMounted(() => {
   getList()

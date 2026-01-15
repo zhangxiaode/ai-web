@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 800px;" @update:show="onClose">
     <template #header>
-      <slot name="header">新增章节</slot>
+      <slot name="header">{{ form.id ? '编辑' : '新增' }}章节</slot>
     </template>
     <slot>
       <div class="new-content">
@@ -23,8 +23,8 @@
             <n-input v-model:value="form.name" placeholder="请输入章节名称" />
           </n-form-item>
           <n-form-item label="章节内容:" path="content">
-            <Editor :value="form.content" :height="500" placeholder="请输入章节内容" @change="val => form.content = val" />
-            <!-- <n-input v-model:value="form.content" type="textarea" placeholder="请输入章节内容" /> -->
+            <!-- <Editor :value="form.content" :height="500" placeholder="请输入章节内容" @change="val => form.content = val" /> -->
+            <n-input v-model:value="form.content" type="textarea" placeholder="请输入章节内容" :rows="10" show-count :maxlength="5000" />
           </n-form-item>
         </n-form>
       </div>
@@ -43,7 +43,7 @@ import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { getChapterDetail, postChapter, putChapter } from "@/apis/index";
-import Editor from "@/components/editor.vue"
+// import Editor from "@/components/editor.vue"
 
 const route = useRoute()
 const emit = defineEmits(["save"]);
@@ -52,7 +52,7 @@ const message = useMessage()
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
-const uploadRef: any = ref(null)
+// const uploadRef: any = ref(null)
 const form = ref({
   id: null,
   index: null,

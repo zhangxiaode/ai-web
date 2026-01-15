@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 600px;" @update:show="onClose">
     <template #header>
-      <slot name="header">新增项目</slot>
+      <slot name="header">{{ form.id ? '编辑' : '新增' }}项目</slot>
     </template>
     <slot>
       <div class="new-content">

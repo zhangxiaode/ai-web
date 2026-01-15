@@ -67,21 +67,21 @@
               </div>
             </div>
             <div class="flex items-center mt-16px">
-              <n-button class="mx-6px" type="error" size="tiny"  @click="transformAudioScript(item)">
+              <n-button class="mx-6px" type="error" size="tiny"  @click="transformScript(item)">
                 <template #icon>
                   <n-icon>
                     <PeopleOutline />
                   </n-icon>
                 </template>
-                转换有声书剧本
+                转换剧本
               </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="transformVideoScript(item)">
+              <n-button class="mx-6px" type="error" size="tiny"  @click="bindCharacter(item)">
                 <template #icon>
                   <n-icon>
-                    <PeopleOutline />
+                    <ApertureSharp />
                   </n-icon>
                 </template>
-                转换影视剧本
+                角色绑定
               </n-button>
               <n-button class="mx-6px" type="error" size="tiny"  @click="createAudiobook(item)">
                 <template #icon>
@@ -125,6 +125,7 @@
       @update:page-size="handleSizeChange"
     />
     <NewChapterModal @save="handleNewModalComplete" />
+    <TransformScriptModal @save="handleTransformAudioScriptModalComplete" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -132,6 +133,7 @@ import { useModal } from "@/hooks";
 import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, PeopleOutline, ApertureSharp } from '@vicons/ionicons5';
 import { getChapterList, deleteChapter } from '@/apis/index';
 import NewChapterModal from './components/newChapterModal.vue';
+import TransformScriptModal from './components/transformScriptModal.vue';
 
 const router = useRouter()
 const dialog = useDialog()
@@ -144,11 +146,15 @@ const size = ref(10)
 const total = ref(0)
 const list: any = ref([])
 const { showModal: showNewModal } = useModal("new-modal");
+const { showModal: showTransformScriptModal } = useModal("transformScript-modal");
 
 const onAdd = () => {
   showNewModal();
 };
 const handleNewModalComplete = () => {
+  getList();
+};
+const handleTransformAudioScriptModalComplete = () => {
   getList();
 };
 const handleReset = () => {
@@ -208,11 +214,17 @@ const handleCurrentChange = (val: number) => {
   page.value = val;
   getList();
 };
-const transformAudioScript = (item: any) => {
-  router.push(`/layout/project/character?id=${item.id}`)
+const transformScript = (item: any) => {
+  showTransformScriptModal({
+    id: item.id,
+    novel_id: item.novel_id
+  })
 };
-const transformVideoScript = (item: any) => {
-  router.push(`/layout/project/character?id=${item.id}`)
+const bindCharacter = (item: any) => {
+  showTransformScriptModal({
+    id: item.id,
+    novel_id: item.novel_id
+  })
 };
 const createAudiobook = (item: any) => {
   router.push(`/layout/project/scene?id=${item.id}`)
