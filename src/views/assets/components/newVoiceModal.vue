@@ -27,6 +27,9 @@
               clearable
             />
           </n-form-item>
+          <n-form-item label="是否公共音色:" path="is_public">
+            <n-switch v-model:value="form.is_public" :checked-value="1" :unchecked-value="0" />
+          </n-form-item>
           <n-form-item label="音色性别:" path="gender">
             <n-select
               v-model:value="form.gender"
@@ -95,7 +98,6 @@ import { splitFilename, debouncing } from '@/utils/index';
 import { getUser } from "@/utils/auth";
 import { language_opts, gender_opts, platform_opts } from '@/constants/index';
 import { uploadFileToOBS, getVoiceDetail, postVoice, putVoice } from "@/apis/index";
-// postThirdVoice
 
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-voice-modal');
@@ -107,6 +109,7 @@ const form = ref({
   id: null,
   name: '',
   platform: null,
+  is_public: 0,
   gender: null,
   voice_id: '',
   language: null,
@@ -157,6 +160,7 @@ const onSubmit = async () => {
       let params = {
         name: form.value.name,
         platform: form.value.platform,
+        is_public: form.value.is_public,
         gender: form.value.gender,
         voice_id: form.value.voice_id,
         language: form.value.language,
@@ -176,6 +180,7 @@ const onSubmit = async () => {
             id: res?.data?.id,
             name: res?.data?.name,
             platform: res?.data?.platform,
+            is_public: res?.data?.is_public,
             gender: res?.data?.gender,
             voice_id: res?.data?.voice_id,
             language: res?.data?.language,
@@ -200,6 +205,7 @@ const getVoiceInfo = async () => {
   form.value.id = res.data.id
   form.value.name = res.data.name
   form.value.platform = res.data.platform
+  form.value.is_public = res.data.is_public || 0
   form.value.gender = res.data.gender
   form.value.voice_id = res.data.voice_id
   form.value.language = res.data.language
@@ -216,6 +222,7 @@ watch(visible, (newValue: any) => {
       id: null,
       name: '',
       platform: null,
+      is_public: 0,
       gender: null,
       voice_id: '',
       language: null,

@@ -39,8 +39,8 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 flex flex-wrap overflow-auto">
-      <div v-for="(item, index) in sound_list" :key="index" class="h-30px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
+    <div class="flex-1 overflow-auto sound-wrap">
+      <div v-for="(item, index) in sound_list" :key="index" class="h-30px float-left p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex flex-col justify-center items-normal">
           <div class="flex items-center">
             <div class="text-14px c-#fff mr-12px">{{ item.name }}</div>
@@ -63,12 +63,7 @@
             </template>
             删除
           </n-button>
-          <n-button class="mx-6px" type="error" size="tiny">
-            <template #icon>
-              <AudioPlayer :src="item.resource_path" />
-            </template>
-            试听
-          </n-button>
+          <AudioPlayer :src="item.signed_url" class="mx-6px" />
         </div>
       </div>
     </div>
@@ -174,4 +169,11 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.thing-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  align-items: start;
+  grid-auto-rows: min-content;
+}
 </style>

@@ -60,7 +60,6 @@ export function deleteVoice(params: any) {
   });
 }
 
-
 // 音效列表
 export function getSoundList(params: any) {
   return request({
@@ -113,7 +112,6 @@ export function deleteSound(params: any) {
     params
   });
 }
-
 
 // 物品列表
 export function getThingList(params: any) {

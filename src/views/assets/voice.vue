@@ -87,12 +87,7 @@
             </template>
             删除
           </n-button>
-          <n-button class="mx-6px" type="error" size="tiny">
-            <template #icon>
-              <AudioPlayer :src="item.resource_path" />
-            </template>
-            试听
-          </n-button>
+          <AudioPlayer :src="item.resource_path" class="mx-6px" />
         </div>
       </div>
     </div>

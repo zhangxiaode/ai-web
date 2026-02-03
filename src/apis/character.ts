@@ -1,4 +1,4 @@
-// 物品列表
+// 角色列表
 export function getCharacterList(params: any) {
   return request({
     url: `/character`,
@@ -6,7 +6,7 @@ export function getCharacterList(params: any) {
     params
   });
 }
-// 物品详情
+// 角色详情
 export function getCharacterDetail(params: any) {
   return request({
     url: `/character/${params.id}`,
@@ -15,7 +15,7 @@ export function getCharacterDetail(params: any) {
   });
 }
 
-// AI创建物品
+// AI创建角色
 export function createCharacter(data: any) {
   return request({
     url: `/character/create`,
@@ -24,7 +24,7 @@ export function createCharacter(data: any) {
   });
 }
 
-// 创建物品
+// 创建角色
 export function postCharacter(data: any) {
   return request({
     url: `/character`,
@@ -33,7 +33,7 @@ export function postCharacter(data: any) {
   });
 }
 
-// 更新物品
+// 更新角色
 export function putCharacter(data: any) {
   return request({
     url: `/character`,
@@ -42,7 +42,7 @@ export function putCharacter(data: any) {
   });
 }
 
-// 删除物品
+// 删除角色
 export function deleteCharacter(params: any) {
   return request({
     url: `/character/${params.id}`,

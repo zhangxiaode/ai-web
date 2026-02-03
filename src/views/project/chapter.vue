@@ -75,14 +75,6 @@
                 </template>
                 转换剧本
               </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="bindCharacter(item)">
-                <template #icon>
-                  <n-icon>
-                    <ApertureSharp />
-                  </n-icon>
-                </template>
-                角色绑定
-              </n-button>
               <n-button class="mx-6px" type="error" size="tiny"  @click="createAudiobook(item)">
                 <template #icon>
                   <n-icon>
@@ -126,6 +118,7 @@
     />
     <NewChapterModal @save="handleNewModalComplete" />
     <TransformScriptModal @save="handleTransformAudioScriptModalComplete" />
+    <CreateAudioBookModal @save="handleCreateAudioBookModalComplete" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -134,6 +127,7 @@ import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, PeopleOutline, A
 import { getChapterList, deleteChapter } from '@/apis/index';
 import NewChapterModal from './components/newChapterModal.vue';
 import TransformScriptModal from './components/transformScriptModal.vue';
+import CreateAudioBookModal from './components/createAudioBookModal.vue';
 
 const router = useRouter()
 const dialog = useDialog()
@@ -147,6 +141,7 @@ const total = ref(0)
 const list: any = ref([])
 const { showModal: showNewModal } = useModal("new-modal");
 const { showModal: showTransformScriptModal } = useModal("transformScript-modal");
+const { showModal: showCreateAudioBookModal } = useModal("createAudioBook-modal");
 
 const onAdd = () => {
   showNewModal();
@@ -155,6 +150,9 @@ const handleNewModalComplete = () => {
   getList();
 };
 const handleTransformAudioScriptModalComplete = () => {
+  getList();
+};
+const handleCreateAudioBookModalComplete = () => {
   getList();
 };
 const handleReset = () => {
@@ -220,14 +218,11 @@ const transformScript = (item: any) => {
     novel_id: item.novel_id
   })
 };
-const bindCharacter = (item: any) => {
-  showTransformScriptModal({
+const createAudiobook = (item: any) => {
+  showCreateAudioBookModal({
     id: item.id,
     novel_id: item.novel_id
   })
-};
-const createAudiobook = (item: any) => {
-  router.push(`/layout/project/scene?id=${item.id}`)
 };
 const goShot = (item: any) => {
   router.push(`/layout/project/shot?id=${item.id}`)

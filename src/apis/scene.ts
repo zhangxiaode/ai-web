@@ -1,4 +1,4 @@
-// 物品列表
+// 场景列表
 export function getSceneList(params: any) {
   return request({
     url: `/scene`,
@@ -6,7 +6,7 @@ export function getSceneList(params: any) {
     params
   });
 }
-// 物品详情
+// 场景详情
 export function getSceneDetail(params: any) {
   return request({
     url: `/scene/${params.id}`,
@@ -15,7 +15,7 @@ export function getSceneDetail(params: any) {
   });
 }
 
-// AI创建物品
+// AI创建场景
 export function createScene(data: any) {
   return request({
     url: `/scene/create`,
@@ -24,7 +24,7 @@ export function createScene(data: any) {
   });
 }
 
-// 创建物品
+// 创建场景
 export function postScene(data: any) {
   return request({
     url: `/scene`,
@@ -33,7 +33,7 @@ export function postScene(data: any) {
   });
 }
 
-// 更新物品
+// 更新场景
 export function putScene(data: any) {
   return request({
     url: `/scene`,
@@ -42,7 +42,7 @@ export function putScene(data: any) {
   });
 }
 
-// 删除物品
+// 删除场景
 export function deleteScene(params: any) {
   return request({
     url: `/scene/${params.id}`,
