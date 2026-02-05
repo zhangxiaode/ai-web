@@ -147,7 +147,7 @@
               </div>
               <div v-for="(ele, idx) in scene.elements" :key="idx" class="bg-555 my-5px p-8px">
                 <div class="flex items-center justify-between my-5px">
-                  <div class="text-12px c-#fff mr-12px w-80px text-right">{{ ele.element_type === 'sound_effect' ? '音效' : ele.element_type === 'narrator' ? '旁白' : ele.role_name }}: </div>
+                  <div class="text-12px c-#fff mr-12px w-80px text-right">{{ ele.element_type === 'sound_effect' ? '音效' : ele.element_type === 'narrator' ? '旁白' : ele.element_type === 'action' ? '动作' : ele.element_type === 'cut_to' ? '镜头切换' : ele.role_name }}: </div>
                   <div class="flex-1 text-14px c-#fff">{{ ele.tone }}</div>
                 </div>
                 <div class="flex items-center justify-between my-5px">

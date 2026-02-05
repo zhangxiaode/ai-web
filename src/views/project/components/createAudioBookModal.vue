@@ -121,7 +121,6 @@ const form: any = ref({
     role_list: [],
     scenes: []
   },
-  movie_script: {},
 });
 const role_options = ref([])
 const sound_options = ref([])
@@ -255,10 +254,6 @@ watch(visible, async (newValue: any) => {
       id: null,
       index: null,
       audio_script: {
-        role_list: [],
-        scenes: []
-      },
-      movie_script: {
         role_list: [],
         scenes: []
       },
