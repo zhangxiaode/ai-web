@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 650px;" @update:show="onClose">
     <template #header>
-      <slot name="header">创建镜头</slot>
+      <slot name="header">生成视频</slot>
     </template>
     <slot>
       <div class="create-content">

@@ -130,6 +130,7 @@ import TransformScriptModal from './components/transformScriptModal.vue';
 import CreateAudioBookModal from './components/createAudioBookModal.vue';
 
 const router = useRouter()
+const route = useRoute()
 const dialog = useDialog()
 const message = useMessage()
 let searchForm: any = ref({
@@ -168,7 +169,7 @@ const handleEdit = (item: any) => {
 }
 const handleDelete = async (item: any) => {
   dialog.warning({
-    title: '确定要删除该项目吗？',
+    title: '确定要删除该章节吗？',
     content: () => '删除后不可恢复，请谨慎操作！',
     positiveText: '确定',
     negativeText: '取消',
@@ -193,6 +194,7 @@ const handleDelete = async (item: any) => {
 const getList = async () => {
   try {
     const res: any = await getChapterList({
+      novel_id: route.query.id,
       page: page.value,
       size: size.value,
       index: searchForm.value.index
@@ -225,10 +227,10 @@ const createAudiobook = (item: any) => {
   })
 };
 const goShot = (item: any) => {
-  router.push(`/layout/project/shot?id=${item.id}`)
+  router.push(`/layout/project/shot?novel_id=${route.query.id}&chapter_id=${item.id}`)
 };
 const mergeVideo = (item: any) => {
-  router.push(`/layout/project/shot?id=${item.id}`)
+  router.push(`/layout/project/shot?novel_id=${route.query.id}&chapter_id=${item.id}`)
 };
 onMounted(() => {
   getList()

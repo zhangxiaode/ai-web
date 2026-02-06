@@ -67,7 +67,7 @@
               </div>
             </div>
             <div class="flex items-center mt-16px">
-              <n-button class="mx-6px" type="error" size="tiny"  @click="createVideoShort(item)">
+              <n-button class="mx-6px" type="error" size="tiny"  @click="createShot(item)">
                 <template #icon>
                   <n-icon>
                     <PeopleOutline />
@@ -92,20 +92,18 @@
       @update:page="handleCurrentChange"
       @update:page-size="handleSizeChange"
     />
-    <NewChapterModal @save="handleNewModalComplete" />
-    <TransformScriptModal @save="handleTransformAudioScriptModalComplete" />
-    <CreateAudioBookModal @save="handleCreateAudioBookModalComplete" />
+    <NewShotModal @save="handleNewModalComplete" />
+    <CreateShotModal @save="handleCreateShotModalComplete" />
   </div>
 </template>
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
-import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, PeopleOutline, ApertureSharp } from '@vicons/ionicons5';
-import { getChapterList, deleteChapter } from '@/apis/index';
-import NewChapterModal from './components/newChapterModal.vue';
-import TransformScriptModal from './components/transformScriptModal.vue';
-import CreateAudioBookModal from './components/createAudioBookModal.vue';
+import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, PeopleOutline } from '@vicons/ionicons5';
+import { getShotList, deleteShot } from '@/apis/index';
+import NewShotModal from './components/newShotModal.vue';
+import CreateShotModal from './components/createShotModal.vue';
 
-const router = useRouter()
+const route = useRoute()
 const dialog = useDialog()
 const message = useMessage()
 let searchForm: any = ref({
@@ -116,8 +114,7 @@ const size = ref(10)
 const total = ref(0)
 const list: any = ref([])
 const { showModal: showNewModal } = useModal("new-modal");
-const { showModal: showTransformScriptModal } = useModal("transformScript-modal");
-const { showModal: showCreateAudioBookModal } = useModal("createAudioBook-modal");
+const { showModal: showCreateShotModal } = useModal("create-modal");
 
 const onAdd = () => {
   showNewModal();
@@ -125,10 +122,7 @@ const onAdd = () => {
 const handleNewModalComplete = () => {
   getList();
 };
-const handleTransformAudioScriptModalComplete = () => {
-  getList();
-};
-const handleCreateAudioBookModalComplete = () => {
+const handleCreateShotModalComplete = () => {
   getList();
 };
 const handleReset = () => {
@@ -144,7 +138,7 @@ const handleEdit = (item: any) => {
 }
 const handleDelete = async (item: any) => {
   dialog.warning({
-    title: '确定要删除该项目吗？',
+    title: '确定要删除该镜头吗？',
     content: () => '删除后不可恢复，请谨慎操作！',
     positiveText: '确定',
     negativeText: '取消',
@@ -153,7 +147,7 @@ const handleDelete = async (item: any) => {
     closable: false,
     onPositiveClick: async () => {
       try {
-        await deleteChapter({
+        await deleteShot({
           id: item.id
         })
         getList()
@@ -168,9 +162,11 @@ const handleDelete = async (item: any) => {
 }
 const getList = async () => {
   try {
-    const res: any = await getChapterList({
+    const res: any = await getShotList({
       page: page.value,
       size: size.value,
+      novel_id: route.query.novel_id,
+      chapter_id: route.query.chapter_id,
       index: searchForm.value.index
     })
     total.value = res.data.total
@@ -188,8 +184,8 @@ const handleCurrentChange = (val: number) => {
   page.value = val;
   getList();
 };
-const createVideoShort = (item: any) => {
-  showTransformScriptModal({
+const createShot = (item: any) => {
+  showCreateShotModal({
     id: item.id,
     novel_id: item.novel_id
   })
