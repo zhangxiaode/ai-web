@@ -2,7 +2,7 @@
   <n-modal v-model:show="visible" mask-closable preset="dialog" :show-icon="false" class="dialog"
     style="width: 650px;" @update:show="onClose">
     <template #header>
-      <slot name="header">生成视频</slot>
+      <slot name="header">生成镜头</slot>
     </template>
     <slot>
       <div class="create-content">
@@ -21,39 +21,188 @@
               v-model:value="form.model"
               placeholder="请选择AI模型"
               :options="[
-                { label: '豆包seedream-4-0', value: 'doubao-seedream-4-0-250828' },
-                { label: '千问image-plus', value: 'qwen-image-plus' },
-                { label: '千问image-edit-plus', value: 'qwen-image-edit-plus' },
-                { label: '万象2.5-t2i-preview', value: 'wan2.5-t2i-preview' },
-                { label: '万象2.5-i2i-preview', value: 'wan2.5-i2i-preview' }
+                { label: '豆包-seedance-1-0-pro', value: 'doubao-seedance-1-0-pro-250528' },
+                { label: '豆包-seedance-1-0-lite', value: 'doubao-seedance-1-0-lite-i2v-250428' },
+                { label: '万相-图生视频-基于首帧-wan2.5-i2v-preview', value: 'wan2.5-i2v-preview' },
+                { label: '万相-图生视频-基于首帧-wan2.2-i2v-plus', value: 'wan2.2-i2v-plus' },
+                { label: '万相-图生视频-基于首帧-wanx2.1-i2v-turbo', value: 'wanx2.1-i2v-turbo' },
+                { label: '万相-图生视频-基于首尾帧-wan2.2-kf2v-flash', value: 'wan2.2-kf2v-flash' },
+                { label: '万相-图生视频-基于首尾帧-wanx2.1-kf2v-plus', value: 'wanx2.1-kf2v-plus' },
+                { label: '万相-文生视频-wan2.5-t2v-preview', value: 'wan2.5-t2v-preview' },
+                { label: '万相-通用视频编辑-wanx2.1-vace-plus', value: 'wanx2.1-vace-plus' },
+                { label: '万相-图生动作-wan2.2-animate-move', value: 'wan2.2-animate-move' },
+                { label: '万相-视频换人-wan2.2-animate-mix', value: 'wan2.2-animate-mix' },
+                { label: '万相-数字人-wan2.2-s2v', value: 'wan2.2-s2v' }
               ]"
               clearable
               @update:value="handleChangeModel()"
             />
           </n-form-item>
-          <n-form-item label="提示词:" path="msg">
-            <n-input v-model:value="form.msg" type="textarea" placeholder="请输入提示词" />
+          <n-form-item v-if="[
+            'doubao-seedance-1-0-pro-250528',
+            'doubao-seedance-1-0-lite-i2v-250428',
+            'wan2.5-i2v-preview',
+            'wan2.2-i2v-plus',
+            'wanx2.1-i2v-turbo',
+            'wan2.2-kf2v-flash',
+            'wanx2.1-kf2v-plus',
+            'wan2.5-t2v-preview',
+            'wanx2.1-vace-plus',
+            ].includes(form.model)" label="提示词:" path="msg">
+            <n-input v-model:value="form.msg" :max="form_rules.input_msg_max" type="textarea" placeholder="请输入提示词" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="期望生成图片数量:" path="output_image_number">
-            <n-input-number v-model:value="form.output_image_number" :show-button="false" placeholder="请输入期望生成图片数量" />
+          <n-form-item v-if="[
+            'wanx2.1-i2v-turbo',
+            'wanx2.1-kf2v-plus',
+            ].includes(form.model)" label="反向提示词:" path="negative_prompt">
+            <n-input v-model:value="form.negative_prompt" :max="form_rules.input_negative_msg_max" type="textarea" placeholder="请输入反向提示词" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片宽度(像素):" path="output_image_width">
-            <n-input-number v-model:value="form.output_image_width" :show-button="false" placeholder="请输入生成图片宽度" />
+          <n-form-item v-if="[
+              'doubao-seedance-1-0-lite-i2v-250428',
+              'wan2.5-i2v-preview',
+              'wan2.2-i2v-plus',
+              'wanx2.1-i2v-turbo',
+              'wan2.2-kf2v-flash',
+              'wanx2.1-kf2v-plus',
+            ].includes(form.model)" label="首帧图片:" path="first_frame">
+            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.first_frame = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片高度(像素):" path="output_image_height">
-            <n-input-number v-model:value="form.output_image_height" :show-button="false" placeholder="请输入生成图片高度" />
+          <n-form-item v-if="[
+              'doubao-seedance-1-0-lite-i2v-250428',
+              'wan2.2-kf2v-flash',
+              'wanx2.1-kf2v-plus',
+            ].includes(form.model)" label="尾桢图片:" path="last_frame">
+            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.last_frame = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'qwen-image-plus'" label="生成图片分辨率:" path="size">
+          <n-form-item v-if="[
+              'doubao-seedance-1-0-pro-250528',
+            ].includes(form.model)" label="参考图片:" path="reference_image">
+            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.reference_image = resource_path.map((item: any) => item.original_url)" />
+          </n-form-item>
+          <n-form-item v-if="[
+              'doubao-seedance-1-0-pro-250528',
+              'doubao-seedance-1-0-lite-i2v-250428',
+              'wan2.5-i2v-preview',
+              'wan2.2-i2v-plus',
+              'wanx2.1-i2v-turbo',
+              'wan2.2-kf2v-flash',
+              'wanx2.1-kf2v-plus',
+              'wan2.2-s2v',
+            ].includes(form.model)" label="生成视频分辨率:" path="resolution">
             <n-select
-              v-model:value="form.size"
-              placeholder="请选择图片分辨率"
-              :options="form_rules.output_image_size_options"
+              v-model:value="form.resolution"
+              placeholder="请选择视频分辨率"
+              :options="form_rules.output_video_resolution_options"
               clearable
-              @update:value="handleChangeSize()"
             />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `novel/${route.query.id}/scene/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
+          <n-form-item v-if="[
+            'doubao-seedance-1-0-pro-250528',
+            'doubao-seedance-1-0-lite-i2v-250428',
+            ].includes(form.model)" label="输出视频时长:" path="output_video_duration">
+            <n-input-number v-model:value="form.output_video_duration" :min="form_rules.output_video_duration_min" :max="form_rules.output_video_duration_max" :show-button="false" placeholder="请输入输出视频时长" />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.5-i2v-preview',
+            'wan2.5-t2v-preview',
+            ].includes(form.model)" label="输出视频时长:" path="output_video_duration">
+            <n-select
+              v-model:value="form.resolution"
+              placeholder="请选择输出视频时长"
+              :options="form_rules.output_video_duration_options"
+              clearable
+            />
+          </n-form-item>
+          <n-form-item v-if="[
+            'doubao-seedance-1-0-pro-250528',
+            'doubao-seedance-1-0-lite-i2v-250428',
+            ].includes(form.model)" label="是否固定摄像头:" path="camerafixed">
+            <n-switch v-model:value="form.camerafixed" />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.5-i2v-preview',
+            'wan2.5-t2v-preview',
+            ].includes(form.model)" label="是否添加音频:" path="audio">
+            <n-switch v-model:value="form.audio" />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.5-i2v-preview',
+            'wan2.5-t2v-preview',
+            'wan2.2-s2v',
+            ].includes(form.model)" label="上传音频:" path="audio_url">
+            <Upload :accept="suffix_audio_accept" :max="1" :size_max="form_rules.input_audio_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.audio_url = resource_path.map((item: any) => item.original_url)" />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.2-i2v-plus',
+            'wanx2.1-i2v-turbo',
+            'wanx2.1-kf2v-plus'
+          ].includes(form.model)" label="视频特效:" path="template">
+            <n-cascader
+              v-model:value="form.template"
+              placeholder="请选择视频特效"
+              :options="form_rules.input_template_options"
+              clearable
+            />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.5-t2v-preview',
+            ].includes(form.model)" label="生成视频宽高比:" path="size">
+            <n-select
+              v-model:value="form.size"
+              placeholder="请选择视频宽高比"
+              :options="form_rules.output_video_width_height_options"
+              clearable
+            />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wanx2.1-vace-plus'
+            ].includes(form.model)" label="生成视频宽高比:" path="size">
+            <n-select
+              v-model:value="form.size"
+              placeholder="请选择视频宽高比"
+              :options="form_rules.output_video_resolution_options"
+              clearable
+            />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wanx2.1-vace-plus',
+            ].includes(form.model)" label="参考图片:" path="ref_images_url">
+            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.ref_images_url = resource_path.map((item: any) => item.original_url)" />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wanx2.1-vace-plus',
+            ].includes(form.model)" label="参考图用途:" path="obj_or_bg">
+            <n-select
+              v-model:value="form.obj_or_bg"
+              placeholder="请选择参考图用途"
+              multiple
+              :options="form_rules.obj_or_bg_options"
+              clearable
+            />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.2-animate-move',
+            'wan2.2-animate-mix',
+            'wan2.2-s2v'
+            ].includes(form.model)" label="参考图片:" path="image_url">
+            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max || 9999" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.image_url = resource_path.map((item: any) => item.original_url)" />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.2-animate-move',
+            'wan2.2-animate-mix'
+            ].includes(form.model)" label="参考视频:" path="video_url">
+            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_video_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.video_url = resource_path.map((item: any) => item.original_url)" />
+          </n-form-item>
+          <n-form-item v-if="[
+            'wan2.2-animate-move',
+            'wan2.2-animate-mix'
+            ].includes(form.model)" label="模型类型:" path="mode">
+            <n-select
+              v-model:value="form.mode"
+              placeholder="请选择模型类型"
+              :options="form_rules.mode_options"
+              clearable
+            />
           </n-form-item>
         </n-form>
       </div>
@@ -68,6 +217,19 @@
 </template>
 
 <script lang="ts" setup>
+// doubao-seedance-1-0-pro-250528  // msg first_frame last_frame reference_image resolution ratio duration seed camerafixed
+// doubao-seedance-1-0-lite-i2v-250428  // msg first_frame last_frame reference_image resolution ratio duration seed camerafixed
+// wan2.5-i2v-preview: 通义万相-图生视频-基于首帧 // 自动配音 msg first_frame audio_url resolution duration audio
+// wan2.2-i2v-plus: 通义万相-图生视频-基于首帧 // 生成无声视频 msg first_frame template resolution
+// wanx2.1-i2v-turbo: 通义万相-图生视频-基于首帧 msg first_frame template negative_prompt resolution
+// wan2.2-kf2v-flash: 通义万相-图生视频-基于首尾帧 msg first_frame last_frame resolution
+// wanx2.1-kf2v-plus: 通义万相-图生视频-基于首尾帧 msg first_frame last_frame negative_prompt template resolution
+// wan2.5-t2v-preview: 通义万相-文生视频 msg size duration audio_url audio
+// wanx2.1-vace-plus: 通义万相-通用视频编辑 msg ref_images_url obj_or_bg size
+// wan2.2-animate-move: 通义万相-图生动作 image_url video_url mode
+// wan2.2-animate-mix: 通义万相-视频换人 image_url video_url mode
+// wan2.2-s2v: 通义万相-数字人 image_url audio_url resolution
+
 // 基础信息：镜头序号、时长、画幅比例（16:9/2.35:1 电影画幅 / 9:16 竖屏）；
 // 视觉核心：景别（近景 / 中景 / 全景）、镜头类型（固定 / 跟拍 / 摇镜）、画面主体 + 动作 + 环境；
 // 风格调性：影视风格（院线电影 / 网剧 / 纪录片 / 微电影）、色调（暖调 / 冷调 / 复古胶片）、画质（4K/8K、60 帧、HDR）；
@@ -172,12 +334,12 @@
 import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { createCharacter, getOptions } from "@/apis/index";
+import { createShot, putShotVideo, getOptions } from "@/apis/index";
 import Upload from '@/components/upload.vue';
 
 const route = useRoute()
 const emit = defineEmits(["save"]);
-const { visible, hideModal } = useModal('create-modal');
+const { visible, payload, hideModal } = useModal('create-modal');
 const message = useMessage()
 const dialog = useDialog()
 
@@ -186,11 +348,23 @@ const formRef = ref<FormInst | null>(null)
 const form: any = ref({
   model: null,
   msg: '星际穿越，黑洞，黑洞里冲出一辆快支离破碎的复古列车，抢视觉冲击力，电影大片，末日既视感，动感，对比色，oc渲染，光线追踪，动态模糊，景深，超现实主义，深蓝，画面通过细腻的丰富的色彩层次塑造主体与场景，质感真实，暗黑风背景的光影效果营造出氛围，整体兼具艺术幻想感，夸张的广角透视效果，耀光，反射，极致的光影，强引力，吞噬',
-  output_image_number: 2,
-  output_image_width: 1920,
-  output_image_height: 1080,
-  images: [],
-  size: null
+  negative_prompt: '',
+  first_frame: '',
+  last_frame: '',
+  reference_image: [],
+  resolution: '',
+  output_video_duration: null,
+  camerafixed: '',
+  audio: false,
+  audio_url: '',
+  template: '',
+  size: null,
+  ref_images_url: '',
+  obj_or_bg: '',
+  image_url: '',
+  video_url: '',
+  mode: '',
+  input_seed: 123
 });
 const rules = computed(() => {
   return {
@@ -201,58 +375,54 @@ const rules = computed(() => {
     ] : [
       {required: true, message: "提示词不能为空", trigger: ['blur', 'change']}
     ],
-    output_image_number: form_rules.value.input_output_images_max ? [
-      {required: true, type: "number", message: "生成图片数量不能为空", trigger: ['blur', 'change']},
-      {max: form_rules.value.input_output_images_max - form.value.images.length, type: "number", message: `生成图片数量最大为${form_rules.value.input_output_images_max - form.value.images.length}`, trigger: ['blur', 'change']}
-    ] : form_rules.value.output_images_max ? [
-      {required: true, type: "number", message: "生成图片数量不能为空", trigger: ['blur', 'change']},
-      {max: form_rules.value.output_images_max, type: "number", message: `生成图片数量最大为${form_rules.value.output_images_max}`, trigger: ['blur', 'change']}
-    ] : [],
-    output_image_width: form_rules.value.output_image_width_min && form_rules.value.output_image_width_max ? [
-      {required: true, type: "number", message: "生成图片宽度不能为空", trigger: ['blur', 'change']},
-      {min: form_rules.value.output_image_width_min, type: "number", message: `生成图片宽度不能小于${form_rules.value.output_image_width_min}`, trigger: ['blur', 'change']},
-      {max: form_rules.value.output_image_width_max, type: "number", message: `生成图片宽度不能大于${form_rules.value.output_image_width_max}`, trigger: ['blur', 'change']}
-    ] : [],
-    output_image_height: form_rules.value.output_image_height_min && form_rules.value.output_image_height_max ? [
-      {required: true, message: "生成图片高度不能为空", type: "number", trigger: ['blur', 'change']},
-      {min: form_rules.value.output_image_height_min, type: "number", message: `生成图片高度不能小于${form_rules.value.output_image_height_min}`, trigger: ['blur', 'change']},
-      {max: form_rules.value.output_image_height_max, type: "number", message: `生成图片高度不能大于${form_rules.value.output_image_height_max}`, trigger: ['blur', 'change']}
-    ] : [],
-    images: form.value.model === 'qwen-image-edit-plus' || form.value.model === 'wan2.5-i2i-preview' ? [
-      {required: true, type: 'array', message: "参考图不能为空", trigger: ['blur', 'change']}
-    ] : [],
+    negative_prompt: form_rules.value.input_negative_msg_max ? [
+      {required: true, message: "反向提示词不能为空", trigger: ['blur', 'change']},
+      {max: form_rules.value.input_negative_msg_max, message: `反向提示词长度限制${form_rules.value.input_negative_msg_max}`, trigger: ['blur', 'change']}
+    ] : [
+      {required: true, message: "反向提示词不能为空", trigger: ['blur', 'change']}
+    ],
+    // first_frame: '',
+    // last_frame: '',
+    // reference_image: [],
+    // resolution: '',
+    // output_video_duration: '',
+    // camerafixed: '',
+    // audio: false,
+    // audio_url: '',
+    // template: '',
+    // size: null,
+    // ref_images_url: '',
+    // obj_or_bg: '',
+    // image_url: '',
+    // video_url: '',
+    // mode: '',
   }
 });
 const default_rules = ref({
   input_msg_max: null, // 提示词最大长度
+  input_negative_msg_max: null, // 反向提示词最大长度
   input_image_suffix_options: [], // 图片后缀列表
+  input_audio_suffix_options: [], // 音频后缀列表
   input_image_size_max: 10, // 图片最大值
+  input_audio_size_max: 10, // 音频最大值
+  input_video_size_max: 200, // 音频最大值
+  output_video_duration_min: 2, // 视频时长最小值
+  output_video_duration_max: 10, // 视频时长最大值
   input_images_max: null,  // 限制图片上传数量
-  input_output_images_max: null,  // 上传图片+输出图片最大值
-  output_images_max: null, // 输出图片数量限制
-  output_image_width_min: null, // 输出图片宽度最小值
-  output_image_width_max: null, // 输出图片宽度最大值
-  output_image_height_min: null, // 输出图片高度最小值
-  output_image_height_max: null, // 输出图片高度最大值
-  output_image_size_options: null, // 输出图片尺寸下拉列表
+  input_template_options: [], // 视频特效
+  output_video_resolution_options: [], // 输出视频的分辨率
+  output_video_duration_options: [], // 输出视频时长
+  output_video_width_height_options: [], // 输出视频的宽高比
+  obj_or_bg_options: [], // 参考图用途
+  mode_options: [], // 模型类型
 })
 const form_rules = ref(default_rules.value)
 const suffix_accept = computed(() => form_rules.value.input_image_suffix_options?.length > 0 ? form_rules.value.input_image_suffix_options.map((item: any) => `image/${item.value}`).join(', ') : 'image/*')
+const suffix_audio_accept = computed(() => form_rules.value.input_audio_suffix_options?.length > 0 ? form_rules.value.input_audio_suffix_options.map((item: any) => `audio/${item.value}`).join(', ') : 'audio/*')
 
 const handleChangeModel = async () => {
   const res: any = await getOptions({ model: form.value.model })
-  if(res.data.output_image_size_options && res.data.output_image_size_options.length > 0) {
-    res.data.output_image_size_options = res.data.output_image_size_options.map((item: any) => ({
-      label: item.resolution,
-      value: item.resolution
-    }))
-  }
   form_rules.value = {...default_rules, ...res.data }
-}
-const handleChangeSize = async () => {
-  const width_height = form.value.size.split('*')
-  form.value.output_image_width = Number(width_height[0]) || 1328
-  form.value.output_image_height = Number(width_height[1]) || 1328
 }
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
@@ -260,35 +430,40 @@ const onSubmit = async () => {
       disabled.value = true
       try {
         const params: any = JSON.parse(JSON.stringify(form.value))
-        params['novel_id'] = route.query.id
+        params['novel_id'] = route.query.novel_id
         delete params['size'];
-        const res: any = await createCharacter(params)
-        if(res.code == 200 && res?.data && res?.data.length > 0) {
-          let current = ref(0)
+        const res: any = await createShot(params)
+        if(res.code == 200 && res?.data?.video_url) {
           dialog.warning({
-            title: '选择心仪图片',
+            title: '选择心仪视频',
             content: () => h('div', { class: 'overflow-auto max-h-300px' }, {
-              default: () => res?.data?.map((item: any, index: number) => h('img', { 
-                width: '100px', 
-                height: '100px', 
-                class: `cursor-pointer rounded-5px border-1px border-style-solid ${current.value === index ? 'border-color-#f44' : 'border-color-transparent'}`, 
-                src: item.sign_path,
-                onClick() {
-                  current.value = index
-                }
-              }, {}))
+              default: () => [
+                h('video', { 
+                  width: '100px', 
+                  height: '100px', 
+                  class: `cursor-pointer rounded-5px border-1px border-style-solid border-color-#f44`, 
+                  src: res?.data?.video_url,
+                  onClick() {
+                    window.open(res?.data?.video_url)
+                  }
+                }, {})
+              ]
             }),
             positiveText: '确定',
+            negativeText: '取消',
             positiveButtonProps: {type: "primary"},
             showIcon: false,
             closable: false,
-            onPositiveClick() {
-              emit('save', {
-                original_url: res.data[current.value].original_url,
-                sign_path: res.data[current.value].sign_path
+            async onPositiveClick() {
+              const response: any = await putShotVideo({
+                chapter_id: route.query.chapter_id,
+                shot_id: payload.value.shot_id,
+                video_url: res?.data?.video_url
               })
+              emit('save', response)
               onClose()
-            }
+            },
+            onNegativeClick: () => {}
           })
         }
       } catch (error) {
@@ -301,20 +476,6 @@ const onSubmit = async () => {
 const onClose = () => {
   hideModal();
 }
-watch(visible, (newValue: any) => {
-  if(newValue) {
-  } else {
-    // form.value = {
-    //   model: null,
-    //   msg: '',
-    //   output_image_number: null,
-    //   output_image_width: null,
-    //   output_image_height: null,
-    //   images: [],
-    //   size: null
-    // }
-  }
-});
 </script>
 
 <style lang="scss" scoped>

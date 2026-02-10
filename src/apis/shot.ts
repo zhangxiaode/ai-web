@@ -29,7 +29,22 @@ export function putShot(data: any) {
     data
   });
 }
-
+// 更新镜头
+export function putShotVideo(data: any) {
+  return request({
+    url: `/chapter/shot/video`,
+    method: "put",
+    data
+  });
+}
+// 生成镜头视频
+export function createShot(data: any) {
+  return request({
+    url: `/chapter/shot/create`,
+    method: "post",
+    data
+  });
+}
 // 删除镜头
 export function deleteShot(params: any) {
   return request({

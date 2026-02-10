@@ -14,7 +14,7 @@
       </div>
       <div class="mx-12px c-#ef4444 text-14px">尧币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
       <div class="userinfo flex justify-center items-center mr-12px">
-        <img :src="user_info?.avatarurl" alt="" class="w-32px h-32px rounded-16px">
+        <img :src="user_info?.signed_avatarurl" alt="" class="w-32px h-32px rounded-16px">
         <span class="c-#fff text-14px mx-12px">{{ user_info?.nickname }}</span>
       </div>
     </div>

@@ -45,7 +45,7 @@
           <div class="flex-1 flex flex-col justify-center ml-16px">
             <div class="flex justify-between items-center">
               <div class="flex flex-col">
-                <div class="text-16px font-bold c-#fff">第{{ item.index }}章. {{ item.name }}</div>
+                <div class="text-16px font-bold c-#fff"> 镜头{{ item.index }}: {{ item.name }}</div>
               </div>
               <div class="flex justify-between items-center">
                 <n-button class="mx-6px" type="primary" size="tiny"  @click="handleEdit(item)">
@@ -75,6 +75,14 @@
                 </template>
                 生成视频
               </n-button>
+              <n-button v-if="item.video_url" class="mx-6px" type="error" size="tiny"  @click="previewVideo(item)">
+                <template #icon>
+                  <n-icon>
+                    <PeopleOutline />
+                  </n-icon>
+                </template>
+                预览视频
+              </n-button>
             </div>
           </div>
         </div>
@@ -99,7 +107,7 @@
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
 import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, PeopleOutline } from '@vicons/ionicons5';
-import { getShotList, deleteShot } from '@/apis/index';
+import { getShotList, deleteShot, getShotDetail } from '@/apis/index';
 import NewShotModal from './components/newShotModal.vue';
 import CreateShotModal from './components/createShotModal.vue';
 
@@ -186,9 +194,16 @@ const handleCurrentChange = (val: number) => {
 };
 const createShot = (item: any) => {
   showCreateShotModal({
-    id: item.id,
-    novel_id: item.novel_id
+    novel_id: item.novel_id,
+    chapter_id: item.chapter_id,
+    shot_id: item.id
   })
+};
+const previewVideo = async (item: any) => {
+  const res: any = await getShotDetail({
+    id: item.id
+  })
+  window.open(res.data.signed_video_url)
 };
 onMounted(() => {
   getList()

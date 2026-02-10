@@ -127,8 +127,8 @@ const tabs = [
 ]
 const tabIndex = ref(0)
 const loginForm = ref({
-  phone: "",
-  password: "",
+  phone: "13023672647",
+  password: "05cqwsbsy27",
   confirmPassword: "",
   captcha_id: "",
   captcha_code: "",
