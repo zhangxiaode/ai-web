@@ -84,11 +84,12 @@ const customRequest = async ({
 }
 const handleCutVideo = async () => {
   const res: any = await cutVideo({
-    video_path: video_url.value.replace('/Users/zxd/ai/', ''),
+    video_path: video_url.value.replace('/zxd/data/ai/', ''),
     output_path: 'demo/demo.mp4',
     start: duration.value * range.value[0] / 100,
     duration: duration.value * (range.value[1] - range.value[0]) / 100,
   })
+  console.log(res)
 }
 </script>
 

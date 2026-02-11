@@ -93,7 +93,7 @@ const customRequest = async ({
 }
 const handleFormat = async () => {
   const res: any = await conversionImageFormat({
-    input_path: image_url.value.replace('/Users/zxd/ai/', ''),
+    input_path: image_url.value.replace('/zxd/data/ai/', ''),
     output_path: output_path.value,
   })
 }

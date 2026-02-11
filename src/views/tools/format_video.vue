@@ -91,7 +91,7 @@ const customRequest = async ({
 }
 const handleFormat = async () => {
   const res: any = await conversionVideoFormat({
-    input_path: video_url.value.replace('/Users/zxd/ai/', ''),
+    input_path: video_url.value.replace('/zxd/data/ai/', ''),
     output_path: output_path.value,
   })
 }
