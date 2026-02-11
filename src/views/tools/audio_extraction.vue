@@ -32,9 +32,12 @@
 <script lang="ts" setup>
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { uploadFile, getVideoAudio } from '@/apis/index';
+import { staticUrl, filenameWithoutExt } from '@/utils/index';
 
+const dialog = useDialog()
 const message = useMessage()
 const video_url = ref(null)
+const filename: any = ref('')
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
   if(!options.file.file?.type.includes('video')) {
     message.error('只能上传视频格式的视频文件，请重新上传')
@@ -54,9 +57,10 @@ const customRequest = async ({
   onProgress
 }: UploadCustomRequestOptions) => {
   try {
+    filename.value = filenameWithoutExt(file.file?.name as string);
     const formData: any = new FormData();
     formData.append('file', file.file);
-    formData.append('folder', 'demo');
+    formData.append('folder', 'audio');
     const res: any = await uploadFile(formData, onProgress)
     video_url.value = res.data
     file.status = 'finished'
@@ -67,11 +71,28 @@ const customRequest = async ({
   }
 }
 const handleGetAudio = async () => {
-  // const res: any = await getVideoAudio(video_url.value, 'demo/小丑.mp3')
+  // const res: any = await getVideoAudio(video_url.value, 'audio/小丑.mp3')
   const res: any = await getVideoAudio({
     video_path: video_url.value,
-    audio_path: 'demo/小丑.mp3'
+    audio_path: `audio/${filename.value}.mp3`
   })
+  if(res.code === 200) {
+    dialog.warning({
+      title: '温馨提示',
+      content: () => '音频提取成功，是否打开',
+      positiveText: '确定',
+      negativeText: '取消',
+      positiveButtonProps: {type: "primary"},
+      showIcon: false,
+      closable: false,
+      onPositiveClick: async () => {
+        window.open(`${staticUrl}/audio/${filename.value}.mp3`)
+      },
+      onNegativeClick: () => {
+        message.warning('已取消')
+      }
+    })
+  }
 }
 </script>
 

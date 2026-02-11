@@ -40,13 +40,14 @@
 <script lang="ts" setup>
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { uploadFile, conversionVideoFormat } from '@/apis/index';
-import { filenameWithoutExt } from '@/utils/index';
+import { staticUrl, filenameWithoutExt } from '@/utils/index';
 
+const dialog = useDialog()
 const message = useMessage()
 const video_url: any = ref('')
 const file_name: any = ref('')
 const format = ref(null)
-const output_path = computed(() => format.value === 'm3u8' ? `demo/${file_name.value}/${file_name.value}.${format.value}` : `demo/${file_name.value}.${format.value}`)
+const output_path = computed(() => format.value === 'm3u8' ? `video/${file_name.value}/${file_name.value}.${format.value}` : `video/${file_name.value}.${format.value}`)
 const format_options = ref([
   { label: 'mp4', value: 'mp4' },
   { label: 'webm', value: 'webm' },
@@ -79,7 +80,7 @@ const customRequest = async ({
     const formData: any = new FormData();
     file_name.value = filenameWithoutExt(file.name)
     formData.append('file', file.file);
-    formData.append('folder', 'demo');
+    formData.append('folder', 'video');
     const res: any = await uploadFile(formData, onProgress)
     video_url.value = res.data
     file.status = 'finished'
@@ -94,6 +95,23 @@ const handleFormat = async () => {
     input_path: video_url.value.replace('/zxd/data/ai/', ''),
     output_path: output_path.value,
   })
+  if(res.code === 200) {
+    dialog.warning({
+      title: '温馨提示',
+      content: () => '视频转换成功，是否打开',
+      positiveText: '确定',
+      negativeText: '取消',
+      positiveButtonProps: {type: "primary"},
+      showIcon: false,
+      closable: false,
+      onPositiveClick: async () => {
+        window.open(`${staticUrl}/${output_path.value}`)
+      },
+      onNegativeClick: () => {
+        message.warning('已取消')
+      }
+    })
+  }
 }
 const handleDownload = () => {
   window.open(`/ai/apis/file/download?file_url=${output_path.value}`)

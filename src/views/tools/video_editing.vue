@@ -43,12 +43,14 @@
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import Xgplayer from '@/components/xgplayer.vue';
 import { uploadFile, cutVideo, getVideoDetail } from '@/apis/index';
-import { formatVideoDuration } from '@/utils/index';
+import { staticUrl, filenameWithoutExt, formatVideoDuration } from '@/utils/index';
 
+const dialog = useDialog()
 const message = useMessage()
 const video_url: any = ref('')
 const range = ref([50, 60])
 const duration = ref(0)
+const filename: any = ref('')
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
   if(!options.file.file?.type.includes('video')) {
     message.error('只能上传视频格式的视频文件，请重新上传')
@@ -68,9 +70,10 @@ const customRequest = async ({
   onProgress
 }: UploadCustomRequestOptions) => {
   try {
+    filename.value = filenameWithoutExt(file.file?.name as string);
     const formData: any = new FormData();
     formData.append('file', file.file);
-    formData.append('folder', 'demo');
+    formData.append('folder', 'video');
     const res: any = await uploadFile(formData, onProgress)
     video_url.value = res.data
     const result: any = await getVideoDetail({ video_path: video_url.value })
@@ -85,11 +88,27 @@ const customRequest = async ({
 const handleCutVideo = async () => {
   const res: any = await cutVideo({
     video_path: video_url.value.replace('/zxd/data/ai/', ''),
-    output_path: 'demo/demo.mp4',
+    output_path: `video/${filename.value}.mp4`,
     start: duration.value * range.value[0] / 100,
     duration: duration.value * (range.value[1] - range.value[0]) / 100,
   })
-  console.log(res)
+  if(res.code === 200) {
+    dialog.warning({
+      title: '温馨提示',
+      content: () => '视频截取成功，是否打开',
+      positiveText: '确定',
+      negativeText: '取消',
+      positiveButtonProps: {type: "primary"},
+      showIcon: false,
+      closable: false,
+      onPositiveClick: async () => {
+        window.open(`${staticUrl}/video/${filename.value}.mp4`)
+      },
+      onNegativeClick: () => {
+        message.warning('已取消')
+      }
+    })
+  }
 }
 </script>
 
