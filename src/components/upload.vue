@@ -39,10 +39,10 @@ const getUserInfo = async () => {
     user_info.value = user
 }
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
-  if(!options.file.file?.type.includes('image')) {
-    message.error('只能上传图片格式的图片文件，请重新上传')
-    return false
-  }
+  // if(!options.file.file?.type.includes('image')) {
+  //   message.error('只能上传图片格式的图片文件，请重新上传')
+  //   return false
+  // }
   if(props.size_max && options.file.file && options.file.file.size > props.size_max * 1024 * 1024) {
     message.error(`大小限制${props.size_max}MB以下`)
     return false

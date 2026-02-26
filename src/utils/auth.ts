@@ -22,14 +22,17 @@ export function setUser(user: any) {
 }
 
 export async function getUser(is_cookie:boolean = true) {
-    const user: string = Cookies.get('user') || localStorage.getItem("user") as string
-    if(user && is_cookie) {
-        return JSON.parse(user)
-    } else {
-        const user_info: any = await getUserDetail()
-        setUser(user_info.data)
-        return user_info.data
-    }
+    // const user: string = Cookies.get('user') || localStorage.getItem("user") as string
+    // if(user && is_cookie) {
+    //     return JSON.parse(user)
+    // } else {
+    //     const user_info: any = await getUserDetail()
+    //     setUser(user_info.data)
+    //     return user_info.data
+    // }
+    const user_info: any = await getUserDetail()
+    setUser(user_info.data)
+    return user_info.data
 }
 
 export function removeUser() {

@@ -107,7 +107,7 @@
             'wan2.5-t2v-preview',
             ].includes(form.model)" label="输出视频时长:" path="output_video_duration">
             <n-select
-              v-model:value="form.resolution"
+              v-model:value="form.output_video_duration"
               placeholder="请选择输出视频时长"
               :options="form_rules.output_video_duration_options"
               clearable
@@ -185,13 +185,13 @@
             'wan2.2-animate-mix',
             'wan2.2-s2v'
             ].includes(form.model)" label="参考图片:" path="image_url">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max || 9999" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.image_url = resource_path.map((item: any) => item.original_url)" />
+            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max || 9999" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.image_url = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
             'wan2.2-animate-move',
             'wan2.2-animate-mix'
             ].includes(form.model)" label="参考视频:" path="video_url">
-            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_video_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.video_url = resource_path.map((item: any) => item.original_url)" />
+            <Upload accept="video/*" :max="1" :size_max="form_rules.input_video_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.video_url = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
             'wan2.2-animate-move',
@@ -349,20 +349,20 @@ const form: any = ref({
   model: null,
   msg: '星际穿越，黑洞，黑洞里冲出一辆快支离破碎的复古列车，抢视觉冲击力，电影大片，末日既视感，动感，对比色，oc渲染，光线追踪，动态模糊，景深，超现实主义，深蓝，画面通过细腻的丰富的色彩层次塑造主体与场景，质感真实，暗黑风背景的光影效果营造出氛围，整体兼具艺术幻想感，夸张的广角透视效果，耀光，反射，极致的光影，强引力，吞噬',
   negative_prompt: '',
-  first_frame: '',
-  last_frame: '',
+  first_frame: [],
+  last_frame: [],
   reference_image: [],
   resolution: '',
   output_video_duration: null,
   camerafixed: '',
   audio: false,
-  audio_url: '',
+  audio_url: [],
   template: '',
   size: null,
   ref_images_url: '',
   obj_or_bg: '',
-  image_url: '',
-  video_url: '',
+  image_url: [],
+  video_url: [],
   mode: '',
   input_seed: 123
 });
@@ -431,6 +431,11 @@ const onSubmit = async () => {
       try {
         const params: any = JSON.parse(JSON.stringify(form.value))
         params['novel_id'] = route.query.novel_id
+        params.first_frame = params.first_frame[0]
+        params.last_frame = params.last_frame[0]
+        params.image_url = params.image_url[0]
+        params.audio_url = params.audio_url[0]
+        params.video_url = params.video_url[0]
         delete params['size'];
         const res: any = await createShot(params)
         if(res.code == 200 && res?.data?.video_url) {
