@@ -359,7 +359,7 @@ const form: any = ref({
   audio_url: [],
   template: '',
   size: null,
-  ref_images_url: '',
+  ref_images_url: [],
   obj_or_bg: '',
   image_url: [],
   video_url: [],
@@ -391,7 +391,7 @@ const rules = computed(() => {
     // audio_url: '',
     // template: '',
     // size: null,
-    // ref_images_url: '',
+    // ref_images_url: [],
     // obj_or_bg: '',
     // image_url: '',
     // video_url: '',
@@ -436,7 +436,6 @@ const onSubmit = async () => {
         params.image_url = params.image_url[0]
         params.audio_url = params.audio_url[0]
         params.video_url = params.video_url[0]
-        delete params['size'];
         const res: any = await createShot(params)
         if(res.code == 200 && res?.data?.video_url) {
           dialog.warning({

@@ -1,21 +1,22 @@
 <template>
-    <n-upload
-        ref="upload"
-        v-model:file-list="resource_path"
-        multiple
-        directory-dnd
-        action=""
-        :headers="{}"
-        :data="{}"
-        :max="max || 1"
-        method="post"
-        :accept="accept"
-        list-type="image-card"
-        :on-before-upload="beforeUpload"
-        :custom-request="(e: any) => customRequest(e)"
-    >点击上传</n-upload>
+  <n-upload
+    ref="upload"
+    v-model:file-list="resource_path"
+    multiple
+    directory-dnd
+    action=""
+    :headers="{}"
+    :data="{}"
+    :max="max || 1"
+    method="post"
+    :accept="accept"
+    list-type="image-card"
+    :on-before-upload="beforeUpload"
+    :on-remove="removeUpload"
+    :custom-request="(e: any) => customRequest(e)"
+  >点击上传</n-upload>
 </template>
-  
+
 <script lang="ts" setup>
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { uploadFileToOBS, getTemporaryUrl } from "@/apis/index";
@@ -24,19 +25,20 @@ import { getUser } from "@/utils/auth";
 
 const message = useMessage()
 const props = defineProps({
-    accept: { type: String, default: '' },
-    max: { type: Number, default: 1 },
-    size_max: { type: Number, default: 10 },
-    get_file_path: { type: Function, default: () => '' }
+  accept: { type: String, default: '' },
+  max: { type: Number, default: 1 },
+  size_max: { type: Number, default: 10 },
+  get_file_path: { type: Function, default: () => '' }
 })
 const emit = defineEmits(["change"]);
 
 const user_info: any = ref(null)
 const resource_path: any = ref([])
+const file_list: any = ref([])
   
 const getUserInfo = async () => {
-    const user: any = await getUser()
-    user_info.value = user
+  const user: any = await getUser()
+  user_info.value = user
 }
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
   // if(!options.file.file?.type.includes('image')) {
@@ -49,6 +51,9 @@ const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[
   } else {
     return true
   }
+}
+const removeUpload = async (options: { file: UploadFileInfo, fileList: UploadFileInfo[], index: number }) => {
+  file_list.value.splice(options.index, 1);
 }
 const customRequest = async ({
   file,
@@ -70,20 +75,18 @@ const customRequest = async ({
       if(res.data) {
         const response: any = await getTemporaryUrl({ video_path: res.data })
         if(response.data) {
-            resource_path.value = [
-              {
-                id: file?.id,
-                name: name,
-                url: response.data,
-                original_url: res.data,
-                status: 'finished'
-              },
-            ]
-            emit('change', {
-              resource_path: resource_path.value
-            })
-            file.status = 'finished'
-            onFinish()
+          file_list.value.push({
+            id: file?.id,
+            name: name,
+            url: response.data,
+            original_url: res.data,
+            status: 'finished'
+          })
+          emit('change', {
+            resource_path: file_list.value
+          })
+          file.status = 'finished'
+          onFinish()
         }
       }
     }
@@ -103,6 +106,7 @@ const setResource = async (list: Array<any>) => {
       status: 'finished'
     }
   })
+  file_list.value = JSON.parse(JSON.stringify(resource_path.value))
 }
 defineExpose({ setResource });
 
