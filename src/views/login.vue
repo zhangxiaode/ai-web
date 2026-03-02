@@ -336,17 +336,26 @@ const goPage = (path: string) => {
 onMounted(async () => {
   redirect_path.value = route.query.path
   if(route.query.code) {
-    const res: any = await loginThird({
-      loginType: 2,
-      code: route.query.code || '031aWYll2BA9gh4Sqknl2aaSwF1aWYl3'
-    }) as any
-    setToken(res.data.token)
-    if(redirect_path.value) {
-      router.replace(redirect_path.value)
-    } else {
-      router.replace('/layout')
-    }
+    // const res: any = await loginThird({
+    //   loginType: 2,
+    //   code: route.query.code || '031aWYll2BA9gh4Sqknl2aaSwF1aWYl3'
+    // }) as any
+    // console.log(res)
+    // setToken(res.data.token)
+    // if(redirect_path.value) {
+    //   router.replace(redirect_path.value)
+    // } else {
+    //   router.replace('/layout')
+    // }
     // https://ai.chengyaokj.com/login?code=031aWYll2BA9gh4Sqknl2aaSwF1aWYl3&state=STATE
+
+
+    // message
+    // : 
+    // "Converting circular structure to JSON\n    --> starting at object with constructor 'TLSSocket'\n    |     property '_httpMessage' -> object with constructor 'ClientRequest'\n    --- property 'socket' closes the circle"
+    // stack
+    // : 
+    // "TypeError: Converting circular structure to JSON\n    --> starting at object with constructor 'TLSSocket'\n    |     property '_httpMessage' -> object with constructor 'ClientRequest'\n    --- property 'socket' closes the circle\n    at JSON.stringify (<anonymous>)\n    at respond (/Users/zxd/workspace/person/ai-node/node_modules/@midwayjs/koa/node_modules/koa/lib/application.js:306:15)\n    at handleResponse (/Users/zxd/workspace/person/ai-node/node_modules/@midwayjs/koa/node_modules/koa/lib/application.js:184:34)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)"
   } else {
     handleCountdown()
     getCaptchaData()
