@@ -141,6 +141,7 @@
               v-model:value="form.template"
               placeholder="请选择视频特效"
               :options="form_rules.input_template_options"
+              check-strategy="child"
               clearable
             />
           </n-form-item>

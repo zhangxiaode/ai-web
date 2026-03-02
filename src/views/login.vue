@@ -88,10 +88,15 @@
               <div v-else type="primary" size="medium" class="w-98px min-w-98px h-34px leading-34px ml-12px text-center c-#f80 text-18px font-bold box-border border-1 border-solid border-[#f80] rounded-5px">{{ seconds }}s</div>
             </n-form-item>
           </n-form>
-          <div label-placement="left" class="w-100% py-16px">
+          <div class="w-100% py-16px">
             <n-button v-if="tabIndex === 0 || tabIndex === 1" class="w-100%" type="primary" size="large" @click="debouncing(onLogin, message, 2000)"><span>登录</span></n-button>
             <n-button v-if="tabIndex === 2" type="primary" class="w-100%" size="large" @click="debouncing(onRegister, message, 2000)"><span>注册</span></n-button>
             <n-button v-if="tabIndex === 3" type="primary" class="w-100%" size="large" @click="debouncing(onModify, message, 2000)"><span>保存</span></n-button>
+          </div>
+          <div class="w-100% py-16px">
+            <div class="w-32px h-32px rounded-16px overflow-hidden mx-auto cursor-pointer" @click="debouncing(onLoginThird, message, 2000)">
+              <img src="../assets/wx.png" class="w-32px h-32px" />
+            </div>
           </div>
           <div class="text-12px c-#fff leading-24px">
             <n-checkbox v-model:checked="agree" class="flex ai-center">
@@ -322,13 +327,30 @@ const onModify = async () => {
     }
   })
 };
+const onLoginThird = async () => {
+  window.open(`https://open.weixin.qq.com/connect/qrconnect?appid=wx3d8a5aeb29bc6300&redirect_uri=${location.href}&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect`)
+}
 const goPage = (path: string) => {
   window.open(path)
 }
-onMounted(() => {
+onMounted(async () => {
   redirect_path.value = route.query.path
-  handleCountdown()
-  getCaptchaData()
+  if(route.query.code) {
+    const res: any = await loginThird({
+      loginType: 2,
+      code: route.query.code || '031aWYll2BA9gh4Sqknl2aaSwF1aWYl3'
+    }) as any
+    setToken(res.data.token)
+    if(redirect_path.value) {
+      router.replace(redirect_path.value)
+    } else {
+      router.replace('/layout')
+    }
+    // https://ai.chengyaokj.com/login?code=031aWYll2BA9gh4Sqknl2aaSwF1aWYl3&state=STATE
+  } else {
+    handleCountdown()
+    getCaptchaData()
+  }
 })
 </script>
 <style lang="scss" scoped>

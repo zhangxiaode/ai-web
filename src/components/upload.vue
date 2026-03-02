@@ -75,13 +75,15 @@ const customRequest = async ({
       if(res.data) {
         const response: any = await getTemporaryUrl({ video_path: res.data })
         if(response.data) {
-          file_list.value.push({
-            id: file?.id,
-            name: name,
-            url: response.data,
-            original_url: res.data,
-            status: 'finished'
-          })
+          if(file_list.value.every((item: any) => item.id !== file?.id)) {
+            file_list.value.push({
+              id: file?.id,
+              name: name,
+              url: response.data,
+              original_url: res.data,
+              status: 'finished'
+            })
+          }
           emit('change', {
             resource_path: file_list.value
           })
