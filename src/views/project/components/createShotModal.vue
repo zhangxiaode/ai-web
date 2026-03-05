@@ -406,7 +406,7 @@ const default_rules = ref({
   input_audio_suffix_options: [], // 音频后缀列表
   input_image_size_max: 10, // 图片最大值
   input_audio_size_max: 10, // 音频最大值
-  input_video_size_max: 200, // 音频最大值
+  input_video_size_max: 1000, // 音频最大值
   output_video_duration_min: 2, // 视频时长最小值
   output_video_duration_max: 10, // 视频时长最大值
   input_images_max: null,  // 限制图片上传数量

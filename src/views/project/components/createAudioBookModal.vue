@@ -48,7 +48,7 @@
               <div v-for="(ele, idx) in scene.elements" :key="idx" class="bg-555 my-5px p-8px">
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">{{ ele.element_type === 'sound_effect' ? '音效' : ele.element_type === 'narrator' ? '旁白' : ele.role_name }}: </div>
-                  <div class="flex-1 text-14px c-#fff">{{ ele.tone }}</div>
+                  <div class="flex-1 text-14px c-#fff">{{ ele.emotion }}</div>
                 </div>
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">内容: </div>
@@ -130,7 +130,11 @@ const onTransformAudio = async (ele: any) => {
       chapter_id: form.value.id,
       chapter_index: form.value.index,
       role_id: ele.role_id,
-      content: ele.content
+      content: ele.content,
+      emotion: ele.emotion, // 设置音色的情感。 ​开心（happy），悲伤（sad），生气（angry），惊讶（surprised），恐惧（fear），厌恶（hate），激动（excited），冷漠（coldness），中性（neutral），沮丧（depressed），撒娇（lovey-dovey），害羞（shy），安慰鼓励（comfort），咆哮/焦急（tension），温柔（tender），讲故事 / 自然讲述（storytelling），情感电台（radio），磁性（magnetic），广告营销（advertising），气泡音（vocal - fry），低语 (ASMR)，新闻播报（news），娱乐八卦（entertainment），方言（dialect）
+      emotion_scale: ele.emotion_scale, // 设置情绪值，范围1~5 情绪值越大，情感越明显。
+      speech_rate: ele.speech_rate, // 语速，取值范围[-50,100] 100代表2.0倍速，-50代表0.5倍数
+      loudness_rate: ele.loudness_rate // 音量，取值范围[-50,100]，100代表2.0倍音量，-50代表0.5倍音量
     })
     ele['api_key'] = res.data.api_key
     ele['signed_url'] = res.data.signed_url

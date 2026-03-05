@@ -13,17 +13,19 @@
         <span class="text-14px c-#fff ml-3px">尧币充值</span>
       </div>
       <div class="mx-12px c-#ef4444 text-14px">尧币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
-      <div class="userinfo flex justify-center items-center mr-12px">
-        <img :src="user_info?.signed_avatarurl" alt="" class="w-32px h-32px rounded-16px">
-        <span class="c-#fff text-14px mx-12px">{{ user_info?.nickname }}</span>
-      </div>
+      <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+        <div class="userinfo flex justify-center items-center mr-12px">
+          <img :src="user_info?.signed_avatarurl" alt="" class="w-32px h-32px rounded-16px">
+          <span class="c-#fff text-14px mx-12px">{{ user_info?.nickname }}(ID:{{ user_info?.id }})</span>
+        </div>
+      </n-dropdown>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { formatZhNumber } from "@/utils/index";
-import { getUser } from "@/utils/auth";
+import { getUser, removeToken, removeUser } from "@/utils/auth";
 
 const router = useRouter()
 const route = useRoute()
@@ -57,6 +59,20 @@ const current = computed(() => {
   return tabs.value.findIndex(item => route.path.includes(item.path))
 });
 const user_info: any = ref(null)
+const options: any = ref([
+  {
+    label: '退出登录',
+    key: 0
+  },
+])
+
+const handleSelect = (key: string | number) => {
+  if(key === 0) {
+    removeToken()
+    removeUser()
+    router.replace('/login')
+  }
+}
 const handleTab = (path: string) => {
   router.push(path)
 }

@@ -111,9 +111,9 @@
 
 <script lang="ts" setup>
 import { FormInst, useMessage } from 'naive-ui';
-import { getCaptcha, sendCode, login, loginThird, regist, settingPassword } from '@/apis/index'
+import { getCaptcha, sendCode, login, loginThird, regist, settingPassword } from '@/apis/index';
 import { debouncing } from '@/utils/index';
-import { setToken } from '@/utils/auth'
+import { setToken } from '@/utils/auth';
 
 const redirect_path: any = ref('')
 const message = useMessage()

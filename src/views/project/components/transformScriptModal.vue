@@ -324,7 +324,6 @@ const handleChangeRole = (role: any) => {
       return scene
     })
   } else {
-    console.log(111, role, form.value.movie_script.scenes)
     form.value.movie_script.scenes = form.value.movie_script.scenes.map((scene: any) => {
       scene.elements = scene.elements.map((ele: any) => {
         if(ele.role_name == role.role_name) {

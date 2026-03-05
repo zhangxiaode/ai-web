@@ -21,7 +21,7 @@
         <div class="text-14px c-#999 leading-1.5em mt-4px">5. 各项目积分消耗在提交任务处有醒目标注，在积分余额处有消耗流水列表。因服务器原因生成失败的返还积分；</div>
         <div class="text-14px c-#999 leading-1.5em mt-4px">6. 使用指导，对公支付，开具发票，购买更多积分，咨询节省计划，请联系商务，邮箱 chengyaokeji@126.com</div>
       </div>
-      <div class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px h-60px leading-60px w-380px text-center c-#fff text-18px font-bold" @click="debouncing(goPay, message, 2000)">立即充值 {{ product?.type === 0 ? product?.coin + ' 尧币' : product?.timeFormat }}</div>
+      <div class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px h-60px leading-60px w-380px text-center c-#fff text-18px font-bold" @click="debouncing(handlePay, message, 2000)">立即充值 {{ product?.type === 0 ? product?.coin + ' 尧币' : product?.timeFormat }}</div>
     </div>
   </div>
 </template>
@@ -63,12 +63,13 @@ const getData = async () => {
 const changeProduct = (id: number) => {
   current.value = id
 }
-const goPay = async () => {
-  const res: any = await postOrder({
-    product_id: current.value
-  })
-  if(res.code == 200) {
-  }
+const handlePay = async () => {
+  message.warning('快马加鞭接入中，请耐心等待');
+  // const res: any = await postOrder({
+  //   product_id: current.value
+  // })
+  // if(res.code == 200) {
+  // }
 }
 onMounted(() => {
   getUserInfo()
