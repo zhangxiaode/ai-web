@@ -1,20 +1,20 @@
 <template>
-  <div class="header flex justify-between items-normal h-64px c-[rgba(255,255,255,.8)] bg-[rgba(22,22,23,.8)]">
+  <div class="header flex justify-between items-normal h-64px w-100% overflow-auto c-[rgba(255,255,255,.8)] bg-[rgba(22,22,23,.8)]">
     <div class="headerL flex items-center">
       <img class="w-36px h-36px mx-16px cursor-pointer" src="../assets/logo.png" alt="" @click="goHome()" />
       <div class="title leading-44px text-18px font-500 min-w-72px">丞尧智芯</div>
-      <div class="tabs flex items-center ml-32px min-w-456px">
+      <div class="tabs flex items-center ml-32px min-w-524px">
         <div v-for="(item, index) in tabs" :key="index" :class="['tab h-44px leading-44px px-8px mx-8px c-#ccc text-12px cursor-pointer origin-center', { 'actived relative c-#fff': current === index }]" @click="handleTab(item.path)">{{ item.name }}</div>
       </div>
     </div>
     <div class="headerR flex items-center min-w-330px">
-      <div class="recharge flex justify-center items-center rounded-4px bg-#ef4444 h-32px px-12px cursor-pointer" @click="router.push('/layout/recharge')">
+      <div class="recharge flex justify-center items-center rounded-4px bg-#ef4444 h-32px px-12px cursor-pointer min-w-99px" @click="router.push('/layout/recharge')">
         <img src="../assets/cash.png" alt="" class="w-16px h-16px">
         <span class="text-14px c-#fff ml-3px">尧币充值</span>
       </div>
-      <div class="mx-12px c-#ef4444 text-14px">尧币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
+      <div class="mx-12px c-#ef4444 text-14px min-w-80px">尧币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
       <n-dropdown trigger="hover" :options="options" @select="handleSelect">
-        <div class="userinfo flex justify-center items-center mr-12px">
+        <div class="userinfo flex justify-center items-center mr-12px min-w-150px">
           <img :src="user_info?.signed_avatarurl" alt="" class="w-32px h-32px rounded-16px">
           <span class="c-#fff text-14px mx-12px">{{ user_info?.nickname }}(ID:{{ user_info?.id }})</span>
         </div>
@@ -41,6 +41,10 @@ const tabs = ref([
   {
     name: '素材管理',
     path: '/layout/assets'
+  },
+  {
+    name: '元宇宙',
+    path: '/layout/metaverse'
   },
   {
     name: '项目管理',

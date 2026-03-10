@@ -79,7 +79,6 @@ const customRequest = async ({
   onProgress
 }: UploadCustomRequestOptions) => {
   try {
-    console.log(111, file);
     const formData: any = new FormData();
     file_name.value = filenameWithoutExt(file.name)
     formData.append('file', file.file);

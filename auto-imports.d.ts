@@ -11,6 +11,7 @@ declare global {
   const NButton: typeof import('naive-ui').NButton
   const NIcon: typeof import('naive-ui').NIcon
   const NImage: typeof import('naive-ui').NImage
+  const NQrCode: typeof import('naive-ui').NQrCode
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp

@@ -79,6 +79,19 @@ const routes = [
                     },
                 ]
             },
+            { // 音色管理、音效管理、物品管理
+                path: "metaverse",
+                name: "metaverse",
+                component: () => import("../views/metaverse/index.vue"),
+                redirect: "/layout/metaverse/agent",
+                children: [
+                    {
+                        path: "agent",
+                        name: "metaverse_agent",
+                        component: () => import("../views/metaverse/agent.vue")
+                    },
+                ]
+            },
             {
                 path: "recharge",
                 name: "recharge",

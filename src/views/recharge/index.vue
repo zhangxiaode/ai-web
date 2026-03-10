@@ -9,12 +9,12 @@
         <div v-if="item.type === 1" class="flex-1 text-16px px-12px py-8px flex flex-col justify-center">{{ item.timeFormat }}</div>
         <div class="px-12px pt-12px text-20px font-bold c-#a855f7 my-4px flex justify-center items-center">
           <div><text class="text-16px">¥ </text>{{ item.price }}</div>
-          <div v-if="item.cost_price > 0" class="ml-4px c-#999 text-14px line-through"><text class="text-12px">¥ </text>{{ item.cost_price }}</div>
+          <div v-if="item.old_price > 0" class="ml-4px c-#999 text-14px line-through"><text class="text-12px">¥ </text>{{ item.old_price }}</div>
         </div>
         <div v-if="item.tag" class="absolute px-12px right-0px top-0px rounded-[0_0_0_24rpx] c-#fff text-12px bg-[linear-gradient(1turn,#ff4320,#ff760e)]">{{ item.tag }}</div>
       </div>
       <div class="p-16px">
-        <div class="text-14px c-#999 leading-1.5em mt-4px">1. 订单超时时间为60秒，超时后订单自动取消，请及时完成支付；</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">1. 订单超时时间为15分，超时后订单自动取消，请及时完成支付；</div>
         <div class="text-14px c-#999 leading-1.5em mt-4px">2. 积分为虚拟商品，一经充值，不支持退款；</div>
         <div class="text-14px c-#999 leading-1.5em mt-4px">3. 购买后的积分有效期为 365 天，到期余量自动清零；</div>
         <div class="text-14px c-#999 leading-1.5em mt-4px">4. 1元人民币对应100个积分。各项目积分消耗在提交任务处有醒目标注，在积分余额处有消耗流水列表。因服务器原因生成失败的返还积分；</div>
@@ -31,9 +31,11 @@ import { debouncing } from '@/utils/index';
 import { getProductList, postOrder } from "@/apis/index";
 
 const message = useMessage()
+const dialog = useDialog()
 const user_info: any = ref(null)
 const list: any = ref([])
 const current: any = ref(4)
+const code_url: any = ref('')
 
 const product: any = computed(() => {
   return list.value.find((item: any) => item.id === current.value) || null
@@ -49,9 +51,8 @@ const getData = async () => {
   if (res.code == 200) {
     list.value = res.data.map((item: any) => {
       item.price = (item.price / 100).toFixed(2)
-      item.cost_price = (item.cost_price / 100).toFixed(2)
+      item.old_price = (item.old_price / 100).toFixed(2)
       item.timeFormat = item.time === 7 ? '周卡会员' : item.time === 30 ? '月卡会员' : item.time === 92 ? '季卡会员' : '年卡会员'
-      
       return item
     })
     // const product: any = list.value.find((item: any) => item.is_default)
@@ -64,12 +65,31 @@ const changeProduct = (id: number) => {
   current.value = id
 }
 const handlePay = async () => {
-  message.warning('快马加鞭接入中，请耐心等待');
-  // const res: any = await postOrder({
-  //   product_id: current.value
-  // })
-  // if(res.code == 200) {
-  // }
+  // message.warning('快马加鞭接入中，请耐心等待');
+  const res: any = await postOrder({
+    product_id: current.value
+  })
+  if(res.code == 200) {
+    code_url.value = res.data.code_url
+    dialog.warning({
+      title: '扫码支付',
+      content: () => h(NQrCode, {
+        value: code_url.value,
+        color: '#18a058'
+      }, {}),
+      positiveText: '确定',
+      negativeText: '取消',
+      positiveButtonProps: {type: "primary"},
+      showIcon: false,
+      closable: false,
+      onPositiveClick: async () => {
+        message.success('确认支付完成')
+      },
+      onNegativeClick: () => {
+        message.warning('已取消删除')
+      }
+    })
+  }
 }
 onMounted(() => {
   getUserInfo()
