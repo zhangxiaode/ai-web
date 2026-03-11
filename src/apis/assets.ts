@@ -51,6 +51,15 @@ export function putVoice(data: any) {
   });
 }
 
+// 支付音色
+export function payVoice(data: any) {
+  return request({
+    url: `/voice/pay`,
+    method: "post",
+    data
+  });
+}
+
 // 删除音色
 export function deleteVoice(params: any) {
   return request({

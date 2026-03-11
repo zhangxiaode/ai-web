@@ -1,7 +1,7 @@
 <template>
   <div class="c-#fff h-100% overflow-auto">
     <div class="p-32px flex flex-wrap">
-      <div v-for="(item, index) in list" :key="index" :class="['bg-#1f2937 overflow-hidden rounded-12px w-[calc(50%-32px)] h-80px m-16px p-24px box-border border-2px border-style-solid border-color-#4b5563 relative flex justify-between items-center cursor-pointer', { 'border-color-#a855f7': item.id === current } ]" @click="changeProduct(item.id)">
+      <div v-for="(item, index) in list" :key="index" :class="['bg-#1f2937 overflow-hidden rounded-12px w-[calc(50%-32px)] h-80px min-w-286px m-16px p-24px box-border border-2px border-style-solid border-color-#4b5563 relative flex justify-between items-center cursor-pointer', { 'border-color-#a855f7': item.id === current } ]" @click="changeProduct(item.id)">
         <div v-if="item.type === 0" class="flex-1 c-#fff px-12px py-8px flex flex-col justify-center">
           <text class="text-16px">{{ item.coin }}尧币</text>
           <text class="text-12px c-#9ca3af" v-if="item.coin_gift > 0">送{{ item.coin_gift }}尧币</text>
@@ -15,11 +15,11 @@
       </div>
       <div class="p-16px">
         <div class="text-14px c-#999 leading-1.5em mt-4px">1. 订单超时时间为15分，超时后订单自动取消，请及时完成支付；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">2. 积分为虚拟商品，一经充值，不支持退款；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">3. 购买后的积分有效期为 365 天，到期余量自动清零；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">4. 1元人民币对应100个积分。各项目积分消耗在提交任务处有醒目标注，在积分余额处有消耗流水列表。因服务器原因生成失败的返还积分；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">5. 各项目积分消耗在提交任务处有醒目标注，在积分余额处有消耗流水列表。因服务器原因生成失败的返还积分；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">6. 使用指导，对公支付，开具发票，购买更多积分，咨询节省计划，请联系商务，邮箱 chengyaokeji@126.com</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">2. 尧币为虚拟商品，一经充值，不支持退款；</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">3. 购买后的尧币有效期为 365 天，到期余量自动清零；</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">4. 1元人民币对应100个尧币。各项目尧币消耗在提交任务处有醒目标注，在尧币余额处有消耗流水列表。因服务器原因生成失败的返还尧币；</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">5. 各项目尧币消耗在提交任务处有醒目标注，在尧币余额处有消耗流水列表。因服务器原因生成失败的返还尧币；</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">6. 使用指导，对公支付，开具发票，购买更多尧币，咨询节省计划，请联系商务，邮箱 chengyaokeji@126.com</div>
       </div>
       <div class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px h-60px leading-60px w-380px text-center c-#fff text-18px font-bold" @click="debouncing(handlePay, message, 2000)">立即充值 {{ product?.type === 0 ? product?.coin + ' 尧币' : product?.timeFormat }}</div>
     </div>
@@ -86,7 +86,7 @@ const handlePay = async () => {
         message.success('确认支付完成')
       },
       onNegativeClick: () => {
-        message.warning('已取消删除')
+        message.warning('已取消支付')
       }
     })
   }

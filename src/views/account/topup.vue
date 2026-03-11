@@ -3,14 +3,14 @@
 		<div class="text-24px font-bold my-16px font-bold c-#fff">充值记录</div>
 		<div class="flex-1 overflow-hidden" ref="tableRef">
 			<n-data-table
-			size="small"
-			:loading="loading"
-			:single-line="false"
-			:row-key="(row: any) => row.id"
-			:columns="columns"
-			:data="tableData"
-			scroll-x
-			class="table-wrapper"
+				size="small"
+				:loading="loading"
+				:single-line="false"
+				:row-key="(row: any) => row.id"
+				:columns="columns"
+				:data="tableData"
+				scroll-x
+				class="table-wrapper"
 			/>
 		</div>
 		<n-pagination
@@ -73,7 +73,7 @@ let columns = ref([
   },
   {
     title: '支付状态',
-    key: 'contact_person',
+    key: 'trade_state_desc',
     width: 120,
     align: 'center',
     render(row: any) {
@@ -105,11 +105,11 @@ const formatTradeStatus = (val: string) => {
 		case 'CLOSED':
 			return '已关闭'
 		case 'REVOKED':
-			return '已撤销（仅付款码支付会返回）'
+			return '已撤销'
 		case 'USERPAYING':
-			return '用户支付中（仅付款码支付会返回）'
+			return '用户支付中'
 		case 'PAYERROR':
-			return '支付失败（仅付款码支付会返回）'
+			return '支付失败'
 		default:
 			return '未知'
 	}

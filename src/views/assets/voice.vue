@@ -74,10 +74,18 @@
           <n-button class="mx-6px" type="primary" size="tiny"  @click="handleTraining(item)">
             <template #icon>
               <n-icon>
-                <CreateOutline />
+                <HammerOutline />
               </n-icon>
             </template>
             训练
+          </n-button>
+          <n-button v-if="item.platform === 1 && item.is_payed === 0" class="mx-6px" type="primary" size="tiny"  @click="handlePay(item)">
+            <template #icon>
+              <n-icon>
+                <LogoUsd />
+              </n-icon>
+            </template>
+            支付
           </n-button>
           <n-button class="mx-6px" type="error" size="tiny"  @click="handleDelete(item)">
             <template #icon>
@@ -109,8 +117,8 @@
 </template>
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
-import { Search, Repeat, AddSharp, CreateOutline, TrashOutline } from '@vicons/ionicons5';
-import { getVoiceList, deleteVoice } from '@/apis/index';
+import { Search, Repeat, AddSharp, CreateOutline, HammerOutline, LogoUsd, TrashOutline } from '@vicons/ionicons5';
+import { getVoiceList, payVoice, deleteVoice } from '@/apis/index';
 import AudioPlayer from '@/components/audioPlayer.vue';
 import NewVoiceModal from './components/newVoiceModal.vue';
 import TrainingVoiceModal from './components/trainingVoiceModal.vue';
@@ -142,6 +150,31 @@ const handleTraining = (item: any) => {
 };
 const handleTrainingModalComplete = (res: any) => {
   getList();
+};
+const handlePay = (item: any) => {
+  dialog.warning({
+    title: '温馨提示',
+    content: () => '确定要支付吗？支付后将扣除15000尧币。',
+    positiveText: '确定',
+    negativeText: '取消',
+    positiveButtonProps: {type: "primary"},
+    showIcon: false,
+    closable: false,
+    onPositiveClick: async () => {
+      try {
+        await payVoice({
+          id: item.id
+        })
+        message.success('支付完成')
+        getList()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    onNegativeClick: () => {
+      message.warning('已取消支付')
+    }
+  })
 };
 const handleReset = () => {
   searchForm.value = {
