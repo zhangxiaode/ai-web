@@ -54,8 +54,8 @@ let columns = ref([
 	}
   },
   {
-    title: '模型',
-    key: 'model',
+    title: '消耗内容',
+    key: 'desc',
     width: 150,
     align: 'center'
   },
