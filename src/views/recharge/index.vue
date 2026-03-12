@@ -28,7 +28,8 @@
 <script lang="ts" setup>
 import { getUser } from "@/utils/auth";
 import { debouncing } from '@/utils/index';
-import { getProductList, postOrder } from "@/apis/index";
+import { getProductList, getOrderDetail, postOrder } from "@/apis/index";
+import { formatTradeStatus } from "@/constants/index";
 
 const message = useMessage()
 const dialog = useDialog()
@@ -36,6 +37,7 @@ const user_info: any = ref(null)
 const list: any = ref([])
 const current: any = ref(4)
 const code_url: any = ref('')
+const stl: any = ref(null)
 
 const product: any = computed(() => {
   return list.value.find((item: any) => item.id === current.value) || null
@@ -65,30 +67,41 @@ const changeProduct = (id: number) => {
   current.value = id
 }
 const handlePay = async () => {
-  // message.warning('快马加鞭接入中，请耐心等待');
   const res: any = await postOrder({
     product_id: current.value
   })
   if(res.code == 200) {
     code_url.value = res.data.code_url
-    dialog.warning({
+    const payDialog: any = dialog.warning({
       title: '扫码支付',
       content: () => h(NQrCode, {
         value: code_url.value,
-        color: '#18a058'
+        color: '#18a058',
+        size: 166
       }, {}),
-      positiveText: '确定',
-      negativeText: '取消',
+      style: {
+        width: '246px',
+      },
+      negativeText: '关闭',
       positiveButtonProps: {type: "primary"},
       showIcon: false,
       closable: false,
-      onPositiveClick: async () => {
-        message.success('确认支付完成')
-      },
       onNegativeClick: () => {
-        message.warning('已取消支付')
+        stl.value && clearInterval(stl.value)
       }
     })
+    stl.value && clearInterval(stl.value)
+    stl.value = setInterval(async () => {
+      const order_detail: any = await getOrderDetail({ id: res.data.id })
+      if(order_detail?.data?.trade_state != 'NOTPAY' && order_detail?.data?.trade_state != 'USERPAYING') {
+        if(order_detail?.data?.trade_state === 'SUCCESS') {
+          message.success(formatTradeStatus(order_detail?.data?.trade_state))
+        } else {
+          message.error(formatTradeStatus(order_detail?.data?.trade_state))
+        }
+        payDialog.destroy()
+      }
+    }, 1000)
   }
 }
 onMounted(() => {

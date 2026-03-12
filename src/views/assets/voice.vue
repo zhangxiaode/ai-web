@@ -148,7 +148,7 @@ const handleTraining = (item: any) => {
     platform: item.platform
   });
 };
-const handleTrainingModalComplete = (res: any) => {
+const handleTrainingModalComplete = () => {
   getList();
 };
 const handlePay = (item: any) => {

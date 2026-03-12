@@ -28,15 +28,18 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { getOrderList } from "@/apis/index";
-import { Copy } from '@vicons/ionicons5'
-import { copyToClip } from '@/utils/index'
+import { getOrderList, getOrderDetail } from "@/apis/index";
+import { Copy } from "@vicons/ionicons5";
+import { copyToClip } from "@/utils/index";
+import { formatTradeStatus } from "@/constants/index";
 
 const message = useMessage()
+const dialog = useDialog()
 const loading = ref(false)
 const page = ref(1)
 const size = ref(10)
 const total = ref(0)
+const stl: any = ref(null)
 let columns = ref([
   {
     title: '订单ID',
@@ -92,28 +95,26 @@ let columns = ref([
     width: 120,
     align: 'center'
   },
+  {
+    title: '操作',
+    key: 'actions',
+    width: 80,
+    fixed: 'right',
+    align: 'center',
+    render(row: any) {
+      return (row.trade_state === 'NOTPAY' || row.trade_state === 'USERPAYING') && row.code_url ? [
+        h(NButton, {
+          type: 'primary',
+          link: true,
+          quaternary: true,
+          size: "small",
+          onClick: () => onPay(row)
+        }, {default: () => '支付'})
+      ] : []
+    }
+  }
 ]);
 let tableData: any = ref([]);
-const formatTradeStatus = (val: string) => {
-	switch (val){
-		case 'SUCCESS':
-			return '支付成功'
-		case 'REFUND':
-			return '转入退款'
-		case 'NOTPAY':
-			return '未支付'
-		case 'CLOSED':
-			return '已关闭'
-		case 'REVOKED':
-			return '已撤销'
-		case 'USERPAYING':
-			return '用户支付中'
-		case 'PAYERROR':
-			return '支付失败'
-		default:
-			return '未知'
-	}
-}
 const getOrder = async () => {
 	loading.value = true
 	try {
@@ -139,6 +140,38 @@ const handleCurrentChange = (val: number) => {
   page.value = val;
   getOrder();
 };
+const onPay = async (row: any) => {
+  const payDialog: any = dialog.warning({
+    title: '扫码支付',
+    content: () => h(NQrCode, {
+      value: row.code_url,
+      color: '#18a058',
+      size: 166
+    }, {}),
+    style: {
+      width: '246px',
+    },
+    negativeText: '关闭',
+    positiveButtonProps: {type: "primary"},
+    showIcon: false,
+    closable: false,
+    onNegativeClick: () => {
+      stl.value && clearInterval(stl.value)
+    }
+  })
+  stl.value && clearInterval(stl.value)
+  stl.value = setInterval(async () => {
+    const order_detail: any = await getOrderDetail({ id: row.id })
+    if(order_detail.data.trade_state != 'NOTPAY' && order_detail.data.trade_state != 'USERPAYING') {
+      if(order_detail.data.trade_state === 'SUCCESS') {
+        message.success(formatTradeStatus(order_detail.data.trade_state))
+      } else {
+        message.error(formatTradeStatus(order_detail.data.trade_state))
+      }
+      payDialog.destroy()
+    }
+  }, 1000)
+}
 onMounted(async () => {
 	if(total.value === 0 && page.value === 1) {
 		await getOrder()

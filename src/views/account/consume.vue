@@ -3,14 +3,14 @@
 		<div class="text-24px font-bold my-16px font-bold c-#fff">消费记录</div>
 		<div class="flex-1 overflow-hidden" ref="tableRef">
 			<n-data-table
-			size="small"
-			:loading="loading"
-			:single-line="false"
-			:row-key="(row: any) => row.id"
-			:columns="columns"
-			:data="tableData"
-			scroll-x
-			class="table-wrapper"
+				size="small"
+				:loading="loading"
+				:single-line="false"
+				:row-key="(row: any) => row.id"
+				:columns="columns"
+				:data="tableData"
+				scroll-x
+				class="table-wrapper"
 			/>
 		</div>
 		<n-pagination
