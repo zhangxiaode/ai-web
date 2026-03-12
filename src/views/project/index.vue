@@ -47,7 +47,7 @@
             <div class="flex justify-between items-center">
               <div class="flex flex-col">
                 <div class="text-16px font-bold c-#fff">{{ item.name }}</div>
-                <div class="text-12px c-#f2f2f2 mt-12px">{{ item.desc }}</div>
+                <div class="text-12px multi-ellipsis--l2 c-#f2f2f2 mt-12px">{{ item.desc }}</div>
               </div>
               <div class="flex justify-between items-center">
                 <n-button class="mx-6px" type="primary" size="tiny"  @click="handleEdit(item)">
