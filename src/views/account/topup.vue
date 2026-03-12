@@ -169,6 +169,7 @@ const onPay = async (row: any) => {
         message.error(formatTradeStatus(order_detail.data.trade_state))
       }
       payDialog.destroy()
+      clearInterval(stl.value)
     }
   }, 1000)
 }
