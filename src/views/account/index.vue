@@ -19,7 +19,7 @@
         <div>剩余尧币: {{ user_info?.coin }}</div>
       </div>
       <div class="flex justify-between items-center m-12px p-16px w-[calc(50%-58px)] text-14px flex items-center border-1px border-color-#393939 border-style-solid rounded-6px">
-        <div v-if="user_info?.is_vip">绑定账号: {{ user_info?.platform }}</div>
+        <div v-if="user_info?.openid">绑定账号: {{ user_info?.platform }}</div>
         <div v-else class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] h-30px leading-30px w-120px text-center c-#fff text-14px font-bold" @click="bindWechat()">绑定微信</div>
       </div>
       <div class="flex justify-between items-center m-12px p-16px w-[calc(50%-58px)] text-14px flex items-center border-1px border-color-#393939 border-style-solid rounded-6px">
@@ -48,13 +48,14 @@ import ResetNicknameModal from './components/reset_nickname.vue';
 import ResetPhoneModal from './components/reset_phone.vue';
 import BindPhoneModal from './components/bind_phone.vue';
 import ResetPasswordModal from './components/reset_password.vue';
-import { updateAvatar } from "@/apis/index";
+import { updateAvatar, thirdBind } from "@/apis/index";
 
 const { showModal: showResetNicknameModal } = useModal("reset-nickname-modal");
 const { showModal: showResetPhoneModal } = useModal("reset-phone-modal");
 const { showModal: showBindPhoneModal } = useModal("bind-phone-modal");
 const { showModal: showResetPasswordModal } = useModal("reset-password-modal");
 const router = useRouter()
+const route = useRoute()
 const message = useMessage()
 const user_info: any = ref(null)
 const uploadRef: any = ref(null)
@@ -106,7 +107,7 @@ const handleEditPassword = async () => {
   });
 }
 const bindWechat = () => {
-  router.push('/layout/bind_wechat')
+  location.href = `https://open.weixin.qq.com/connect/qrconnect?appid=wx3d8a5aeb29bc6300&redirect_uri=${location.href}&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect`
 };
 const goRecharge = () => {
   router.push('/layout/recharge')
@@ -117,7 +118,13 @@ const goTopup = () => {
 const goConsume = () => {
   router.push('/layout/consume')
 };
-onMounted(() => {
+onMounted(async () => {
+  if(route.query.code) {
+    await thirdBind({
+      loginType: 2,
+      code: route.query.code || ''
+    }) as any
+  }
   getUserInfo(false)
 })
 </script>

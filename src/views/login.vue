@@ -338,7 +338,7 @@ onMounted(async () => {
   if(route.query.code) {
     const res: any = await loginThird({
       loginType: 2,
-      code: route.query.code || '031aWYll2BA9gh4Sqknl2aaSwF1aWYl3'
+      code: route.query.code || ''
     }) as any
     setToken(res.data.token)
     if(redirect_path.value) {

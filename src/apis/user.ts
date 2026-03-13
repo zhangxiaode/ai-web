@@ -91,3 +91,11 @@ export function updatePhone(data: any) {
 	  data
   });
 }
+// 绑定三方账号
+export function thirdBind(data: any) {
+  return request({
+    url: `/third/bind`,
+    method: "POST",
+	  data
+  });
+}
