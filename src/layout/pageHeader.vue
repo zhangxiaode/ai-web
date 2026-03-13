@@ -12,7 +12,7 @@
         <img src="../assets/cash.png" alt="" class="w-16px h-16px">
         <span class="text-14px c-#fff ml-3px">尧币充值</span>
       </div>
-      <div class="mx-12px c-#ef4444 text-14px min-w-80px">尧币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
+      <div class="mx-12px c-#ef4444 text-14px min-w-100px">尧币余额: {{ formatZhNumber(user_info?.coin || 0) }}</div>
       <n-dropdown trigger="hover" :options="options" @select="handleSelect">
         <div class="userinfo flex justify-center items-center mr-12px min-w-150px">
           <img :src="user_info?.signed_avatarurl" alt="" class="w-32px h-32px rounded-16px">

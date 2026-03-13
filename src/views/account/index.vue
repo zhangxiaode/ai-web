@@ -19,7 +19,7 @@
         <div>剩余尧币: {{ user_info?.coin }}</div>
       </div>
       <div class="flex justify-between items-center m-12px p-16px w-[calc(50%-58px)] text-14px flex items-center border-1px border-color-#393939 border-style-solid rounded-6px">
-        <div v-if="user_info?.openid && user_info?.platform">绑定账号: {{ user_info?.platform === 'wx' ? `微信-${user_info?.openid}` : '' }}</div>
+        <div v-if="user_info?.openid && user_info?.platform">绑定账号: {{ user_info?.platform === 'wx' ? `微信(${user_info?.platform_name})` : '' }}</div>
         <div v-else class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] h-30px leading-30px w-120px text-center c-#fff text-14px font-bold" @click="bindWechat()">绑定微信</div>
       </div>
       <div class="flex justify-between items-center m-12px p-16px w-[calc(50%-58px)] text-14px flex items-center border-1px border-color-#393939 border-style-solid rounded-6px">
