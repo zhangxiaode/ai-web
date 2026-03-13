@@ -112,11 +112,6 @@ const routes = [
                 name: "consume",
                 component: () => import("../views/account/consume.vue")
             },
-            {
-                path: "bind_wechat",
-                name: "bind_wechat",
-                component: () => import("../views/account/bind_wechat.vue")
-            },
             { // 角色管理、场景管理、物品管理、剧集管理-分镜管理
                 path: "project",
                 name: "project",
