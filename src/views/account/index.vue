@@ -128,9 +128,8 @@ onMounted(async () => {
       path: route.path,
       query: {}
     })
-  } else {
-    getUserInfo(false)
   }
+  getUserInfo(false)
 })
 </script>
 
