@@ -124,8 +124,13 @@ onMounted(async () => {
       loginType: 2,
       code: route.query.code || ''
     }) as any
+    router.replace({
+      path: route.path,
+      query: {}
+    })
+  } else {
+    getUserInfo(false)
   }
-  getUserInfo(false)
 })
 </script>
 
