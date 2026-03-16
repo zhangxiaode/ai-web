@@ -119,7 +119,7 @@ const getSceneInfo = async () => {
   form.value.name = res.data.name
   form.value.desc = res.data.desc
   form.value.resource_path = res.data.resource_path
-  const response: any = await getTemporaryUrl({ video_path: res.data.resource_path })
+  const response: any = await getTemporaryUrl({ path: res.data.resource_path })
   if(response.data) {
     uploadRef.value?.setResource([{
       original_url: res.data.resource_path,

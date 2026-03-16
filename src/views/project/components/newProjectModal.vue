@@ -106,7 +106,7 @@ const getProjectInfo = async () => {
   form.value.name = res.data.name
   form.value.desc = res.data.desc
   form.value.poster = res.data.poster
-  const response: any = await getTemporaryUrl({ video_path: res.data.poster })
+  const response: any = await getTemporaryUrl({ path: res.data.poster })
   if(response.data) {
     uploadRef.value?.setResource([{
       original_url: res.data.poster,

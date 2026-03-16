@@ -73,7 +73,7 @@ const customRequest = async ({
       formData.append('file_path', file_path);
       const res: any = await uploadFileToOBS(formData, onProgress)
       if(res.data) {
-        const response: any = await getTemporaryUrl({ video_path: res.data })
+        const response: any = await getTemporaryUrl({ path: res.data })
         if(response.data) {
           if(file_list.value.every((item: any) => item.id !== file?.id)) {
             file_list.value.push({
