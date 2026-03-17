@@ -71,7 +71,7 @@
             </template>
             编辑
           </n-button>
-          <n-button class="mx-6px" type="primary" size="tiny"  @click="handleTraining(item)">
+          <n-button v-if="item.voice_id" class="mx-6px" type="primary" size="tiny"  @click="handleTraining(item)">
             <template #icon>
               <n-icon>
                 <HammerOutline />
@@ -95,7 +95,7 @@
             </template>
             删除
           </n-button>
-          <AudioPlayer :src="item.resource_path" class="mx-6px" />
+          <AudioPlayer v-if="item.resource_path" :src="item.resource_path" class="mx-6px" />
         </div>
       </div>
     </div>
