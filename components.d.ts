@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AudioPlayer: typeof import('./src/components/audioPlayer.vue')['default']
+    copy: typeof import('./src/components/upload copy.vue')['default']
     Editor: typeof import('./src/components/editor.vue')['default']
     Empty: typeof import('./src/components/empty.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
@@ -46,6 +47,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Upload: typeof import('./src/components/upload.vue')['default']
+    UploadObs: typeof import('./src/components/uploadObs.vue')['default']
     Xgplayer: typeof import('./src/components/xgplayer.vue')['default']
   }
 }

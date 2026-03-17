@@ -186,13 +186,13 @@
             'wan2.2-animate-mix',
             'wan2.2-s2v'
             ].includes(form.model)" label="参考图片:" path="image_url">
-            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max || 9999" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.image_url = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max || 9999" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.image_url = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
             'wan2.2-animate-move',
             'wan2.2-animate-mix'
             ].includes(form.model)" label="参考视频:" path="video_url">
-            <Upload accept="video/*" :max="1" :size_max="form_rules.input_video_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.video_url = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs accept="video/*" :max="1" :size_max="form_rules.input_video_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.video_url = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
             'wan2.2-animate-move',
@@ -336,7 +336,7 @@ import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { createShot, putShotVideo, getOptions } from "@/apis/index";
-import Upload from '@/components/upload.vue';
+import UploadObs from '@/components/uploadObs.vue';
 
 const route = useRoute()
 const emit = defineEmits(["save"]);

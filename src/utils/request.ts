@@ -21,11 +21,6 @@ service.interceptors.request.use(
     } else if (location.pathname !== '/login'){
       location.href = `/login?redirect=${window.location.pathname + window.location.search}`;
     }
-    config.onUploadProgress = (progressEvent: any) => {
-      const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      console.log(`Upload Progress: ${percentCompleted}%`);
-      // 在这里可以处理进度条或 UI 更新
-    };
     return config;
   },
   (error: any) => {
@@ -93,3 +88,17 @@ function apiAxios(httpDefault: AxiosRequestConfig) {
   });
 }
 export default apiAxios;
+
+// 上传文件
+export const uploadFileToObs = async({ serverUrl, file, headers, onUploadProgress }) => {
+  try {
+    const response = await axios.put(serverUrl, file, {
+      headers,
+      transformRequest: [(data) => data],
+      onUploadProgress,
+    });
+    return { success: true, message: '上传成功', data: response?.data };
+  } catch (error: any) {
+    return { success: false, message: '上传失败', data: error };
+  }
+}

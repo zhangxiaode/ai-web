@@ -30,6 +30,14 @@ export function uploadNetworkFileToOBS(data: any, progress: Function) {
     }
   });
 }
+// 生成临时签名 URL
+export function getUploadConfig(params: any) {
+  return request({
+    url: `/obs/config`,
+    method: "get",
+    params
+  });
+}
 // 获取OBS文件临时地址
 export function getTemporaryUrl(params: any) {
   return request({

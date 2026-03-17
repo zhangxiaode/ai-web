@@ -2,33 +2,10 @@
   <div class="h-100% overflow-auto">
     <div class="p-32px flex flex-col justify-center items-center">
       <!-- 图片格式转换 -->
-      <n-upload
-        ref="upload"
-        multiple
-        directory-dnd
-        action=""
-        :headers="{}"
-        :data="{}"
-        :max="1"
-        method="post"
-        accept="image/png, image/jpg, image/jpeg, image/ico, image/gif, image/bmp, image/tif, image/tga, image/apng, image/pcx"
-        :on-before-upload="beforeUpload"
-        :custom-request="(e: any) => customRequest(e)"
-      >
-        <n-upload-dragger class="flex flex-col justify-center items-center bg-#a5a5a5 rounded-14px border-1px border-color-[transparent] border-style-dashed hover:bg-#494949 hover:border-color-#666">
-          <div class="mb-12px">
-            <img src="../../assets/upload.png" class="w-120px h-120px" alt="">
-          </div>
-          <div class="flex flex-column justify-center items-center">
-            <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
-              将文件拖至此区域,或<span class="c-#53d8fe">点击上传</span>
-            </n-text>
-            <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
-              支持的文件类型：png, jpg, jpeg, ico, gif, bmp, tif, tga, apng, pcx
-            </n-text>
-          </div>
-        </n-upload-dragger>
-      </n-upload>
+      <Upload accept="image/png, image/jpg, image/jpeg, image/ico, image/gif, image/bmp, image/tif, image/tga, image/apng, image/pcx" :max="1" :size_max="20" folder="image" @change="({ resource_path }) => image_url = resource_path.map((item: any) => item.original_url)[0]" />
+      <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
+        支持的文件类型：png, jpg, jpeg, ico, gif, bmp, tif, tga, apng, pcx
+      </n-text>
       <div class="format my-24px">
         <n-select class="w-200px" v-model:value="format" :options="format_options" placeholder="请选择转换图片格式" />
       </div>
@@ -38,9 +15,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
-import { uploadFile, conversionImageFormat } from '@/apis/index';
-import { staticUrl, filenameWithoutExt } from '@/utils/index';
+import { conversionImageFormat } from '@/apis/index';
+import { staticUrl } from '@/utils/index';
+import Upload from '@/components/upload.vue';
 
 const dialog = useDialog()
 const message = useMessage()
@@ -60,41 +37,9 @@ const format_options = ref([
   { label: 'apng', value: 'apng' },
   { label: 'pcx', value: 'pcx' },
 ])
-const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
-  if(!options.file.file?.type.includes('image')) {
-    message.error('只能上传图片格式的图片文件，请重新上传')
-    return false
-  }
-  if(options.file.file && options.file.file.size > 20 * 1024 * 1024) {
-    message.error('大小限制20MB以下')
-    return false
-  } else {
-    return true
-  }
-}
-const customRequest = async ({
-  file,
-  onFinish,
-  onError,
-  onProgress
-}: UploadCustomRequestOptions) => {
-  try {
-    const formData: any = new FormData();
-    file_name.value = filenameWithoutExt(file.name)
-    formData.append('file', file.file);
-    formData.append('folder', 'image');
-    const res: any = await uploadFile(formData, onProgress)
-    image_url.value = res.data
-    file.status = 'finished'
-    onFinish()
-  } catch (error: any) {
-    file.status = 'error'
-    onError()
-  }
-}
 const handleFormat = async () => {
   const res: any = await conversionImageFormat({
-    input_path: image_url.value.replace('/zxd/data/ai/', ''),
+    input_path: image_url.value,
     output_path: output_path.value,
   })
   if(res.code === 200) {

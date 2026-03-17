@@ -19,21 +19,28 @@
 
 <script lang="ts" setup>
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
-import { uploadFile } from "@/apis/index";
+import { getTemporaryUrl } from "@/apis/index";
 import { splitFilename, splitPath } from '@/utils/index';
+import { getUser } from "@/utils/auth";
+import { uploadObs } from "@/utils/obs";
 
 const message = useMessage()
 const props = defineProps({
   accept: { type: String, default: '' },
   max: { type: Number, default: 1 },
   size_max: { type: Number, default: 10 },
-  folder: { type: String, default: 'demo' },
+  get_file_path: { type: Function, default: () => '' }
 })
 const emit = defineEmits(["change"]);
 
+const user_info: any = ref(null)
 const resource_path: any = ref([])
 const file_list: any = ref([])
-
+  
+const getUserInfo = async () => {
+  const user: any = await getUser()
+  user_info.value = user
+}
 const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
   if(props.size_max && options.file.file && options.file.file.size > props.size_max * 1024 * 1024) {
     message.error(`大小限制${props.size_max}MB以下`)
@@ -53,27 +60,33 @@ const customRequest = async ({
 }: UploadCustomRequestOptions) => {
   try {
     if(file) {
-      const { name } = splitFilename(file?.name)
+      const { name, ext } = splitFilename(file?.name)
       const formData: any = new FormData();
       formData.append('file', file?.file);
-      formData.append('folder', props.folder);
-      const res: any = await uploadFile(formData, onProgress)
-      if(res.code == 200) {
-        if(file_list.value.every((item: any) => item.id !== file?.id)) {
-          file_list.value.push({
-            id: file?.id,
-            name: name,
-            url: res.data.signed_url,
-            original_url: res.data.original_url,
-            file: file?.file,
-            status: 'finished'
+      const file_path = props.get_file_path({
+        user_id: user_info.value?.id,
+        file_name: `${name}_${Date.now()}${ext}`
+      })
+      formData.append('file_path', file_path);
+      const res: any = await uploadObs(file_path, file?.file, onProgress)
+      if(res.success) {
+        const response: any = await getTemporaryUrl({ path: res.data })
+        if(response.data) {
+          if(file_list.value.every((item: any) => item.id !== file?.id)) {
+            file_list.value.push({
+              id: file?.id,
+              name: name,
+              url: response.data,
+              original_url: res.data,
+              status: 'finished'
+            })
+          }
+          emit('change', {
+            resource_path: file_list.value
           })
+          file.status = 'finished'
+          onFinish()
         }
-        emit('change', {
-          resource_path: file_list.value
-        })
-        file.status = 'finished'
-        onFinish()
       } else {
         file.status = 'error'
         onError()
@@ -98,6 +111,10 @@ const setResource = async (list: Array<any>) => {
   file_list.value = JSON.parse(JSON.stringify(resource_path.value))
 }
 defineExpose({ setResource });
+
+onMounted(async () => {
+  getUserInfo()
+})
 </script>
   
 <style scoped>

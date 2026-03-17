@@ -2,31 +2,7 @@
   <div class="h-100% overflow-auto">
     <div class="p-32px flex flex-col justify-center items-center">
       <!-- 视频剪辑 -->
-      <n-upload
-        ref="upload"
-        multiple
-        directory-dnd
-        action=""
-        :headers="{}"
-        :data="{}"
-        :max="1"
-        method="post"
-        accept="video/*"
-        :on-before-upload="beforeUpload"
-        :custom-request="(e: any) => customRequest(e)"
-      >
-        <!-- image/* audio/* -->
-        <n-upload-dragger class="bg-#a5a5a5 rounded-14px border-1px border-color-[transparent] border-style-dashed hover:bg-#494949 hover:border-color-#666">
-          <div class="mb-12px">
-            <img src="../../assets/upload.png" class="w-120px h-120px" alt="">
-          </div>
-          <div class="flex flex-column justify-center items-center">
-            <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
-              将文件拖至此区域,或<span class="c-#53d8fe">点击上传</span>
-            </n-text>
-          </div>
-        </n-upload-dragger>
-      </n-upload>
+      <Upload accept="video/*" :max="1" :size_max="1024" folder="video" @change="handleUploadChange" />
       <Xgplayer v-if="video_url" class="welcome-home-bg" src="https://bogeyai-staticdsn.judianwangluo.com/welcome/welcome.m3u8" />
       <div class="my-24px">
         <n-slider v-model:value="range" range :step="0.01" :format-tooltip="(val: number) => formatVideoDuration(duration * val / 100)" />
@@ -40,10 +16,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import Xgplayer from '@/components/xgplayer.vue';
-import { uploadFile, cutVideo, getVideoDetail } from '@/apis/index';
-import { staticUrl, filenameWithoutExt, formatVideoDuration } from '@/utils/index';
+import { cutVideo, getVideoDetail } from '@/apis/index';
+import { staticUrl, formatVideoDuration } from '@/utils/index';
+import Upload from '@/components/upload.vue';
 
 const dialog = useDialog()
 const message = useMessage()
@@ -51,43 +27,16 @@ const video_url: any = ref('')
 const range = ref([50, 60])
 const duration = ref(0)
 const filename: any = ref('')
-const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[] }): (Promise<boolean | void> | boolean | void) => {
-  if(!options.file.file?.type.includes('video')) {
-    message.error('只能上传视频格式的视频文件，请重新上传')
-    return false
-  }
-  if(options.file.file && options.file.file.size > 1024 * 1024 * 1024) {
-    message.error('大小限制1G以下')
-    return false
-  } else {
-    return true
-  }
+
+const handleUploadChange = async ({ resource_path }) => {
+  video_url.value = resource_path.map((item: any) => item.original_url)[0]
+  const result: any = await getVideoDetail({ video_path: video_url.value })
+  duration.value = result.data.duration
 }
-const customRequest = async ({
-  file,
-  onFinish,
-  onError,
-  onProgress
-}: UploadCustomRequestOptions) => {
-  try {
-    filename.value = filenameWithoutExt(file.file?.name as string);
-    const formData: any = new FormData();
-    formData.append('file', file.file);
-    formData.append('folder', 'video');
-    const res: any = await uploadFile(formData, onProgress)
-    video_url.value = res.data
-    const result: any = await getVideoDetail({ video_path: video_url.value })
-    duration.value = result.data.duration
-    file.status = 'finished'
-    onFinish()
-  } catch (error: any) {
-    file.status = 'error'
-    onError()
-  }
-}
+
 const handleCutVideo = async () => {
   const res: any = await cutVideo({
-    video_path: video_url.value.replace('/zxd/data/ai/', ''),
+    video_path: video_url.value,
     output_path: `video/${filename.value}.mp4`,
     start: duration.value * range.value[0] / 100,
     duration: duration.value * (range.value[1] - range.value[0]) / 100,
@@ -111,9 +60,3 @@ const handleCutVideo = async () => {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-:deep(.n-upload-file-list .n-upload-file.n-upload-file--success-status .n-upload-file-info .n-upload-file-info__name) {
-  color: #fff;
-}
-</style>

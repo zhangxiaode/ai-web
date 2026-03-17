@@ -333,7 +333,6 @@ const handleChangeRole = (role: any) => {
       })
       return scene
     })
-    console.log(222, role, form.value.movie_script.scenes)
   }
 }
 watch(visible, async (newValue: any) => {
