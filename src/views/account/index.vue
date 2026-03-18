@@ -1,6 +1,6 @@
 <template>
   <div class="h-100% c-#fff p-24px overflow-auto">
-    <Upload ref="uploadRef" accept="images/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `normal/avatar/${file_name}`" @change="handleUpdateAvatar" />
+    <UploadObs ref="uploadRef" accept="images/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `normal/avatar/${file_name}`" @change="handleUpdateAvatar" />
     <div class="flex flex-wrap">
       <div class="flex justify-between items-center m-12px p-16px w-[calc(50%-58px)] text-14px flex items-center border-1px border-color-#393939 border-style-solid rounded-6px">
         <div>手机号: {{ user_info?.phone || '--' }}</div>
@@ -43,7 +43,7 @@
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
 import { getUser } from "@/utils/auth";
-import Upload from '@/components/upload.vue';
+import UploadObs from '@/components/uploadObs.vue';
 import ResetNicknameModal from './components/reset_nickname.vue';
 import ResetPhoneModal from './components/reset_phone.vue';
 import BindPhoneModal from './components/bind_phone.vue';

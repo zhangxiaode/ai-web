@@ -53,7 +53,7 @@
             />
           </n-form-item>
           <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ user_id, file_name }) => `thing/${user_id}/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -72,7 +72,7 @@ import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { createThing, getOptions } from "@/apis/index";
-import Upload from '@/components/upload.vue';
+import UploadObs from '@/components/uploadObs.vue';
 
 const emit = defineEmits(["save"]);
 const { visible, hideModal } = useModal('create-modal');

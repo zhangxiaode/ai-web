@@ -50,7 +50,7 @@
           <n-form-item label="角色图片:" path="resource_path">
             <div class="flex flex-col">
               <n-button class="btn mb-12px" type="primary" size="small" @click="debouncing(onCreate, message, 2000)">AI创作</n-button>
-              <Upload ref="uploadRef" accept="image/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `novel/${route.query.id}/character/${file_name}`" @change="({ resource_path }) => form.resource_path = resource_path[0].original_url" />
+              <UploadObs ref="uploadRef" accept="image/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `novel/${route.query.id}/character/${file_name}`" @change="({ resource_path }) => form.resource_path = resource_path[0].original_url" />
             </div>
           </n-form-item>
         </n-form>
@@ -72,7 +72,7 @@ import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { getVoiceList, getTemporaryUrl, getCharacterDetail, postCharacter, putCharacter } from "@/apis/index";
 import CreateCharacterModal from './createCharacterModal.vue';
-import Upload from '@/components/upload.vue';
+import UploadObs from '@/components/uploadObs.vue';
 import { character_type_options, character_gender_options } from '@/constants/index'
 
 const route = useRoute()

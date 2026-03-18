@@ -2,21 +2,23 @@
   <div class="h-100% overflow-auto">
     <div class="p-32px flex flex-col justify-center items-center">
       <!-- 音频格式转换 -->
-      <Upload accept="audio/mp3, audio/wav, audio/flac, audio/aac, audio/ogg, audio/m4a, audio/opus, audio/wma, audio/ac3" :max="1" :size_max="300" folder="audio" @change="({ resource_path }) => audio_url = resource_path.map((item: any) => item.original_url)[0]" />
-      <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
+      <Upload accept="audio/mp3, audio/wav, audio/flac, audio/aac, audio/ogg, audio/m4a, audio/opus, audio/wma, audio/ac3" :max="1" :size_max="300" folder="audio" @change="handleUploadChange" />
+      <n-text class="my-24px font-500 text-12px c-#666 leading-18px text-center">
         支持的文件类型：mp3, wav, flac, aac, ogg, m4a, opus, wma, ac3
       </n-text>
       <div class="format my-24px">
         <n-select class="w-200px" v-model:value="format" :options="format_options" placeholder="请选择转换音频格式" />
       </div>
-      <div v-if="audio_url" class="w-150px h-50px leading-50px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleFormat()">格式转换</div>
-      <div v-if="audio_url" class="w-150px h-50px leading-50px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleDownload()">下载</div>
+      <div class="flex items-center justify-center">
+        <div v-if="audio_url" class="w-150px h-50px leading-50px mx-12px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleFormat()">格式转换</div>
+        <div v-if="audio_url" class="w-150px h-50px leading-50px mx-12px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleDownload()">下载</div>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { conversionImageFormat } from '@/apis/index';
-import { staticUrl } from '@/utils/index';
+import { staticUrl, filenameWithoutExt } from '@/utils/index';
 import Upload from '@/components/upload.vue';
 
 const dialog = useDialog()
@@ -36,6 +38,16 @@ const format_options = ref([
   { label: 'wma', value: 'wma' },
   { label: 'ac3', value: 'ac3' },
 ])
+const handleUploadChange = async ({ resource_path }) => {
+  if(resource_path.length > 0) {
+    audio_url.value = resource_path.map((item: any) => item.original_url)[0]
+    const file = resource_path.map((item: any) => item.file)[0]
+    file_name.value = filenameWithoutExt(file?.name as string)
+  } else {
+    audio_url.value = null
+    file_name.value = ''
+  }
+}
 const handleFormat = async () => {
   const res: any = await conversionImageFormat({
     input_path: audio_url.value,

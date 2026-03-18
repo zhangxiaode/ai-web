@@ -24,7 +24,7 @@
           </n-form-item>
           <n-form-item label="项目封面:" path="poster">
             <div class="flex flex-col">
-              <Upload ref="uploadRef" accept="image/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `novel/poster/${file_name}`" @change="({ resource_path }) => form.poster = resource_path[0].original_url" />
+              <UploadObs ref="uploadRef" accept="image/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `novel/poster/${file_name}`" @change="({ resource_path }) => form.poster = resource_path[0].original_url" />
             </div>
           </n-form-item>
         </n-form>
@@ -44,6 +44,7 @@ import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { getTemporaryUrl, getProjectDetail, postProject, putProject } from "@/apis/index";
+import UploadObs from '@/components/uploadObs.vue';
 
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');

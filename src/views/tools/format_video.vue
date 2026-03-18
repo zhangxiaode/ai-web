@@ -2,21 +2,23 @@
   <div class="h-100% overflow-auto">
     <div class="p-32px flex flex-col justify-center items-center">
       <!-- 视频格式转换 -->
-      <Upload accept="video/mp4, video/webm, video/mkv, video/avi, video/mov, video/flv, video/wmv, video/m3u8" :max="1" :size_max="1024" folder="video" @change="({ resource_path }) => video_url = resource_path.map((item: any) => item.original_url)[0]" />
-      <n-text class="font-500 text-12px c-#666 leading-18px text-center my-6px">
+      <Upload accept="video/mp4, video/webm, video/mkv, video/avi, video/mov, video/flv, video/wmv, video/m3u8" :max="1" :size_max="1024" folder="video" @change="handleUploadChange" />
+      <n-text class="my-24px font-500 text-12px c-#666 leading-18px text-center">
         支持的文件类型：mp4, webm, mkv, avi, mov, flv, wmv, m3u8
       </n-text>
       <div class="format my-24px">
         <n-select class="w-200px" v-model:value="format" :options="format_options" placeholder="请选择转换视频格式" />
       </div>
-      <div v-if="video_url" class="w-150px h-50px leading-50px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleFormat()">格式转换</div>
-      <div v-if="video_url" class="w-150px h-50px leading-50px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleDownload()">下载</div>
+      <div class="flex items-center justify-center">
+        <div v-if="video_url" class="w-150px h-50px leading-50px mx-12px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleFormat()">格式转换</div>
+        <div v-if="video_url" class="w-150px h-50px leading-50px mx-12px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleDownload()">下载</div>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { conversionVideoFormat } from '@/apis/index';
-import { staticUrl } from '@/utils/index';
+import { staticUrl, filenameWithoutExt } from '@/utils/index';
 import Upload from '@/components/upload.vue';
 
 const dialog = useDialog()
@@ -35,6 +37,16 @@ const format_options = ref([
   { label: 'wmv', value: 'wmv' },
   { label: 'm3u8', value: 'm3u8' },
 ])
+const handleUploadChange = async ({ resource_path }) => {
+  if(resource_path.length > 0) {
+    video_url.value = resource_path.map((item: any) => item.original_url)[0]
+    const file = resource_path.map((item: any) => item.file)[0]
+    file_name.value = filenameWithoutExt(file?.name as string)
+  } else {
+    video_url.value = null
+    file_name.value = ''
+  }
+}
 const handleFormat = async () => {
   const res: any = await conversionVideoFormat({
     input_path: video_url.value,

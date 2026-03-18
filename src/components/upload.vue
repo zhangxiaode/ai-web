@@ -44,6 +44,9 @@ const beforeUpload = (options: { file: UploadFileInfo, fileList: UploadFileInfo[
 }
 const removeUpload = async (options: { file: UploadFileInfo, fileList: UploadFileInfo[], index: number }) => {
   file_list.value.splice(options.index, 1);
+  emit('change', {
+    resource_path: file_list.value
+  })
 }
 const customRequest = async ({
   file,

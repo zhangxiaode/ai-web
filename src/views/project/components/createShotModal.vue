@@ -65,19 +65,19 @@
               'wan2.2-kf2v-flash',
               'wanx2.1-kf2v-plus',
             ].includes(form.model)" label="首帧图片:" path="first_frame">
-            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.first_frame = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.first_frame = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
               'doubao-seedance-1-0-lite-i2v-250428',
               'wan2.2-kf2v-flash',
               'wanx2.1-kf2v-plus',
             ].includes(form.model)" label="尾桢图片:" path="last_frame">
-            <Upload :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.last_frame = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs :accept="suffix_accept" :max="1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.last_frame = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
               'doubao-seedance-1-0-pro-250528',
             ].includes(form.model)" label="参考图片:" path="reference_image">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.reference_image = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.reference_image = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
               'doubao-seedance-1-0-pro-250528',
@@ -130,7 +130,7 @@
             'wan2.5-t2v-preview',
             'wan2.2-s2v',
             ].includes(form.model)" label="上传音频:" path="audio_url">
-            <Upload :accept="suffix_audio_accept" :max="1" :size_max="form_rules.input_audio_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.audio_url = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs :accept="suffix_audio_accept" :max="1" :size_max="form_rules.input_audio_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.audio_url = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
             'wan2.2-i2v-plus',
@@ -168,7 +168,7 @@
           <n-form-item v-if="[
             'wanx2.1-vace-plus',
             ].includes(form.model)" label="参考图片:" path="ref_images_url">
-            <Upload :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.ref_images_url = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs :accept="suffix_accept" :max="form_rules.input_images_max || 3" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `chapter/${route.query.chapter_id}/video_script/shot/zh_${Date.now()}_${file_name}`" @change="({ resource_path }) => form.ref_images_url = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item v-if="[
             'wanx2.1-vace-plus',
