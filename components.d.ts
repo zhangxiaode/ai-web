@@ -42,6 +42,7 @@ declare module 'vue' {
     NSpace: typeof import('naive-ui')['NSpace']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NText: typeof import('naive-ui')['NText']
+    NTimePicker: typeof import('naive-ui')['NTimePicker']
     NUpload: typeof import('naive-ui')['NUpload']
     NUploadDragger: typeof import('naive-ui')['NUploadDragger']
     RouterLink: typeof import('vue-router')['RouterLink']

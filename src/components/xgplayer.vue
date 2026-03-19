@@ -1,6 +1,6 @@
 <template>
-    <div class="video-player flex flex-column jc-center">
-        <div v-show="src" id="videoPlayer"></div>
+    <div class="video-player flex flex-column jc-center" :style="{ width: `${width}px`, height: `${height}px` }">
+        <div v-if="src" id="videoPlayer"></div>
     </div>
 </template>
 
@@ -11,6 +11,8 @@ import 'xgplayer/dist/index.min.css';
 
 const props = defineProps({
     src: { type: String, default: '' },
+    width: { type: Number, default: 860 },
+    height: { type: Number, default: 540 },
 })
 const emit = defineEmits([
     'canplaythrough',
@@ -63,15 +65,20 @@ const handleFullscreenChange = (e: any) => {
     // }
 }
 
-onMounted(() => {
+const initPlayer = async () => {
     try {
         if (props.src) {
+            if (player) {
+                player.destroy()
+                player = null
+            }
             player = new Player({
                 id: 'videoPlayer',
                 loop: true,
                 ignores: ['cssfullscreen'],
                 url: props.src,
-                plugins: [ HlsPlugin ],
+                playsinline: true,
+                plugins: props.src.includes('.m3u8') ? [ HlsPlugin ] : [],
                 autoplay: true,
                 autoplayMuted: true,
                 closeVideoClick: true,
@@ -79,8 +86,8 @@ onMounted(() => {
                 enableContextmenu: false,
                 fluid: true,
                 controls: false,
-                width: '100%',
-                height: '100vh'
+                width: `${props.width}px`,
+                height: `${props.height}px`
             })
             player.on(Events.CANPLAY_THROUGH, handleCanplaythrough)
             player.on(Events.WAITING, handleWaiting)
@@ -90,11 +97,19 @@ onMounted(() => {
             player.on(Events.ENDED, handleEnded)
             player.on(Events.ERROR, handleError)
             player.on(Events.FULLSCREEN_CHANGE, handleFullscreenChange)
-            player.play()
+            // player.play()
         }
     } catch (error) {
         console.log(error)
     }
+}
+
+watch(() => props.src, () => {
+    initPlayer()
+});
+
+onMounted(() => {
+    initPlayer()
 })
 
 onBeforeUnmount(() => {
@@ -107,12 +122,9 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 .video-player {
-    width: 100%;
-    height: 100vh;
     #videoPlayer {
         width: 100%;
-        height: 100% !important;
-        padding-top: 0 !important;
+        height: 100%;
         video {
             object-fit: cover;
         }

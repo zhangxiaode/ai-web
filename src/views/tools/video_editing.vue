@@ -2,14 +2,10 @@
   <div class="h-100% overflow-auto">
     <div class="p-32px flex flex-col justify-center items-center">
       <!-- 视频剪辑 -->
-      <Upload accept="video/*" :max="1" :size_max="1024" folder="video" @change="handleUploadChange" />
-      <Xgplayer v-if="signed_url" class="w-200px h-auto" :src="signed_url" />
-      <div class="my-24px">
-        <n-slider v-model:value="range" range :step="0.01" :format-tooltip="(val: number) => formatVideoDuration(duration * val / 100)" />
-        <n-space class="my-24px">
-          <n-input-number v-model:value="range[0]" size="small" :show-button="false" :format="(val: number) => formatVideoDuration(duration * val / 100)" />
-          <n-input-number v-model:value="range[1]" size="small" :show-button="false" :format="(val: number) => formatVideoDuration(duration * val / 100)" />
-        </n-space>
+      <UploadObs ref="uploadRef" accept="video/*" :max="1" :size_max="1024" :get_file_path="({ file_name }) => `video/${file_name}`" @change="handleUploadChange" />
+      <Xgplayer v-if="signed_url" :width="860" :height="540" :src="signed_url" />
+      <div class="m-24px w-100%">
+        <n-slider v-model:value="range" class="w-100%" range :step="0.01" :marks="marks" :format-tooltip="(val: number) => formatVideoDuration(duration * val / 100)" />
       </div>
       <div v-if="signed_url" class="w-150px h-50px leading-50px px-16px rounded-25px bg-#db2777 text-center c-#fff text-14px cursor-pointer" @click="handleCutVideo()">视频截取</div>
     </div>
@@ -18,28 +14,30 @@
 <script lang="ts" setup>
 import Xgplayer from '@/components/xgplayer.vue';
 import { cutVideo, getVideoDetail } from '@/apis/index';
-import { staticUrl, filenameWithoutExt, formatVideoDuration } from '@/utils/index';
-import Upload from '@/components/upload.vue';
+import { filenameWithoutExt, formatVideoDuration } from '@/utils/index';
+import UploadObs from '@/components/uploadObs.vue';
 
 const dialog = useDialog()
 const message = useMessage()
 const video_url: any = ref('')
 const signed_url: any = ref('')
-const range = ref([50, 60])
+const range = ref([0, 60])
 const duration = ref(0)
 const filename: any = ref('')
+const formatDuration = computed(() => formatVideoDuration(duration.value))
+const marks = computed(() => ({ 0: '00:00:00', 100: formatDuration.value }))
 
 const handleUploadChange = async ({ resource_path }) => {
   if(resource_path.length > 0) {
-    video_url.value = resource_path.map((item: any) => item.original_url)[0]
-    signed_url.value = resource_path.map((item: any) => item.url)[0]
+    video_url.value = resource_path[0].original_url
+    signed_url.value = resource_path[0].url
     const result: any = await getVideoDetail({ video_path: video_url.value })
     duration.value = result.data.duration
-    const file = resource_path.map((item: any) => item.file)[0]
+    const file = resource_path[0].file
     filename.value = filenameWithoutExt(file?.name as string)
   } else {
-    video_url.value = null
-    signed_url.value = null
+    video_url.value = ''
+    signed_url.value = ''
     duration.value = 0
     filename.value = ''
   }
@@ -48,7 +46,7 @@ const handleUploadChange = async ({ resource_path }) => {
 const handleCutVideo = async () => {
   const res: any = await cutVideo({
     video_path: video_url.value,
-    output_path: `video/${filename.value}.mp4`,
+    output_path: `video/${filename.value}_${Date.now()}_cut.mp4`,
     start: duration.value * range.value[0] / 100,
     duration: duration.value * (range.value[1] - range.value[0]) / 100,
   })
@@ -61,8 +59,8 @@ const handleCutVideo = async () => {
       positiveButtonProps: {type: "primary"},
       showIcon: false,
       closable: false,
-      onPositiveClick: async () => {
-        window.open(`${staticUrl}/video/${filename.value}.mp4`)
+      onPositiveClick() {
+        window.open(res.data)
       },
       onNegativeClick: () => {
         message.warning('已取消')

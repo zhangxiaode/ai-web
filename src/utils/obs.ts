@@ -8,6 +8,7 @@ export const uploadObs = async (file_path: string, file: File | null, onProgress
     })
     if(res.data?.SignedUrl) {
         try {
+            delete res.data?.ActualSignedRequestHeaders['Host']
             const resopnse: any = await uploadFileToObs({
                 serverUrl: res.data?.SignedUrl, 
                 file,

@@ -78,6 +78,7 @@ const customRequest = async ({
               name: name,
               url: response.data,
               original_url: res.data,
+              file: file?.file,
               status: 'finished'
             })
           }
