@@ -165,7 +165,7 @@ const onSubmit = async () => {
           dialog.warning({
             title: '选择心仪图片',
             content: () => h('div', { class: 'overflow-auto max-h-300px' }, {
-              default: () => res?.data?.map((item: any, index: number) => h('img', { 
+              default: () => res?.data?.map((item: any, index: number) => h('img', {
                 width: '100px', 
                 height: '100px', 
                 class: `cursor-pointer rounded-5px border-1px border-style-solid ${current.value === index ? 'border-color-#f44' : 'border-color-transparent'}`, 
@@ -198,20 +198,6 @@ const onSubmit = async () => {
 const onClose = () => {
   hideModal();
 }
-watch(visible, (newValue: any) => {
-  if(newValue) {
-  } else {
-    // form.value = {
-    //   model: null,
-    //   msg: '',
-    //   output_image_number: null,
-    //   output_image_width: null,
-    //   output_image_height: null,
-    //   images: [],
-    //   size: null
-    // }
-  }
-});
 </script>
 
 <style lang="scss" scoped>

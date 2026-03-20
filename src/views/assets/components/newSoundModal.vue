@@ -20,7 +20,7 @@
             <n-input v-model:value="form.name" placeholder="请输入音效名称" />
           </n-form-item>
           <n-form-item label="上传音效:" path="resource_path">
-            <UploadObs accept="audio/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `sound/${user_id}/${file_name}`" @change="({ resource_path }) => form.resource_path = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs ref="uploadRef" accept="audio/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `sound/${user_id}/${file_name}`" @change="({ resource_path }) => form.resource_path = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -38,7 +38,7 @@
 import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { getSoundDetail, postSound, putSound } from "@/apis/index";
+import { getSoundDetail, postSound, putSound, getTemporaryUrl } from "@/apis/index";
 import UploadObs from '@/components/uploadObs.vue';
 
 const emit = defineEmits(["save"]);
@@ -47,14 +47,15 @@ const message = useMessage()
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
-const form = ref({
+const uploadRef: any = ref(null)
+const form: any = ref({
   id: null,
   name: '',
-  resource_path: ''
+  resource_path: []
 });
 const rules = {
   name: {required: true, message: "音效名称不能为空", trigger: ['blur', 'change']},
-  resource_path: {required: true, message: "音效不能为空", trigger: ['blur', 'change']}
+  resource_path: {required: true, type: 'array', message: "音效不能为空", trigger: ['blur', 'change']}
 };
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
@@ -62,7 +63,7 @@ const onSubmit = async () => {
       disabled.value = true
       let params = {
         name: form.value.name,
-        resource_path: form.value.resource_path
+        resource_path: form.value.resource_path[0]
       }
       let f = postSound
       if(form.value.id) {
@@ -95,7 +96,14 @@ const getSoundInfo = async () => {
   })
   form.value.id = res.data.id
   form.value.name = res.data.name
-  form.value.resource_path = res.data.resource_path
+  form.value.resource_path = [ res?.data?.resource_path ]
+  const response: any = await getTemporaryUrl({ path: res.data.resource_path })
+  if(response.data) {
+    uploadRef.value?.setResource([{
+      original_url: res.data.resource_path,
+      sign_path: response.data
+    }])
+  }
 }
 watch(visible, (newValue: any) => {
   if(newValue) {
@@ -106,7 +114,7 @@ watch(visible, (newValue: any) => {
     form.value = {
       id: null,
       name: '',
-      resource_path: ''
+      resource_path: []
     }
   }
 });

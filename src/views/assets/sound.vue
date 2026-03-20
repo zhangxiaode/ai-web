@@ -40,7 +40,7 @@
       </n-form-item>
     </n-form>
     <div class="flex-1 overflow-auto sound-wrap">
-      <div v-for="(item, index) in sound_list" :key="index" class="h-30px float-left p-12px rounded-8px bg-#252525 flex flex-between items-center">
+      <div v-for="(item, index) in sound_list" :key="index" class="w-300px h-30px float-left p-12px m-6px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex flex-col justify-center items-normal">
           <div class="flex items-center">
             <div class="text-14px c-#fff mr-12px">{{ item.name }}</div>

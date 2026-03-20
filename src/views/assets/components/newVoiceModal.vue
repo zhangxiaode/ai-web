@@ -75,7 +75,7 @@ const message = useMessage()
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
-const form = ref({
+const form: any = ref({
   id: null,
   name: '',
   platform: null,
@@ -83,8 +83,7 @@ const form = ref({
   gender: null,
   voice_id: '',
   language: null,
-  training_path: '',
-  resource_path: ''
+  training_path: [],
 });
 const rules = {
   name: {required: true, message: "音色名称不能为空", trigger: ['blur', 'change']},
@@ -101,8 +100,7 @@ const onSubmit = async () => {
         gender: form.value.gender,
         voice_id: form.value.voice_id,
         language: form.value.language,
-        training_path: form.value.training_path,
-        resource_path: form.value.resource_path
+        training_path: form.value.training_path[0],
       }
       let f = postVoice
       if(form.value.id) {
@@ -122,7 +120,6 @@ const onSubmit = async () => {
             voice_id: res?.data?.voice_id,
             language: res?.data?.language,
             training_path: res?.data?.training_path,
-            resource_path: res?.data?.resource_path
           })
         }
       } catch (error) {
@@ -146,8 +143,7 @@ const getVoiceInfo = async () => {
   form.value.gender = res.data.gender
   form.value.voice_id = res.data.voice_id
   form.value.language = res.data.language
-  form.value.training_path = res.data.training_path
-  form.value.resource_path = res.data.resource_path
+  form.value.training_path = [ res.data.training_path ]
 }
 watch(visible, (newValue: any) => {
   if(newValue) {
@@ -163,8 +159,7 @@ watch(visible, (newValue: any) => {
       gender: null,
       voice_id: '',
       language: null,
-      training_path: '',
-      resource_path: ''
+      training_path: [],
     }
   }
 });
