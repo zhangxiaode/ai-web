@@ -100,7 +100,7 @@
           </div>
           <div class="text-12px c-#fff leading-24px">
             <n-checkbox v-model:checked="agree" class="flex ai-center">
-              我已阅读并同意<span class="hover:c-#53d8fe hover:underline cursor-pointer" @click="goPage('https://www.chengyaokj.com/data/ai/h5/privacy_policy.html')">隐私政策</span><span class="link cursor-pointer">，</span><span class="link cursor-pointer" @click="goPage('https://www.chengyaokj.com/data/ai/h5/service_terms.html')">丞尧智芯服务协议</span>
+              我已阅读并同意<span class="hover:c-#53d8fe hover:underline cursor-pointer" @click="goPage('https://ai.chengyaokj.com/data/ai/h5/privacy_policy.html')">隐私政策</span><span class="link cursor-pointer">，</span><span class="link cursor-pointer" @click="goPage('https://ai.chengyaokj.com/data/ai/h5/service_terms.html')">丞尧智芯服务协议</span>
             </n-checkbox>
           </div>
         </div>
