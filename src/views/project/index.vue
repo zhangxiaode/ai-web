@@ -77,14 +77,6 @@
                 </template>
                 章节管理
               </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="goThing(item)">
-                <template #icon>
-                  <n-icon>
-                    <DiceOutline />
-                  </n-icon>
-                </template>
-                物品管理
-              </n-button>
               <n-button class="mx-6px" type="error" size="tiny"  @click="goCharacter(item)">
                 <template #icon>
                   <n-icon>
@@ -93,14 +85,22 @@
                 </template>
                 角色管理
               </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="goScene(item)">
+              <!-- <n-button class="mx-6px" type="error" size="tiny"  @click="goThing(item)">
+                <template #icon>
+                  <n-icon>
+                    <DiceOutline />
+                  </n-icon>
+                </template>
+                物品管理
+              </n-button> -->
+              <!-- <n-button class="mx-6px" type="error" size="tiny"  @click="goScene(item)">
                 <template #icon>
                   <n-icon>
                     <ApertureSharp />
                   </n-icon>
                 </template>
                 场景管理
-              </n-button>
+              </n-button> -->
             </div>
           </div>
         </div>
@@ -123,7 +123,8 @@
 </template>
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
-import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, DocumentTextOutline, DiceOutline, PeopleOutline, ApertureSharp } from '@vicons/ionicons5';
+// import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, DocumentTextOutline, DiceOutline, PeopleOutline, ApertureSharp } from '@vicons/ionicons5';
+import { Search, Repeat, AddSharp, CreateOutline, TrashOutline, DocumentTextOutline, PeopleOutline } from '@vicons/ionicons5';
 import { getProjectList, deleteProject } from '@/apis/index';
 import NewProjectModal from './components/newProjectModal.vue';
 
