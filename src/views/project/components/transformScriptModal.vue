@@ -11,8 +11,8 @@
             v-model:value="form.model"
             placeholder="请选择AI模型"
             :options="[
-              { label: '豆包seedream-4-0', value: 'doubao-seed-1.6' },
-              { label: '千问image-plus', value: 'qwen-plus' },
+              { label: '豆包seed2-0', value: 'doubao-seed-2-0-pro-260215' },
+              { label: '千问qwen-plus', value: 'qwen-plus' },
             ]"
             clearable
           />
@@ -21,7 +21,7 @@
             placeholder="请选择转换类型"
             :options="[
               { label: '有声书剧本', value: 0 },
-              { label: '影视剧本', value: 1 },
+              // { label: '影视剧本', value: 1 },
             ]"
             class="ml-8px"
             clearable
@@ -216,7 +216,7 @@ const disabled: any = ref(false)
 const form: any = ref({
   id: null,
   novel_id: null,
-  model: 'doubao-seed-1.6',
+  model: 'doubao-seed-2-0-pro-260215',
   type: 0,
   content: '',
   audio_script: {

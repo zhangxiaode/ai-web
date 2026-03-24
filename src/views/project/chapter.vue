@@ -83,7 +83,7 @@
                 </template>
                 生成有声书
               </n-button>
-              <n-button class="mx-6px" type="error" size="tiny"  @click="goShot(item)">
+              <!-- <n-button class="mx-6px" type="error" size="tiny"  @click="goShot(item)">
                 <template #icon>
                   <n-icon>
                     <TrashOutline />
@@ -98,7 +98,7 @@
                   </n-icon>
                 </template>
                 合成剧集
-              </n-button>
+              </n-button> -->
             </div>
           </div>
         </div>
