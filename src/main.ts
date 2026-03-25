@@ -1,5 +1,6 @@
 import App from './App.vue'
 import router from "./router"
+import directives from '@/directives'
 import NaiveUI from "naive-ui";
 
 import "normalize.css/normalize.css";
@@ -9,6 +10,7 @@ const app = createApp(App);
   app.use(createPinia())
   .use(router)
   .use(NaiveUI)
+  .use(directives)
   .mount("#app");
 
 
