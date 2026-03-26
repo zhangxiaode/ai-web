@@ -1,46 +1,85 @@
 <template>
   <div class="c-#fff h-100% overflow-auto">
-    <div class="p-32px flex flex-wrap">
-      <div v-for="(item, index) in list" :key="index" :class="['bg-#1f2937 overflow-hidden rounded-12px w-[calc(50%-32px)] h-80px min-w-286px m-16px p-24px box-border border-2px border-style-solid border-color-#4b5563 relative flex justify-between items-center cursor-pointer', { 'border-color-#a855f7': item.id === current } ]" @click="changeProduct(item.id)">
-        <div v-if="item.type === 0" class="flex-1 c-#fff px-12px py-8px flex flex-col justify-center">
-          <text class="text-16px">{{ item.coin }}尧币</text>
-          <text class="text-12px c-#9ca3af" v-if="item.coin_gift > 0">送{{ item.coin_gift }}尧币</text>
+    <div class="p-32px flex flex-column">
+      <div class="flex justify-center items-center">
+        <n-radio-group v-model:value="vip_time_type" name="radiobuttongroup1">
+          <n-radio-button
+            v-for="item in vip_time_type_options"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          />
+        </n-radio-group>
+      </div>
+      <div class="flex flex-wrap justify-center items-center my-32px">
+        <div v-for="(item, index) in list" :key="index" class="bg-#1f2937 overflow-hidden rounded-12px w-[calc(25%-32px)] h-250px min-w-186px m-16px p-32px box-border border-2px border-style-solid border-color-#4b5563 relative flex flex-column justify-between items-between cursor-pointer">
+          <div class="flex-1 text-18px font-bold px-12px py-8px flex flex-col justify-center">{{ item.name }}</div>
+          <div class="px-12px pt-12px text-20px font-bold my-4px flex justify-center items-center">
+            <div class="flex justify-center items-center"><text class="text-16px c-#a5a5a5">¥ </text><text class="text-32px font-bold c-#a855f7 mx-8px">{{ item.price }}</text><text class="text-16px c-#a5a5a5">/{{ item.unit }}</text></div>
+            <div v-if="item.old_price > 0" class="ml-4px c-#999 text-14px line-through"><text class="text-12px">¥ </text>{{ item.old_price }}/{{ item.unit }}</div>
+          </div>
+          <div v-if="item.tag" class="absolute px-12px right-0px top-0px rounded-[0_0_0_24rpx] c-#fff text-12px bg-[linear-gradient(1turn,#ff4320,#ff760e)]">{{ item.tag }}</div>
+          <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold" @click="debouncing(handlePay, message, 2000, item)">立即购买</div>
         </div>
-        <div v-if="item.type === 1" class="flex-1 text-16px px-12px py-8px flex flex-col justify-center">{{ item.timeFormat }}</div>
-        <div class="px-12px pt-12px text-20px font-bold c-#a855f7 my-4px flex justify-center items-center">
-          <div><text class="text-16px">¥ </text>{{ item.price }}</div>
-          <div v-if="item.old_price > 0" class="ml-4px c-#999 text-14px line-through"><text class="text-12px">¥ </text>{{ item.old_price }}</div>
+      </div>
+      <div class="w-[100%] h-1px bg-#293341 rounded-2px my-16px"></div>
+      <div class="flex flex-wrap items-center my-32px">
+        <div v-for="(item, index) in coin_list" :key="index" class="bg-#1f2937 overflow-hidden rounded-12px w-[calc(25%-32px)] h-250px min-w-186px m-16px p-32px box-border border-2px border-style-solid border-color-#4b5563 relative flex flex-column justify-between items-between cursor-pointer">
+          <div class="c-#fff font-bold px-12px py-4px flex justify-center items-center">
+            <text class="text-18px">{{ item.coin }}尧币</text>
+            <text class="text-14px c-#9ca3af ml-8px" v-if="item.coin_gift > 0">(送{{ item.coin_gift }}尧币)</text>
+          </div>
+          <div class="px-12px pt-12px text-20px font-bold c-#a855f7 my-4px flex justify-center items-center">
+            <div class="flex justify-center items-center"><text class="text-16px c-#a5a5a5">¥ </text><text class="text-32px font-bold c-#a855f7 mx-8px">{{ item.price }}</text><text class="text-16px c-#a5a5a5"></text></div>
+            <div v-if="item.old_price > 0" class="ml-4px c-#999 text-14px line-through"><text class="text-12px">¥ </text>{{ item.old_price }}</div>
+          </div>
+          <div v-if="item.tag" class="absolute px-12px right-0px top-0px rounded-[0_0_0_24rpx] c-#fff text-12px bg-[linear-gradient(1turn,#ff4320,#ff760e)]">{{ item.tag }}</div>
+          <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold" @click="debouncing(handlePay, message, 2000, item)">立即购买</div>
         </div>
-        <div v-if="item.tag" class="absolute px-12px right-0px top-0px rounded-[0_0_0_24rpx] c-#fff text-12px bg-[linear-gradient(1turn,#ff4320,#ff760e)]">{{ item.tag }}</div>
       </div>
       <div class="p-16px">
         <div class="text-14px c-#999 leading-1.5em mt-4px">1. 订单超时时间为15分，超时后订单自动取消，请及时完成支付；</div>
         <div class="text-14px c-#999 leading-1.5em mt-4px">2. 尧币为虚拟商品，一经充值，不支持退款；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">3. 购买后的尧币有效期为 365 天，到期余量自动清零；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">4. 1元人民币对应100个尧币。各项目尧币消耗在提交任务处有醒目标注，在尧币余额处有消耗流水列表。因服务器原因生成失败的返还尧币；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">5. 各项目尧币消耗在提交任务处有醒目标注，在尧币余额处有消耗流水列表。因服务器原因生成失败的返还尧币；</div>
-        <div class="text-14px c-#999 leading-1.5em mt-4px">6. 使用指导，对公支付，开具发票，购买更多尧币，咨询节省计划，请联系商务，邮箱 chengyaokeji@126.com</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">3. 1元人民币对应100个尧币。各项目尧币消耗在提交任务处有醒目标注，在个人中心有消耗流水列表。因服务器原因生成失败的返还尧币；</div>
+        <div class="text-14px c-#999 leading-1.5em mt-4px">4. 使用指导，对公支付，开具发票，购买更多尧币，咨询节省计划，请联系商务，邮箱 chengyaokeji@126.com</div>
       </div>
-      <div class="cursor-pointer rounded-12px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px h-60px leading-60px w-380px text-center c-#fff text-18px font-bold" @click="debouncing(handlePay, message, 2000)">立即充值 {{ product?.type === 0 ? product?.coin + ' 尧币' : product?.timeFormat }}</div>
     </div>
+    <ConfirmModal />
   </div>
 </template>
 <script lang="ts" setup>
+import { useModal } from "@/hooks";
 import { getUser } from "@/utils/auth";
 import { debouncing } from '@/utils/index';
-import { getProductList, getOrderDetail, postOrder } from "@/apis/index";
-import { formatTradeStatus } from "@/constants/index";
+import { getProductList, postOrder, createAliPayOrder } from "@/apis/index";
+import ConfirmModal from './components/confirmModal.vue';
 
 const message = useMessage()
-const dialog = useDialog()
-const user_info: any = ref(null)
-const list: any = ref([])
-const current: any = ref(4)
-const code_url: any = ref('')
-const stl: any = ref(null)
+const { showModal: showConfirmModal } = useModal("confirm-modal");
 
-const product: any = computed(() => {
-  return list.value.find((item: any) => item.id === current.value) || null
+const user_info: any = ref(null)
+const month_vip_list: any = ref([])
+const quarter_vip_list: any = ref([])
+const year_vip_list: any = ref([])
+const coin_list: any = ref([])
+const vip_time_type: any = ref(30)
+const vip_time_type_options: any = ref([
+  { label: '月卡会员', value: 30 },
+  { label: '季卡会员', value: 90 },
+  { label: '年卡会员', value: 365 },
+])
+
+const list: any = computed(() => {
+  switch (vip_time_type.value) {
+    case 30:
+      return month_vip_list.value
+    case 90:
+      return quarter_vip_list.value
+    case 365:
+      return year_vip_list.value
+    default:
+      break;
+  }
 })
 
 const getUserInfo = async () => {
@@ -48,61 +87,39 @@ const getUserInfo = async () => {
   user_info.value = user
 }
 
+const formatData = (list: Array<any>) => {
+  return list.map((item: any) => {
+    item.price = (item.price / 100).toFixed(2)
+    item.old_price = (item.old_price / 100).toFixed(2)
+    item.name = item.vip_type === 1 ? '标准版' : item.vip_type === 2 ? '专业版' : item.vip_type === 3 ? '旗舰版' :  item.vip_type === 4 ? '企业版' : '免费版'
+    item.unit = item.time === 30 ? '月' : item.time === 90 ? '季' : item.time === 365 ? '年' : '周'
+    return item
+  })
+}
+
 const getData = async () => {
   const res: any = await getProductList()
   if (res.code == 200) {
-    list.value = res.data.map((item: any) => {
-      item.price = (item.price / 100).toFixed(2)
-      item.old_price = (item.old_price / 100).toFixed(2)
-      item.timeFormat = item.time === 7 ? '周卡会员' : item.time === 30 ? '月卡会员' : item.time === 92 ? '季卡会员' : '年卡会员'
-      return item
-    })
-    // const product: any = list.value.find((item: any) => item.is_default)
-    // if(product) {
-    //   current.value = product.id
-    // }
+    month_vip_list.value = formatData(res.data.month_vip_list)
+    quarter_vip_list.value = formatData(res.data.quarter_vip_list)
+    year_vip_list.value = formatData(res.data.year_vip_list)
+    coin_list.value = formatData(res.data.coin_list)
   }
 }
-const changeProduct = (id: number) => {
-  current.value = id
-}
-const handlePay = async () => {
+const handlePay = async (item: any) => {
   const res: any = await postOrder({
-    product_id: current.value
+    product_id: item.id
   })
+  // const res: any = await createAliPayOrder({
+  //   product_id: item.id
+  // })
   if(res.code == 200) {
-    code_url.value = res.data.code_url
-    const payDialog: any = dialog.warning({
-      title: '扫码支付',
-      content: () => h(NQrCode, {
-        value: code_url.value,
-        color: '#18a058',
-        size: 166
-      }, {}),
-      style: {
-        width: '246px',
-      },
-      negativeText: '关闭',
-      positiveButtonProps: {type: "primary"},
-      showIcon: false,
-      closable: false,
-      onNegativeClick: () => {
-        stl.value && clearInterval(stl.value)
-      }
-    })
-    stl.value && clearInterval(stl.value)
-    stl.value = setInterval(async () => {
-      const order_detail: any = await getOrderDetail({ id: res.data.id })
-      if(order_detail?.data?.trade_state != 'NOTPAY' && order_detail?.data?.trade_state != 'USERPAYING') {
-        if(order_detail?.data?.trade_state === 'SUCCESS') {
-          message.success(formatTradeStatus(order_detail?.data?.trade_state))
-        } else {
-          message.error(formatTradeStatus(order_detail?.data?.trade_state))
-        }
-        payDialog.destroy()
-        clearInterval(stl.value)
-      }
-    }, 1000)
+    showConfirmModal({
+      code_url: res.data.code_url,
+      order_id: res.data.id,
+      product: item,
+      pay_form: res.data.pay_form
+    });
   }
 }
 onMounted(() => {

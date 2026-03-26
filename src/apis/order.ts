@@ -21,3 +21,11 @@ export function postOrder(data: any) {
     data
   });
 }
+// 创建支付宝订单
+export function createAliPayOrder(data: any) {
+  return request({
+    url: `/alipay/order`,
+    method: "post",
+    data
+  });
+}
