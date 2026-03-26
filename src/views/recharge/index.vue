@@ -133,7 +133,8 @@ const handlePay = async (params: any) => {
     showConfirmModal({
       code_url,
       order_id: res.data.id,
-      product: params.product
+      product: params.product,
+      platform: params.platform
     });
   }
 }

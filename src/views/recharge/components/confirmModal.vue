@@ -19,8 +19,9 @@
           </div>
         </div>
         <div class="flex justify-center items-center">
-          <img src="../../../assets/wx.png" class="w-32px h-32px mr-8px" />
-          <div class="text-14px c-#eee">微信扫码支付</div>
+          <img v-if="platform === 'wx'" src="../../../assets/wx.png" class="w-32px h-32px mr-8px" />
+          <img v-else src="../../../assets/alipay.png" class="w-32px h-32px mr-8px" />
+          <div class="text-14px c-#eee">{{ platform === 'wx' ? '微信' : '支付宝' }}扫码支付</div>
           <div v-if="!show_mask && limit_time > 0" class="w-1px h-16px bg-#293341 rounded-2px mx-12px"></div>
           <div v-if="!show_mask && limit_time > 0" class="text-14px c-#eee">{{ format_limit_time }} 后失效</div>
         </div>
@@ -59,6 +60,7 @@ const format_limit_time: any = computed(() => {
 })
 const price: any = computed(() => payload.value?.product?.price)
 const code_url: any = computed(() => payload.value?.code_url)
+const platform: any = computed(() => payload.value?.platform)
 
 const hideMask = () => {
   show_mask.value = false
