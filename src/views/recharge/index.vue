@@ -12,19 +12,22 @@
         </n-radio-group>
       </div>
       <div class="flex flex-wrap justify-center items-center my-32px">
-        <div v-for="(item, index) in list" :key="index" class="bg-#1f2937 overflow-hidden rounded-12px w-[calc(25%-32px)] h-250px min-w-186px m-16px p-32px box-border border-2px border-style-solid border-color-#4b5563 relative flex flex-column justify-between items-between cursor-pointer">
+        <div v-for="(item, index) in list" :key="index" class="bg-#1f2937 overflow-hidden rounded-12px w-[calc(25%-32px)] h-250px min-w-256px m-16px p-32px box-border border-2px border-style-solid border-color-#4b5563 relative flex flex-column justify-between items-between cursor-pointer">
           <div class="flex-1 text-18px font-bold px-12px py-8px flex flex-col justify-center">{{ item.name }}</div>
           <div class="px-12px pt-12px text-20px font-bold my-4px flex justify-center items-center">
             <div class="flex justify-center items-center"><text class="text-16px c-#a5a5a5">¥ </text><text class="text-32px font-bold c-#a855f7 mx-8px">{{ item.price }}</text><text class="text-16px c-#a5a5a5">/{{ item.unit }}</text></div>
             <div v-if="item.old_price > 0" class="ml-4px c-#999 text-14px line-through"><text class="text-12px">¥ </text>{{ item.old_price }}/{{ item.unit }}</div>
           </div>
           <div v-if="item.tag" class="absolute px-12px right-0px top-0px rounded-[0_0_0_24rpx] c-#fff text-12px bg-[linear-gradient(1turn,#ff4320,#ff760e)]">{{ item.tag }}</div>
-          <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold" @click="debouncing(handlePay, message, 2000, item)">立即购买</div>
+          <div class="flex justify-center items-center">
+            <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold mr-8px" @click="debouncing(handlePay, message, 2000, { product: item, platform: 'wx' })">微信支付</div>
+            <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold" @click="debouncing(handlePay, message, 2000, { product: item, platform: 'alipay' })">支付宝支付</div>
+          </div>
         </div>
       </div>
       <div class="w-[100%] h-1px bg-#293341 rounded-2px my-16px"></div>
       <div class="flex flex-wrap items-center my-32px">
-        <div v-for="(item, index) in coin_list" :key="index" class="bg-#1f2937 overflow-hidden rounded-12px w-[calc(25%-32px)] h-250px min-w-186px m-16px p-32px box-border border-2px border-style-solid border-color-#4b5563 relative flex flex-column justify-between items-between cursor-pointer">
+        <div v-for="(item, index) in coin_list" :key="index" class="bg-#1f2937 overflow-hidden rounded-12px w-[calc(25%-32px)] h-250px min-w-256px m-16px p-32px box-border border-2px border-style-solid border-color-#4b5563 relative flex flex-column justify-between items-between cursor-pointer">
           <div class="c-#fff font-bold px-12px py-4px flex justify-center items-center">
             <text class="text-18px">{{ item.coin }}尧币</text>
             <text class="text-14px c-#9ca3af ml-8px" v-if="item.coin_gift > 0">(送{{ item.coin_gift }}尧币)</text>
@@ -34,7 +37,10 @@
             <div v-if="item.old_price > 0" class="ml-4px c-#999 text-14px line-through"><text class="text-12px">¥ </text>{{ item.old_price }}</div>
           </div>
           <div v-if="item.tag" class="absolute px-12px right-0px top-0px rounded-[0_0_0_24rpx] c-#fff text-12px bg-[linear-gradient(1turn,#ff4320,#ff760e)]">{{ item.tag }}</div>
-          <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold" @click="debouncing(handlePay, message, 2000, item)">立即购买</div>
+          <div class="flex justify-center items-center">
+            <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold mr-8px" @click="debouncing(handlePay, message, 2000, { product: item, platform: 'wx' })">微信支付</div>
+            <div class="cursor-pointer rounded-8px bg-[linear-gradient(to_right,#a855f7,#ec4899)] mx-auto my-32px px-12px h-36px leading-36px text-center c-#fff text-14px font-bold" @click="debouncing(handlePay, message, 2000, { product: item, platform: 'alipay' })">支付宝支付</div>
+          </div>
         </div>
       </div>
       <div class="p-16px">
@@ -51,7 +57,7 @@
 import { useModal } from "@/hooks";
 import { getUser } from "@/utils/auth";
 import { debouncing } from '@/utils/index';
-import { getProductList, postOrder, createAliPayOrder } from "@/apis/index";
+import { getProductList, postOrder } from "@/apis/index";
 import ConfirmModal from './components/confirmModal.vue';
 
 const message = useMessage()
@@ -106,19 +112,28 @@ const getData = async () => {
     coin_list.value = formatData(res.data.coin_list)
   }
 }
-const handlePay = async (item: any) => {
+const handlePay = async (params: any) => {
   const res: any = await postOrder({
-    product_id: item.id
+    product_id: params.product.id,
+    platform: params.platform
   })
-  // const res: any = await createAliPayOrder({
-  //   product_id: item.id
-  // })
   if(res.code == 200) {
+    let code_url: any;
+    if(params.platform === 'wx') {
+      code_url = res.data.code_url
+    } else {
+      const parser: any = new DOMParser();
+      const doc: any = parser.parseFromString(res.data.pay_form, 'text/html');
+      const form: any = doc.querySelector('form');
+      const actionUrl: any = form.action;
+      const formData: any = new FormData(form);
+      const query: any = new URLSearchParams(formData);
+      code_url = `${actionUrl}?${query.toString()}`;
+    }
     showConfirmModal({
-      code_url: res.data.code_url,
+      code_url,
       order_id: res.data.id,
-      product: item,
-      pay_form: res.data.pay_form
+      product: params.product
     });
   }
 }

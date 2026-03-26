@@ -11,8 +11,7 @@
           <span class="text-14px c-#a5a5a5">元</span>
         </div>
         <div class="qrcode relative w-190px h-190px my-24px">
-          <n-qr-code v-if="code_url" :value="code_url" color="#18a058" :size="166" />
-          <div v-else v-html="pay_form"></div>
+          <n-qr-code :value="code_url" color="#18a058" :size="166" />
           <div v-if="show_mask" class="absolute left-0px top-0px z-2 w-190px h-190px bg-[rgba(0,0,0,0.8)] flex flex-column justify-center items-center">
             <div class="text-14px c-#fff">支付前请阅读</div>
             <div class="text-14px c-#fff mt-8px">《丞尧智芯 付费服务协议》</div>
@@ -60,7 +59,6 @@ const format_limit_time: any = computed(() => {
 })
 const price: any = computed(() => payload.value?.product?.price)
 const code_url: any = computed(() => payload.value?.code_url)
-const pay_form: any = computed(() => payload.value?.pay_form)
 
 const hideMask = () => {
   show_mask.value = false
@@ -76,10 +74,7 @@ const onClose = () => {
 }
 watch(visible, (newValue: any) => {
 	if(newValue) {
-    console.log(123, payload.value, document.forms)
-    nextTick(() => {
-      document.forms[0]?.submit();
-    });
+    show_mask.value = true
     limit_time.value = 900
     stl.value && clearInterval(stl.value)
     stl.value = setInterval(async () => {
