@@ -118,23 +118,11 @@ const handlePay = async (params: any) => {
     platform: params.platform
   })
   if(res.code == 200) {
-    let code_url: any;
-    if(params.platform === 'wx') {
-      code_url = res.data.code_url
-    } else {
-      const parser: any = new DOMParser();
-      const doc: any = parser.parseFromString(res.data.pay_form, 'text/html');
-      const form: any = doc.querySelector('form');
-      const actionUrl: any = form.action;
-      const formData: any = new FormData(form);
-      const query: any = new URLSearchParams(formData);
-      code_url = `${actionUrl}?${query.toString()}`;
-    }
     showConfirmModal({
-      code_url,
-      order_id: res.data.id,
+      platform: params.platform,
       product: params.product,
-      platform: params.platform
+      order_id: res.data.id,
+      code_url: res.data.code_url
     });
   }
 }
