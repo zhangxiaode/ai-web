@@ -12,7 +12,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AudioPlayer: typeof import('./src/components/audioPlayer.vue')['default']
-    copy: typeof import('./src/components/upload copy.vue')['default']
     Editor: typeof import('./src/components/editor.vue')['default']
     Empty: typeof import('./src/components/empty.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
@@ -26,7 +25,6 @@ declare module 'vue' {
     NForm: typeof import('naive-ui')['NForm']
     NFormItem: typeof import('naive-ui')['NFormItem']
     NIcon: typeof import('naive-ui')['NIcon']
-    NImage: typeof import('naive-ui')['NImage']
     NInput: typeof import('naive-ui')['NInput']
     NInputNumber: typeof import('naive-ui')['NInputNumber']
     NLoadingBarProvider: typeof import('naive-ui')['NLoadingBarProvider']
@@ -43,9 +41,7 @@ declare module 'vue' {
     NSpace: typeof import('naive-ui')['NSpace']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NText: typeof import('naive-ui')['NText']
-    NTimePicker: typeof import('naive-ui')['NTimePicker']
     NUpload: typeof import('naive-ui')['NUpload']
-    NUploadDragger: typeof import('naive-ui')['NUploadDragger']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Upload: typeof import('./src/components/upload.vue')['default']
