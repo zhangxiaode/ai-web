@@ -50,7 +50,7 @@
     "sass": "^1.94.2",
     "terser": "^5.44.1",
     "through2": "^4.0.2",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "unplugin-auto-import": "^20.3.0",
     "unplugin-vue-components": "^30.0.0",
     "vfonts": "^0.0.3",
