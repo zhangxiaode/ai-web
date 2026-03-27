@@ -85,10 +85,11 @@ watch(visible, (newValue: any) => {
       if(order_detail?.data?.trade_state != 'NOTPAY' && order_detail?.data?.trade_state != 'USERPAYING') {
         if(order_detail?.data?.trade_state === 'SUCCESS') {
           message.success(formatTradeStatus(order_detail?.data?.trade_state))
+          onClose()
         } else {
           message.error(formatTradeStatus(order_detail?.data?.trade_state))
+          clearInterval(stl.value)
         }
-        clearInterval(stl.value)
       }
     }, 1000)
 	} else {
