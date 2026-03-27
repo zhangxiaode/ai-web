@@ -20,7 +20,8 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*", "auto-imports.d.ts"],
   "exclude": ["node_modules"],
