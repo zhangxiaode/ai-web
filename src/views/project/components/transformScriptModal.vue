@@ -12,7 +12,7 @@
             placeholder="请选择AI模型"
             :options="[
               { label: '豆包seed2-0', value: 'doubao-seed-2-0-pro-260215' },
-              { label: '千问qwen-plus', value: 'qwen-plus' },
+              { label: '千问qwen3.5-plus', value: 'qwen3.5-plus' },
             ]"
             clearable
           />
