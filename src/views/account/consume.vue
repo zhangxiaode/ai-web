@@ -81,7 +81,7 @@ const getConsume = async () => {
 			size: size.value
 		})
 		if (res.code === 200) {
-			tableData.value = page.value === 1 ? res.data.rows : [...tableData.value, ...res.data.rows]
+			tableData.value = res.data.rows
 			total.value = res.data.total
 		}
 	} catch (error: any) {
