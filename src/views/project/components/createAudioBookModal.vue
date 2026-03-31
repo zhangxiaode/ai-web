@@ -22,7 +22,7 @@
                 <div class="flex-1 text-14px c-#fff">
                   <n-select
                     v-model:value="role.role_id"
-                    class="w-100px"
+                    class="w-200px"
                     placeholder="请选择关联角色"
                     :options="role_options"
                     value-field="id"
@@ -48,7 +48,7 @@
               <div v-for="(ele, idx) in scene.elements" :key="idx" class="bg-555 my-5px p-8px">
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">{{ ele.element_type === 'sound_effect' ? '音效' : ele.element_type === 'narrator' ? '旁白' : ele.role_name }}: </div>
-                  <div class="flex-1 text-14px c-#fff">{{ ele.emotion }}</div>
+                  <div class="flex-1 text-14px c-#fff">{{ getEmotion(ele.emotion) }}</div>
                 </div>
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">内容: </div>
@@ -59,7 +59,7 @@
                   <div class="flex-1 text-14px c-#fff">
                     <n-select
                       v-model:value="ele.sound_id"
-                      class="w-100px"
+                      class="w-200px"
                       placeholder="请选择关联角色"
                       :options="sound_options"
                       value-field="id"
@@ -73,7 +73,7 @@
                   <div class="flex-1 text-14px c-#fff flex items-center">
                     <n-select
                       v-model:value="ele.role_id"
-                      class="w-100px"
+                      class="w-200px"
                       placeholder="请选择关联角色"
                       :options="role_options"
                       value-field="id"
@@ -81,7 +81,7 @@
                       clearable
                     />
                     <n-button type="primary" class="ml-12px" size="small" @click="onTransformAudio(ele)">转换音频</n-button>
-                    <AudioPlayer v-if="ele.signed_url" :src="ele.signed_url" class="mx-6px" />
+                    <AudioPlayer v-if="ele.api_key" :src="ele.api_key" class="mx-6px" />
                   </div>
                 </div>
               </div>
@@ -104,6 +104,7 @@
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
+import { getEmotion } from '@/constants/emotion'
 import { getCharacterList, getSoundList, getChapterDetail, postScriptAudio, postScriptAudioAll, postChapterLanguage, mergeScriptAudio } from "@/apis/index";
 import AudioPlayer from '@/components/audioPlayer.vue';
 

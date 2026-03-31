@@ -12,17 +12,31 @@
 </template>
 
 <script lang="ts" setup>
+import { getTemporaryUrl } from "@/apis/index";
+
+const message = useMessage()
 const props = defineProps({
   src: { type: String, default: '' },
 })
 const playing = ref(false)
 const audio: any = ref(null)
 
-const handlePlay = () => {
+const handlePlay = async () => {
   if(audio.value) {
     audio.value.stop()
   }
-  audio.value = new Audio(props.src);
+  console.log(111, props.src)
+  if(props.src.includes('chengyao.obs.cn')) {
+    audio.value = new Audio(props.src);
+  } else {
+    const response: any = await getTemporaryUrl({ path: props.src })
+    if(response.data) {
+      audio.value = new Audio(response.data);
+    } else {
+      message.error(`音频加载失败，请联系管理员`)
+      return false
+    }
+  }
   audio.value.addEventListener('play', () => {
     playing.value = true
   });

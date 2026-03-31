@@ -44,7 +44,7 @@
                 <div class="flex-1 text-14px c-#fff">
                   <n-select
                     v-model:value="role.role_id"
-                    class="w-100px"
+                    class="w-200px"
                     placeholder="请选择关联角色"
                     :options="role_options"
                     value-field="id"
@@ -81,8 +81,8 @@
                   <div class="flex-1 text-14px c-#fff">
                     <n-select
                       v-model:value="ele.sound_id"
-                      class="w-100px"
-                      placeholder="请选择关联角色"
+                      class="w-200px"
+                      placeholder="请选择关联音效"
                       :options="sound_options"
                       value-field="id"
                       label-field="name"
@@ -95,7 +95,7 @@
                   <div class="flex-1 text-14px c-#fff">
                     <n-select
                       v-model:value="ele.role_id"
-                      class="w-100px"
+                      class="w-200px"
                       placeholder="请选择关联角色"
                       :options="role_options"
                       value-field="id"
@@ -122,7 +122,7 @@
                 <div class="flex-1 text-14px c-#fff">
                   <n-select
                     v-model:value="role.role_id"
-                    class="w-100px"
+                    class="w-200px"
                     placeholder="请选择关联角色"
                     :options="role_options"
                     value-field="id"
@@ -159,8 +159,8 @@
                   <div class="flex-1 text-14px c-#fff">
                     <n-select
                       v-model:value="ele.sound_id"
-                      class="w-100px"
-                      placeholder="请选择关联角色"
+                      class="w-200px"
+                      placeholder="请选择关联音效"
                       :options="sound_options"
                       value-field="id"
                       label-field="name"
@@ -173,7 +173,7 @@
                   <div class="flex-1 text-14px c-#fff">
                     <n-select
                       v-model:value="ele.role_id"
-                      class="w-100px"
+                      class="w-200px"
                       placeholder="请选择关联角色"
                       :options="role_options"
                       value-field="id"

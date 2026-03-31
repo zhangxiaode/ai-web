@@ -22,10 +22,10 @@ const tabs = ref([
     name: '音效管理',
     path: '/layout/assets/sound'
   },
-  {
-    name: '物品管理',
-    path: '/layout/assets/thing'
-  },
+  // {
+  //   name: '物品管理',
+  //   path: '/layout/assets/thing'
+  // },
 ])
 const current = computed(() => {
   return tabs.value.findIndex(item => route.path.includes(item.path))

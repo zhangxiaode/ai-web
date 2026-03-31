@@ -47,10 +47,10 @@ const formRef = ref<FormInst | null>(null)
 const form = ref({
   id: null,
   platform: null,
-  training_path: ''
+  training_path: []
 });
 const rules = {
-  training_path: {required: true, message: "训练音频不能为空", trigger: ['blur', 'change']}
+  training_path: {required: true, type: 'array', message: "训练音频不能为空", trigger: ['blur', 'change']}
 };
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
@@ -58,7 +58,7 @@ const onSubmit = async () => {
       disabled.value = true
       let params = {
         id: form.value.id,
-        training_path: form.value.training_path
+        training_path: form.value.training_path[0]
       }
       try {
         const res: any = await trainingVoice(params)
@@ -66,7 +66,7 @@ const onSubmit = async () => {
           onClose()
           emit('save', {
             id: res?.data?.id,
-            training_path: res?.data?.training_path
+            training_path: res?.data?.training_path[0]
           })
         }
       } catch (error) {
@@ -87,7 +87,7 @@ watch(visible, (newValue: any) => {
     form.value = {
       id: null,
       platform: null,
-      training_path: '',
+      training_path: [],
     }
   }
 });

@@ -150,7 +150,7 @@ const getOptions = async () => {
     gender: form.value.gender
   })
   voice_options.value = res.data.map((item: any) => {
-    item.label = `${item.name}(${item.gender === 1 ? '男' : '女'})`
+    item.label = `${item.name}(${item.platform === 1 ? '豆包' : '千问'})`
     return item
   })
 }
