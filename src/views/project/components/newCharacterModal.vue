@@ -49,12 +49,12 @@
           </n-form-item>
           <n-form-item label="角色图片:" path="resource_path">
             <div class="flex flex-col">
-              <n-button class="btn mb-12px" type="primary" size="small" @click="debouncing(onCreate, message, 2000)">AI创作</n-button>
+              <!-- <n-button class="btn mb-12px" type="primary" size="small" @click="debouncing(onCreate, message, 2000)">AI创作</n-button> -->
               <UploadObs ref="uploadRef" accept="image/*" :max="1" :size_max="10" :get_file_path="({ file_name }) => `novel/${route.query.id}/character/${file_name}`" @change="({ resource_path }) => form.resource_path = resource_path[0].original_url" />
             </div>
           </n-form-item>
         </n-form>
-        <CreateCharacterModal :detail="form" @save="handleCreateModalComplete" />
+        <!-- <CreateCharacterModal :detail="form" @save="handleCreateModalComplete" /> -->
       </div>
     </slot>
     <template #action>
@@ -71,7 +71,7 @@ import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { getVoiceList, getTemporaryUrl, getCharacterDetail, postCharacter, putCharacter } from "@/apis/index";
-import CreateCharacterModal from './createCharacterModal.vue';
+// import CreateCharacterModal from './createCharacterModal.vue';
 import UploadObs from '@/components/uploadObs.vue';
 import { character_type_options, character_gender_options } from '@/constants/index'
 
@@ -79,7 +79,7 @@ const route = useRoute()
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
 const message = useMessage()
-const { showModal: showCreateModal } = useModal("create-modal");
+// const { showModal: showCreateModal } = useModal("create-modal");
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
@@ -99,9 +99,9 @@ const rules = {
   resource_path: {required: true, message: "角色图片不能为空", trigger: ['blur', 'change']}
 };
 const voice_options = ref([])
-const onCreate = async () => {
-  showCreateModal();
-}
+// const onCreate = async () => {
+//   showCreateModal();
+// }
 const handleCreateModalComplete = (res: any) => {
   uploadRef.value.setResource([res])
   form.value.resource_path = res.original_url

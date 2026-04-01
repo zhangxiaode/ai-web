@@ -42,10 +42,10 @@ const tabs = ref([
     name: '素材管理',
     path: '/layout/assets'
   },
-  {
-    name: '元宇宙',
-    path: '/layout/metaverse'
-  },
+  // {
+  //   name: '元宇宙',
+  //   path: '/layout/metaverse'
+  // },
   {
     name: '项目管理',
     path: '/layout/project'
