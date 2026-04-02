@@ -190,6 +190,14 @@
           <!-- <Editor :value="form.content" class="flex-1 m-5px" :height="500" disabled placeholder="请输入章节内容" @change="val => form.content = val" />
           <Editor :value="form.audio_script" class="flex-1 m-5px" :height="500" placeholder="请输入剧本内容" @change="val => form.script = val" /> -->
         </div>
+        <div class="leadings-[1.5em] flex flex-wrap px-12px mt-12px">
+          <div class="w-100% text-16px font-bold c-#a5a5a5 my-4px">剧本转换定价规则：</div>
+          <div class="w-20% text-14px c-#999 my-4px">免费版: 55尧币/千字</div>
+          <div class="w-20% text-14px c-#999 my-4px">标准版: 46尧币/千字</div>
+          <div class="w-20% text-14px c-#999 my-4px">专业版: 42尧币/千字</div>
+          <div class="w-20% text-14px c-#999 my-4px">旗舰版: 38尧币/千字</div>
+          <div class="w-20% text-14px c-#999 my-4px">企业版: 34尧币/千字</div>
+        </div>
       </div>
     </slot>
     <template #action>

@@ -6,8 +6,8 @@
     </template>
     <slot>
       <div class="audio-book flex flex-col items-normal" v-loading="loading">
-        <div class="w-100% flex justify-between items-normal">
-          <div class="flex-1 m-5px h-500px overflow-auto">
+        <div class="w-100% flex flex-col justify-between items-normal">
+          <div class="m-5px h-500px overflow-auto">
             <div v-for="(role, index) in form.audio_script.role_list" :key="index" class="bg-#333 my-5px p-8px">
               <div class="flex items-center justify-between my-5px">
                 <div class="text-12px c-#fff mr-12px w-80px text-right">角色: </div>
@@ -86,6 +86,26 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="leadings-[1.5em] flex flex-wrap px-12px mt-12px">
+            <div class="w-100% text-16px font-bold c-#a5a5a5 my-4px">音频合成定价规则：</div>
+            <div class="flex">
+              <div class="w-50% flex flex-wrap">
+                <div class="w-50% text-14px c-#999 my-4px">白泽知命免费版: 65尧币/千字</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽知命标准版: 56尧币/千字</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽知命专业版: 52尧币/千字</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽知命旗舰版: 48尧币/千字</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽知命企业版: 44尧币/千字</div>
+              </div>
+              <div class="w-50% flex flex-wrap">
+                <div class="w-50% text-14px c-#999 my-4px">白泽冰晶免费版: 55尧币/千字符</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽冰晶标准版: 46尧币/千字符</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽冰晶专业版: 42尧币/千字符</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽冰晶旗舰版: 38尧币/千字符</div>
+                <div class="w-50% text-14px c-#999 my-4px">白泽冰晶企业版: 34尧币/千字符</div>
+              </div>
+            </div>
+            <div class="w-100% text-12px c-#696969 mt-8px">字符数 => 字数计算规则（汉字：2字符、英文字母/数字/标点/空格：1字符、计算文本长度时，SSML标签内容也包含在内）</div>
           </div>
         </div>
       </div>
@@ -279,6 +299,6 @@ watch(visible, async (newValue: any) => {
 .audio-book {
   font-weight: 500;
   border-radius: 16px;
-  margin: 58px 0;
+  margin: 12px 0;
 }
 </style>
