@@ -39,7 +39,7 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 overflow-auto">
+    <div class="flex-1 overflow-auto" v-loading="loading">
       <div v-for="(item, index) in list" :key="index" class="h-114px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex justify-center items-normal">
           <img :src="item.poster" class="w-100px h-114px" alt="" />
@@ -131,6 +131,7 @@ import NewProjectModal from './components/newProjectModal.vue';
 const router = useRouter()
 const dialog = useDialog()
 const message = useMessage()
+const loading: any = ref(false)
 let searchForm: any = ref({
   name: ''
 });
@@ -167,12 +168,14 @@ const handleDelete = async (item: any) => {
     showIcon: false,
     closable: false,
     onPositiveClick: async () => {
+      loading.value = true
       try {
         await deleteProject({
           id: item.id
         })
         getList()
       } catch (error) {
+        loading.value = false
         console.log(error)
       }
     },
@@ -182,6 +185,7 @@ const handleDelete = async (item: any) => {
   })
 }
 const getList = async () => {
+  loading.value = true
   try {
     const res: any = await getProjectList({
       page: page.value,
@@ -193,6 +197,7 @@ const getList = async () => {
   } catch (error) {
     console.log(error)
   }
+  loading.value = false
 }
 const handleSizeChange = (val: number) => {
   page.value = 1;
@@ -206,15 +211,15 @@ const handleCurrentChange = (val: number) => {
 const goChapter = (item: any) => {
   router.push(`/layout/project/chapter?id=${item.id}`)
 };
-const goThing = (item: any) => {
-  router.push(`/layout/project/thing?id=${item.id}`)
-};
+// const goThing = (item: any) => {
+//   router.push(`/layout/project/thing?id=${item.id}`)
+// };
 const goCharacter = (item: any) => {
   router.push(`/layout/project/character?id=${item.id}`)
 };
-const goScene = (item: any) => {
-  router.push(`/layout/project/scene?id=${item.id}`)
-};
+// const goScene = (item: any) => {
+//   router.push(`/layout/project/scene?id=${item.id}`)
+// };
 onMounted(() => {
   getList()
 })

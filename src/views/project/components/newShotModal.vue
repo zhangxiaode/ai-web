@@ -5,7 +5,7 @@
       <slot name="header">{{ form.id ? '编辑' : '新增' }}镜头</slot>
     </template>
     <slot>
-      <div class="new-content">
+      <div class="new-content" v-loading="loading">
         <n-form
           class="form"
           ref="formRef"
@@ -79,7 +79,7 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
       </slot>
     </template>
   </n-modal>
@@ -96,7 +96,7 @@ const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
 const message = useMessage()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const form: any = ref({
   id: null,
@@ -148,22 +148,22 @@ const getThingOptions = async (query: string) => {
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      disabled.value = true
-      let params = {
-        chapter_id: Number(route.query.chapter_id),
-        index: form.value.index,
-        name: form.value.name,
-        scene_ids: form.value.scene_ids.join(','),
-        thing_ids: form.value.thing_ids.join(','),
-        character_ids: form.value.character_ids.join(','),
-        keyword: form.value.keyword,
-      }
-      let f = postShot
-      if(form.value.id) {
-        f = putShot
-        params['id'] = form.value.id
-      }
+      loading.value = true
       try {
+        let params = {
+          chapter_id: Number(route.query.chapter_id),
+          index: form.value.index,
+          name: form.value.name,
+          scene_ids: form.value.scene_ids.join(','),
+          thing_ids: form.value.thing_ids.join(','),
+          character_ids: form.value.character_ids.join(','),
+          keyword: form.value.keyword,
+        }
+        let f = postShot
+        if(form.value.id) {
+          f = putShot
+          params['id'] = form.value.id
+        }
         const res: any = await f(params)
         if (res.code == 200 || res.code == 0) {
           onClose()
@@ -172,7 +172,7 @@ const onSubmit = async () => {
       } catch (error) {
         console.log(error)
       }
-      disabled.value = false
+      loading.value = false
     }
   })
 }
@@ -180,16 +180,22 @@ const onClose = () => {
   hideModal();
 }
 const getShotInfo = async () => {
-  const res: any = await getShotDetail({
-    id: payload.value.id
-  })
-  form.value.id = res.data.id
-  form.value.index = res.data.index
-  form.value.name = res.data.name
-  form.value.scene_ids = res.data.scene_ids.split(',').map((id: string) => Number(id))
-  form.value.thing_ids = res.data.thing_ids.split(',').map((id: string) => Number(id))
-  form.value.character_ids = res.data.character_ids.split(',').map((id: string) => Number(id))
-  form.value.keyword = res.data.keyword
+  loading.value = true
+  try {
+    const res: any = await getShotDetail({
+      id: payload.value.id
+    })
+    form.value.id = res.data.id
+    form.value.index = res.data.index
+    form.value.name = res.data.name
+    form.value.scene_ids = res.data.scene_ids.split(',').map((id: string) => Number(id))
+    form.value.thing_ids = res.data.thing_ids.split(',').map((id: string) => Number(id))
+    form.value.character_ids = res.data.character_ids.split(',').map((id: string) => Number(id))
+    form.value.keyword = res.data.keyword
+  } catch (error) {
+    console.log(error)
+  }
+  loading.value = false
 }
 watch(visible, (newValue: any) => {
   if(newValue) {

@@ -5,7 +5,7 @@
       <slot name="header">{{ form.id ? '编辑' : '新增' }}音效</slot>
     </template>
     <slot>
-      <div class="new-content">
+      <div class="new-content" v-loading="loading">
         <n-form
           class="form"
           ref="formRef"
@@ -28,7 +28,7 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
       </slot>
     </template>
   </n-modal>
@@ -45,7 +45,7 @@ const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
 const message = useMessage()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const uploadRef: any = ref(null)
 const form: any = ref({
@@ -60,7 +60,7 @@ const rules = {
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      disabled.value = true
+      loading.value = true
       let params = {
         name: form.value.name,
         resource_path: form.value.resource_path[0]
@@ -83,7 +83,7 @@ const onSubmit = async () => {
       } catch (error) {
         console.log(error)
       }
-      disabled.value = false
+      loading.value = false
     }
   })
 }

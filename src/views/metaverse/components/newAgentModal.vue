@@ -23,10 +23,10 @@
             <n-input v-model:value="form.desc" type="textarea" placeholder="请输入智能体描述" />
           </n-form-item>
           <n-form-item label="上传图片:" path="photo">
-            <UploadObs accept="images/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `agent/${user_id}/${file_name}`" @change="({ resource_path }) => form.photo = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs ref="uploadPhotoRef" accept="images/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `agent/${user_id}/${file_name}`" @change="({ resource_path }) => form.photo = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
           <n-form-item label="上传视频:" path="video_url">
-            <UploadObs accept="video/*" :max="1" :size_max="1024" :get_file_path="({ user_id, file_name }) => `agent/${user_id}/${file_name}`" @change="({ resource_path }) => form.video_url = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs ref="uploadVideoRef" accept="video/*" :max="1" :size_max="1024" :get_file_path="({ user_id, file_name }) => `agent/${user_id}/${file_name}`" @change="({ resource_path }) => form.video_url = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -44,7 +44,7 @@
 import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { getAgentDetail, postAgent, putAgent } from "@/apis/index";
+import { getTemporaryUrl, getAgentDetail, postAgent, putAgent } from "@/apis/index";
 import UploadObs from '@/components/uploadObs.vue';
 
 const emit = defineEmits(["save"]);
@@ -53,6 +53,8 @@ const message = useMessage()
 
 const disabled: any = ref(false)
 const formRef = ref<FormInst | null>(null)
+const uploadPhotoRef: any = ref(null)
+const uploadVideoRef: any = ref(null)
 const form = ref({
   id: null,
   name: '',
@@ -111,6 +113,20 @@ const getAgentInfo = async () => {
   form.value.desc = res.data.desc
   form.value.photo = res.data.photo
   form.value.video_url = res.data.video_url
+  const responsePhoto: any = await getTemporaryUrl({ path: res.data.poster })
+  if(responsePhoto.data) {
+    uploadPhotoRef.value?.setResource([{
+      original_url: res.data.poster,
+      sign_path: responsePhoto.data
+    }])
+  }
+  const responseVideo: any = await getTemporaryUrl({ path: res.data.video_url })
+  if(responseVideo.data) {
+    uploadVideoRef.value?.setResource([{
+      original_url: res.data.video_url,
+      sign_path: responseVideo.data
+    }])
+  }
 }
 watch(visible, (newValue: any) => {
   if(newValue) {

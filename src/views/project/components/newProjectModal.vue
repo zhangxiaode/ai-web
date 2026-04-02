@@ -5,7 +5,7 @@
       <slot name="header">{{ form.id ? '编辑' : '新增' }}项目</slot>
     </template>
     <slot>
-      <div class="new-content">
+      <div class="new-content" v-loading="loading">
         <n-form
           class="form"
           ref="formRef"
@@ -33,7 +33,7 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
       </slot>
     </template>
   </n-modal>
@@ -50,7 +50,7 @@ const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-modal');
 const message = useMessage()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const uploadRef: any = ref(null)
 const form = ref({
@@ -67,18 +67,18 @@ const rules = {
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      disabled.value = true
-      let params = {
-        name: form.value.name,
-        desc: form.value.desc,
-        poster: form.value.poster
-      }
-      let f = postProject
-      if(form.value.id) {
-        f = putProject
-        params['id'] = form.value.id
-      }
+      loading.value = true
       try {
+        let params = {
+          name: form.value.name,
+          desc: form.value.desc,
+          poster: form.value.poster
+        }
+        let f = postProject
+        if(form.value.id) {
+          f = putProject
+          params['id'] = form.value.id
+        }
         const res: any = await f(params)
         if (res.code == 200 || res.code == 0) {
           onClose()
@@ -92,7 +92,7 @@ const onSubmit = async () => {
       } catch (error) {
         console.log(error)
       }
-      disabled.value = false
+      loading.value = false
     }
   })
 }
@@ -100,20 +100,26 @@ const onClose = () => {
   hideModal();
 }
 const getProjectInfo = async () => {
-  const res: any = await getProjectDetail({
-    id: payload.value.id
-  })
-  form.value.id = res.data.id
-  form.value.name = res.data.name
-  form.value.desc = res.data.desc
-  form.value.poster = res.data.poster
-  const response: any = await getTemporaryUrl({ path: res.data.poster })
-  if(response.data) {
-    uploadRef.value?.setResource([{
-      original_url: res.data.poster,
-      sign_path: response.data
-    }])
+  loading.value = true
+  try {
+    const res: any = await getProjectDetail({
+      id: payload.value.id
+    })
+    form.value.id = res.data.id
+    form.value.name = res.data.name
+    form.value.desc = res.data.desc
+    form.value.poster = res.data.poster
+    const response: any = await getTemporaryUrl({ path: res.data.poster })
+    if(response.data) {
+      uploadRef.value?.setResource([{
+        original_url: res.data.poster,
+        sign_path: response.data
+      }])
+    }
+  } catch (error) {
+    console.log(error)
   }
+  loading.value = false
 }
 watch(visible, (newValue: any) => {
   if(newValue) {

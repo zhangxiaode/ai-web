@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui';
 import { getTemporaryUrl } from "@/apis/index";
-import { splitFilename, splitPath } from '@/utils/index';
+import { splitFilename, splitPath, getFileType } from '@/utils/index';
 import { getUser } from "@/utils/auth";
 import { uploadObs } from "@/utils/obs";
 
@@ -87,6 +87,7 @@ const customRequest = async ({
           })
           file.status = 'finished'
           onFinish()
+          console.log(112233, resource_path.value, file_list.value)
         }
       } else {
         file.status = 'error'
@@ -100,16 +101,32 @@ const customRequest = async ({
 }
 const setResource = async (list: Array<any>) => {
   resource_path.value = list.map((item: any) => {
-    const { name } = splitPath(item.sign_path)
+    const { name, ext } = splitPath(item.sign_path)
+    const id = Date.now()
     return {
-      id: Date.now(),
+      id,
       name,
       url: item.sign_path,
       original_url: item.original_url,
-      status: 'finished'
+      status: 'finished',
+      file: {},
+      percentage: 100,
+      thumbnailUrl: null,
+      type: getFileType(item.original_url),
+      fullPath: item.sign_path,
+      batchId: id
     }
   })
-  file_list.value = JSON.parse(JSON.stringify(resource_path.value))
+  file_list.value = JSON.parse(JSON.stringify(resource_path.value)).map((item: any) => {
+    return {
+      id: item.id,
+      name: item.name,
+      url: item.url,
+      original_url: item.original_url,
+      status: item.status,
+      file: item.file,
+    }
+  })
 }
 defineExpose({ setResource });
 

@@ -39,7 +39,7 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 overflow-auto sound-wrap">
+    <div class="flex-1 overflow-auto sound-wrap" v-loading="loading">
       <div v-for="(item, index) in sound_list" :key="index" class="w-300px h-30px float-left p-12px m-6px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex flex-col justify-center items-normal">
           <div class="flex items-center">
@@ -91,6 +91,7 @@ import NewSoundModal from './components/newSoundModal.vue';
 
 const dialog = useDialog()
 const message = useMessage()
+const loading: any = ref(false)
 let searchForm: any = ref({
   name: ''
 });
@@ -127,12 +128,14 @@ const handleDelete = async (item: any) => {
     showIcon: false,
     closable: false,
     onPositiveClick: async () => {
+      loading.value = true
       try {
         await deleteSound({
           id: item.id
         })
         getList()
       } catch (error) {
+        loading.value = false
         console.log(error)
       }
     },
@@ -142,6 +145,7 @@ const handleDelete = async (item: any) => {
   })
 }
 const getList = async () => {
+  loading.value = true
   try {
     const res: any = await getSoundList({
       page: page.value,
@@ -153,6 +157,7 @@ const getList = async () => {
   } catch (error) {
     console.log(error)
   }
+  loading.value = false
 }
 const handleSizeChange = (val: number) => {
   page.value = 1;

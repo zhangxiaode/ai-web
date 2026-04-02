@@ -10,10 +10,10 @@ export function formatZhNumber(num: number) {
 }
 
 export function formatAmount(num: number) {
-	num = Number(num);
-  return num.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, function(_$0, $1) {
-		return $1 + ',';
-	})
+  num = Number(num);
+  return num.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, function (_$0, $1) {
+    return $1 + ',';
+  })
 }
 
 export const formatVideoDuration = (duration: number) => {
@@ -46,9 +46,9 @@ export function formatDateTime(date: Date) {
 
 export function formatRole(data: any) {
   return data.map((item: any) => {
-    if(item.children?.length > 0) {
+    if (item.children?.length > 0) {
       formatRole(item.children)
-    }else{
+    } else {
       item.children = ""
     }
     return item
@@ -70,24 +70,54 @@ export const filenameWithoutExt = (filename: string) => filename.lastIndexOf('.'
 /**
  * 提取文件名和后缀
  * @param {string} path 完整文件路径（如 "https://www.baidu.com/aaa/16_1_林弦.wav?aa=123"）
- * @returns {Object} { name: 主文件名, ext: 后缀名（含.） }
+ * @returns {Object} { name: 主文件名, ext: 后缀名（不含.） }
  */
 export const splitPath = (path: string): any => {
   const urlWithoutQuery = path.split('?')[0];
-  
+
   const fullFileName: any = urlWithoutQuery.split('/').pop();
-  
+
   const lastDotIndex: any = fullFileName.lastIndexOf('.');
-  
+
   let name: any = fullFileName;
   let ext: any = '';
-  
+
   if (lastDotIndex !== -1) {
     name = fullFileName.substring(0, lastDotIndex);
     ext = fullFileName.substring(lastDotIndex + 1);
   }
-  
+
   return { name, ext };
+}
+
+// 根据文件名/路径获取 MIME type
+export const getFileType = (filePath: string): string => {
+  if (!filePath) return 'application/octet-stream'
+  // 获取后缀
+  const ext = filePath.split('.').pop()?.toLowerCase() || ''
+  // 后缀映射 MIME type
+  const map = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    gif: 'image/gif',
+    bmp: 'image/bmp',
+    webp: 'image/webp',
+    svg: 'image/svg+xml',
+    pdf: 'application/pdf',
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ppt: 'application/vnd.ms-powerpoint',
+    pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    mp4: 'video/mp4',
+    mp3: 'audio/mpeg',
+    zip: 'application/zip',
+    rar: 'application/x-rar-compressed',
+    txt: 'text/plain',
+  }
+  return map[ext] || 'application/octet-stream'
 }
 
 /**
@@ -113,9 +143,9 @@ export const splitFilename = (filename: string): any => {
 
 
 // 是否为移动端
-export function hasMobile () {
+export function hasMobile() {
   let isMobile = false;
-  if((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+  if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
     isMobile = true;
   }
   if (document.body.clientWidth < 800) {
@@ -136,13 +166,13 @@ export const runtimeId = () => String(currentRuntimeId++);
 // 节流
 let repeat: any = false;
 export const debouncing = (action: Function, message: any, delay: number, params?: any) => {
-    if (repeat) {
-        message && message.warning && message.warning('请勿重复点击')
-    } else {
-        action(params)
-        repeat = true
-    }
-    setTimeout(() => {
-        repeat = false
-    }, delay)
+  if (repeat) {
+    message && message.warning && message.warning('请勿重复点击')
+  } else {
+    action(params)
+    repeat = true
+  }
+  setTimeout(() => {
+    repeat = false
+  }, delay)
 };

@@ -39,7 +39,7 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 overflow-auto">
+    <div class="flex-1 overflow-auto" v-loading="loading">
       <div v-for="(item, index) in list" :key="index" class="h-114px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex justify-center items-normal">
           <div class="flex-1 flex flex-col justify-center ml-16px">
@@ -114,6 +114,7 @@ import CreateShotModal from './components/createShotModal.vue';
 const route = useRoute()
 const dialog = useDialog()
 const message = useMessage()
+const loading: any = ref(false)
 let searchForm: any = ref({
   index: null
 });
@@ -154,12 +155,14 @@ const handleDelete = async (item: any) => {
     showIcon: false,
     closable: false,
     onPositiveClick: async () => {
+      loading.value = true
       try {
         await deleteShot({
           id: item.id
         })
         getList()
       } catch (error) {
+        loading.value = false
         console.log(error)
       }
     },
@@ -169,6 +172,7 @@ const handleDelete = async (item: any) => {
   })
 }
 const getList = async () => {
+  loading.value = true
   try {
     const res: any = await getShotList({
       page: page.value,
@@ -182,6 +186,7 @@ const getList = async () => {
   } catch (error) {
     console.log(error)
   }
+  loading.value = false
 }
 const handleSizeChange = (val: number) => {
   page.value = 1;

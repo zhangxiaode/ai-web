@@ -5,14 +5,14 @@
       <slot name="header">转换剧本</slot>
     </template>
     <slot>
-      <div class="transform-script flex flex-col items-normal">
+      <div class="transform-script flex flex-col items-normal" v-loading="loading">
         <div class="flex items-center">
           <n-select
             v-model:value="form.model"
             placeholder="请选择AI模型"
             :options="[
-              { label: '豆包seed2-0', value: 'doubao-seed-2-0-pro-260215' },
-              { label: '千问qwen3.5-plus', value: 'qwen3.5-plus' },
+              { label: '白泽知命剧构', value: 'cyzx-chat-d-pro' },
+              { label: '白泽冰晶剧构', value: 'cyzx-chat-q-plus' },
             ]"
             clearable
           />
@@ -195,8 +195,8 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onTransform, message, 2000)">转换</n-button>
-        <n-button v-if="(form.type === 0 && form.audio_script) || (form.type === 1 && form.movie_script)" class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSave, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onTransform, message, 2000)">转换</n-button>
+        <n-button v-if="(form.type === 0 && form.audio_script) || (form.type === 1 && form.movie_script)" class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSave, message, 2000)">保存</n-button>
       </slot>
     </template>
   </n-modal>
@@ -212,11 +212,11 @@ const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('transformScript-modal');
 const message = useMessage()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const form: any = ref({
   id: null,
   novel_id: null,
-  model: 'doubao-seed-2-0-pro-260215',
+  model: 'cyzx-chat-d-pro',
   type: 0,
   content: '',
   audio_script: {
@@ -228,30 +228,26 @@ const form: any = ref({
 const role_options = ref([])
 const sound_options = ref([])
 const onTransform = async () => {
+  loading.value = true
   try {
-    disabled.value = true
     const res: any = await postScript({
       model: form.value.model,
       type: form.value.type,
       content: form.value.content
     })
-    try {
-      if(form.value.type === 0) {
-        form.value.audio_script = JSON.parse(res.data)
-      } else {
-        form.value.movie_script = JSON.parse(res.data)
-      }
-    } catch (error: any) {
-      message.error(error.message)
+    if(form.value.type === 0) {
+      form.value.audio_script = JSON.parse(res.data)
+    } else {
+      form.value.movie_script = JSON.parse(res.data)
     }
-    disabled.value = false
-  } catch (error) {
-    disabled.value = false
+  } catch (error: any) {
+    message.error(error.message)
   }
+  loading.value = false
 }
 const onSave = async () => {
+  loading.value = true
   try {
-    disabled.value = true
     if((form.value.type === 0 && form.value.audio_script) || (form.value.type === 1 && form.value.movie_script)) {
       await postChapterLanguage({
         chapter_id: form.value.id,
@@ -262,11 +258,11 @@ const onSave = async () => {
     } else {
       message.error('剧本内容不能为空')
     }
-    disabled.value = false
     onClose()
   } catch (error) {
-    disabled.value = false
+    console.log(error)
   }
+  loading.value = false
 }
 const onClose = () => {
   hideModal();
@@ -290,15 +286,16 @@ const getSoundOptions = async () => {
   }
 }
 const getChapterInfo = async () => {
-  const res: any = await getChapterDetail({
-    id: payload.value.id
-  })
-  form.value.id = res.data.id
-  form.value.novel_id = res.data.novel_id
-  form.value.content = res.data.content
-  const chapter_language = res.data.languages.find((item: any) => item.language === 'zh')
-  if(chapter_language) {
-    try {
+  loading.value = true
+  try {
+    const res: any = await getChapterDetail({
+      id: payload.value.id
+    })
+    form.value.id = res.data.id
+    form.value.novel_id = res.data.novel_id
+    form.value.content = res.data.content
+    const chapter_language = res.data.languages.find((item: any) => item.language === 'zh')
+    if(chapter_language) {
       form.value.audio_script = chapter_language.audio_script ? JSON.parse(chapter_language.audio_script) : {
         role_list: [],
         scenes: []
@@ -307,10 +304,11 @@ const getChapterInfo = async () => {
         role_list: [],
         scenes: []
       }
-    } catch (error) {
-      console.log(error)
     }
+  } catch (error) {
+    console.log(error)
   }
+  loading.value = false
 }
 const handleChangeRole = (role: any) => {
   if(form.value.type === 0 ) {

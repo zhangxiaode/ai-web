@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-#191919 relative w-100% h-100%">
+  <div class="bg-#191919 relative w-100% h-100%" v-loading="loading">
     <div class="w-100% h-100% origin-top-left">
       <div class="absolute left-10% top-10% z-1 text-left w-80% h-80% flex flex-wrap overflow-auto">
         <div class="font-bold text-40px c-#fff leading-40px tracking-[1px] w-100%">欢迎来到丞尧智芯!</div>
@@ -120,6 +120,7 @@ const message = useMessage()
 const route = useRoute()
 const router = useRouter()
 const loginRef = ref<FormInst | null>(null);
+const loading: any = ref(false)
 const tabs = [
   {
     label: '密码登录',
@@ -132,8 +133,8 @@ const tabs = [
 ]
 const tabIndex = ref(0)
 const loginForm = ref({
-  phone: "13023672647",
-  password: "05cqwsbsy27",
+  phone: "",
+  password: "",
   confirmPassword: "",
   captcha_id: "",
   captcha_code: "",
@@ -246,6 +247,7 @@ const onLogin = async () => {
         return;
       }
       try {
+        loading.value = true
         const params: any = tabIndex.value === 0 ? {
           loginType: 1, // 0 验证码 1 密码
           phone: loginForm.value.phone,
@@ -264,6 +266,7 @@ const onLogin = async () => {
           router.replace('/layout')
         }
       } catch (err: any) {
+        loading.value = false
         console.log(err)
       }
     } else {
@@ -278,6 +281,7 @@ const onRegister = async () => {
         message.warning('请先阅读隐私政策和平台使用指南')
         return;
       }
+      loading.value = true
       try {
         const res: any = await regist({
           phone: loginForm.value.phone,
@@ -291,6 +295,7 @@ const onRegister = async () => {
       } catch (err: any) {
         console.log(err)
       }
+      loading.value = false
     } else {
       console.log(errors)
     }
@@ -303,6 +308,7 @@ const onModify = async () => {
         message.warning('请先阅读隐私政策和平台使用指南')
         return;
       }
+      loading.value = true
       try {
         if(loginForm.value.password !== loginForm.value.confirmPassword) {
           message.error('两次输入密码不一致，请检查输入密码')
@@ -322,6 +328,7 @@ const onModify = async () => {
       } catch (err: any) {
         console.log(err)
       }
+      loading.value = false
     } else {
       console.log(errors)
     }

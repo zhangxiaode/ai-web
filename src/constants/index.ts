@@ -20,17 +20,15 @@ export const gender_opts = [
 ]
 export const platform_opts = [
     {
-        label: '豆包',
+        label: '白泽知命',
         value: 1
     },
     {
-        label: '千问',
+        label: '白泽冰晶',
         value: 2
     }
 ]
-export const doubao_seedream_4_0_250828 = [
- /// qwen-image-plus / wan2.5-t2i-preview / qwen-image-edit-plus / wan2.5-i2i-preview
-]
 
 export * from "./character"
+export * from "./emotion"
 export * from "./order"

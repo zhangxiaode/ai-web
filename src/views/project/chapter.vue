@@ -39,7 +39,7 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 overflow-auto">
+    <div class="flex-1 overflow-auto" v-loading="loading">
       <div v-for="(item, index) in list" :key="index" class="h-114px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex justify-center items-normal">
           <div class="flex-1 flex flex-col justify-center ml-16px">
@@ -129,10 +129,11 @@ import NewChapterModal from './components/newChapterModal.vue';
 import TransformScriptModal from './components/transformScriptModal.vue';
 import CreateAudioBookModal from './components/createAudioBookModal.vue';
 
-const router = useRouter()
+// const router = useRouter()
 const route = useRoute()
 const dialog = useDialog()
 const message = useMessage()
+const loading: any = ref(false)
 let searchForm: any = ref({
   index: null
 });
@@ -177,12 +178,14 @@ const handleDelete = async (item: any) => {
     showIcon: false,
     closable: false,
     onPositiveClick: async () => {
+      loading.value = true
       try {
         await deleteChapter({
           id: item.id
         })
         getList()
       } catch (error) {
+        loading.value = false
         console.log(error)
       }
     },
@@ -192,6 +195,7 @@ const handleDelete = async (item: any) => {
   })
 }
 const getList = async () => {
+  loading.value = true
   try {
     const res: any = await getChapterList({
       novel_id: route.query.id,
@@ -204,6 +208,7 @@ const getList = async () => {
   } catch (error) {
     console.log(error)
   }
+  loading.value = false
 }
 const handleSizeChange = (val: number) => {
   page.value = 1;
@@ -226,12 +231,12 @@ const createAudiobook = (item: any) => {
     novel_id: item.novel_id
   })
 };
-const goShot = (item: any) => {
-  router.push(`/layout/project/shot?novel_id=${route.query.id}&chapter_id=${item.id}`)
-};
-const mergeVideo = (item: any) => {
-  router.push(`/layout/project/shot?novel_id=${route.query.id}&chapter_id=${item.id}`)
-};
+// const goShot = (item: any) => {
+//   router.push(`/layout/project/shot?novel_id=${route.query.id}&chapter_id=${item.id}`)
+// };
+// const mergeVideo = (item: any) => {
+//   router.push(`/layout/project/shot?novel_id=${route.query.id}&chapter_id=${item.id}`)
+// };
 onMounted(() => {
   getList()
 })

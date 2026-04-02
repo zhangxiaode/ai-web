@@ -5,7 +5,7 @@
       <slot name="header">训练音色</slot>
     </template>
     <slot>
-      <div class="new-content">
+      <div class="new-content" v-loading="loading">
         <n-form
           class="form"
           ref="formRef"
@@ -17,7 +17,7 @@
           size="medium"
         >
           <n-form-item label="训练音频:" path="training_path">
-            <UploadObs accept="audio/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `invoice/${form.platform === 1 ? 'doubao' : 'qwen'}/${user_id}/${file_name}`" @change="({ resource_path }) => form.training_path = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs ref="uploadRef" accept="audio/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `invoice/${form.platform === 1 ? 'zhiming' : 'bingjing'}/${user_id}/${file_name}`" @change="({ resource_path }) => form.training_path = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -25,7 +25,7 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
       </slot>
     </template>
   </n-modal>
@@ -42,7 +42,7 @@ const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('training-voice-modal');
 const message = useMessage()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const form = ref({
   id: null,
@@ -55,7 +55,7 @@ const rules = {
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      disabled.value = true
+      loading.value = true
       let params = {
         id: form.value.id,
         training_path: form.value.training_path[0]
@@ -72,7 +72,7 @@ const onSubmit = async () => {
       } catch (error) {
         console.log(error)
       }
-      disabled.value = false
+      loading.value = false
     }
   })
 }

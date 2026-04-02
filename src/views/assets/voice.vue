@@ -8,15 +8,15 @@
       <n-form-item path="name" label="音色名称">
         <n-input v-model:value="searchForm.name" size="small" placeholder="请输入音色名称" @keyup.enter.native="getList" />
       </n-form-item>
-      <n-form-item path="platform" label="音色平台">
+      <n-form-item path="platform" label="音色模型">
         <n-select
           v-model:value="searchForm.platform"
           class="w-150"
           size="small"
-          placeholder="请选择音色平台"
+          placeholder="请选择音色模型"
           :options="[
-            { label: '豆包', value: 1 },
-            { label: '千问', value: 2 }
+            { label: '白泽知命', value: 1 },
+            { label: '白泽冰晶', value: 2 }
           ]"
           clearable
         />
@@ -52,13 +52,13 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 overflow-auto">
+    <div class="flex-1 overflow-auto" v-loading="loading">
       <div v-for="(item, index) in voice_list" :key="index" class="h-30px m-16px p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex flex-col justify-center items-normal">
           <div class="flex items-center">
             <div class="text-14px c-#fff mr-12px">{{ item.name }}</div>
             <div class="text-14px c-#fff mx-12px">({{ item.gender === 1 ? "男" : item.gender === 2 ? "女" : "-" }})</div>
-            <div class="text-12px c-#ccc mx-12px">({{ item.platform === 1 ? "豆包" : item.platform === 2 ? "千问" : "-" }})</div>
+            <div class="text-12px c-#ccc mx-12px">({{ item.platform === 1 ? "白泽知命" : item.platform === 2 ? "白泽冰晶" : "-" }})</div>
             <div class="text-12px c-#666 ml-12px">({{ item.language === 'zh' ? "中文" : item.language === 'en' ? "英文" : "" }})</div>
           </div>
         </div>
@@ -125,6 +125,7 @@ import TrainingVoiceModal from './components/trainingVoiceModal.vue';
 
 const dialog = useDialog()
 const message = useMessage()
+const loading: any = ref(false)
 let searchForm: any = ref({
   platform: null,
   name: ''
@@ -198,12 +199,14 @@ const handleDelete = async (item: any) => {
     showIcon: false,
     closable: false,
     onPositiveClick: async () => {
+      loading.value = true
       try {
         await deleteVoice({
           id: item.id
         })
         getList()
       } catch (error) {
+        loading.value = false
         console.log(error)
       }
     },
@@ -213,6 +216,7 @@ const handleDelete = async (item: any) => {
   })
 }
 const getList = async () => {
+  loading.value = true
   try {
     const res: any = await getVoiceList({
       page: page.value,
@@ -225,6 +229,7 @@ const getList = async () => {
   } catch (error) {
     console.log(error)
   }
+  loading.value = false
 }
 const handleSizeChange = (val: number) => {
   page.value = 1;

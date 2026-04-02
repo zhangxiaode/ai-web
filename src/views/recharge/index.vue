@@ -1,6 +1,6 @@
 <template>
   <div class="c-#fff h-100% overflow-auto">
-    <div class="p-32px flex flex-column">
+    <div class="p-32px flex flex-column" v-loading="loading">
       <div class="flex justify-center items-center">
         <n-radio-group v-model:value="vip_time_type" name="radiobuttongroup1">
           <n-radio-button
@@ -62,6 +62,7 @@ import ConfirmModal from './components/confirmModal.vue';
 
 const message = useMessage()
 const { showModal: showConfirmModal } = useModal("confirm-modal");
+const loading: any = ref(false)
 
 const user_info: any = ref(null)
 const month_vip_list: any = ref([])
@@ -104,19 +105,27 @@ const formatData = (list: Array<any>) => {
 }
 
 const getData = async () => {
-  const res: any = await getProductList()
-  if (res.code == 200) {
-    month_vip_list.value = formatData(res.data.month_vip_list)
-    quarter_vip_list.value = formatData(res.data.quarter_vip_list)
-    year_vip_list.value = formatData(res.data.year_vip_list)
-    coin_list.value = formatData(res.data.coin_list)
+  loading.value = true
+  try {
+    const res: any = await getProductList()
+    if (res.code == 200) {
+      month_vip_list.value = formatData(res.data.month_vip_list)
+      quarter_vip_list.value = formatData(res.data.quarter_vip_list)
+      year_vip_list.value = formatData(res.data.year_vip_list)
+      coin_list.value = formatData(res.data.coin_list)
+    }
+  } catch (error) {
+    console.log(error)
   }
+  loading.value = false
 }
 const handlePay = async (params: any) => {
+  loading.value = true
   const res: any = await postOrder({
     product_id: params.product.id,
     platform: params.platform
   })
+  loading.value = false
   if(res.code == 200) {
     showConfirmModal({
       platform: params.platform,

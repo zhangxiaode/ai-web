@@ -39,7 +39,7 @@
         </n-button>
       </n-form-item>
     </n-form>
-    <div class="flex-1 overflow-auto agent-wrap">
+    <div class="flex-1 overflow-auto agent-wrap" v-loading="loading">
       <div v-for="(item, index) in agent_list" :key="index" class="h-30px float-left p-12px rounded-8px bg-#252525 flex flex-between items-center">
         <div class="flex-1 flex flex-col justify-center items-normal">
           <div class="flex items-center">
@@ -109,6 +109,7 @@ import AgentVideoModal from './components/agentVideoModal.vue';
 
 const dialog = useDialog()
 const message = useMessage()
+const loading: any = ref(false)
 let searchForm: any = ref({
   name: ''
 });
@@ -146,6 +147,7 @@ const handleCreateAgent = (item: any) => {
     showIcon: false,
     closable: false,
     onPositiveClick: async () => {
+      loading.value = true
       try {
         await createAgent({
           id: item.id
@@ -153,6 +155,7 @@ const handleCreateAgent = (item: any) => {
         getList()
         message.success('克隆人已生成')
       } catch (error) {
+        loading.value = false
         console.log(error)
       }
     },
@@ -179,12 +182,14 @@ const handleDelete = async (item: any) => {
     showIcon: false,
     closable: false,
     onPositiveClick: async () => {
+      loading.value = true
       try {
         await deleteAgent({
           id: item.id
         })
         getList()
       } catch (error) {
+        loading.value = false
         console.log(error)
       }
     },
@@ -194,6 +199,7 @@ const handleDelete = async (item: any) => {
   })
 }
 const getList = async () => {
+  loading.value = true
   try {
     const res: any = await getAgentList({
       page: page.value,
@@ -205,6 +211,7 @@ const getList = async () => {
   } catch (error) {
     console.log(error)
   }
+  loading.value = false
 }
 const handleSizeChange = (val: number) => {
   page.value = 1;

@@ -5,7 +5,7 @@
       <slot name="header">生成有声书</slot>
     </template>
     <slot>
-      <div class="audio-book flex flex-col items-normal">
+      <div class="audio-book flex flex-col items-normal" v-loading="loading">
         <div class="w-100% flex justify-between items-normal">
           <div class="flex-1 m-5px h-500px overflow-auto">
             <div v-for="(role, index) in form.audio_script.role_list" :key="index" class="bg-#333 my-5px p-8px">
@@ -93,9 +93,9 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onTransformAudioAll, message, 2000)">全部转换</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onTransformAudioAll, message, 2000)">全部转换</n-button>
         <AudioPlayer v-if="form.signed_audio_path" :src="form.signed_audio_path" class="mx-6px" />
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSave, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSave, message, 2000)">保存</n-button>
       </slot>
     </template>
   </n-modal>
@@ -104,7 +104,7 @@
 <script lang="ts" setup>
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { getEmotion } from '@/constants/emotion'
+import { getEmotion } from '@/constants/index';
 import { getCharacterList, getSoundList, getChapterDetail, postScriptAudio, postScriptAudioAll, postChapterLanguage, mergeScriptAudio } from "@/apis/index";
 import AudioPlayer from '@/components/audioPlayer.vue';
 
@@ -112,7 +112,7 @@ const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('createAudioBook-modal');
 const message = useMessage()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const form: any = ref({
   id: null,
   index: null,
@@ -126,6 +126,7 @@ const form: any = ref({
 const role_options = ref([])
 const sound_options = ref([])
 const onTransformAudio = async (ele: any) => {
+  loading.value = true
   try {
     const res: any = await postScriptAudio({
       chapter_id: form.value.id,
@@ -142,24 +143,25 @@ const onTransformAudio = async (ele: any) => {
   } catch (error) {
     console.log(error)
   }
+  loading.value = false
 }
 const onTransformAudioAll = async () => {
+  loading.value = true
   try {
-    disabled.value = true
     const res: any = await postScriptAudioAll({
       chapter_id: form.value.id,
       chapter_index: form.value.index,
       scenes: form.value.audio_script.scenes,
     })
     form.value.audio_script.scenes = res.data
-    disabled.value = false
   } catch (error) {
-    disabled.value = false
+    console.log(error)
   }
+  loading.value = false
 }
 const onSave = async () => {
+  loading.value = true
   try {
-    disabled.value = true
     await postChapterLanguage({
       chapter_id: form.value.id,
       type: 0,
@@ -189,11 +191,11 @@ const onSave = async () => {
       })
     })
     message.success('剧本保存成功')
-    disabled.value = false
     onClose()
   } catch (error) {
-    disabled.value = false
+    console.log(error)
   }
+  loading.value = false
 }
 const onClose = () => {
   hideModal();
@@ -217,24 +219,30 @@ const getSoundOptions = async () => {
   }
 }
 const getChapterInfo = async () => {
-  const res: any = await getChapterDetail({
-    id: payload.value.id
-  })
-  form.value.id = res.data.id
-  form.value.index = res.data.index
-  form.value.novel_id = res.data.novel_id
-  const chapter_language = res.data.languages.find((item: any) => item.language === 'zh')
-  if(chapter_language) {
-    try {
-      form.value.signed_audio_path = chapter_language.signed_audio_path
-      form.value.audio_script = chapter_language.audio_script ? JSON.parse(chapter_language.audio_script) : {
-        role_list: [],
-        scenes: []
+  loading.value = true
+  try {
+    const res: any = await getChapterDetail({
+      id: payload.value.id
+    })
+    form.value.id = res.data.id
+    form.value.index = res.data.index
+    form.value.novel_id = res.data.novel_id
+    const chapter_language = res.data.languages.find((item: any) => item.language === 'zh')
+    if(chapter_language) {
+      try {
+        form.value.signed_audio_path = chapter_language.signed_audio_path
+        form.value.audio_script = chapter_language.audio_script ? JSON.parse(chapter_language.audio_script) : {
+          role_list: [],
+          scenes: []
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
     }
+  } catch (error) {
+    console.log(error)
   }
+  loading.value = false
 }
 const handleChangeRole = (role: any) => {
   form.value.audio_script.scenes = form.value.audio_script.scenes.map((scene: any) => {

@@ -5,7 +5,7 @@
       <slot name="header">创建场景</slot>
     </template>
     <slot>
-      <div class="create-content">
+      <div class="create-content" v-loading="loading">
         <n-form
           class="form max-h-400px overflow-auto"
           ref="formRef"
@@ -21,11 +21,11 @@
               v-model:value="form.model"
               placeholder="请选择AI模型"
               :options="[
-                { label: '豆包seedream-4-0', value: 'doubao-seedream-4-0-250828' },
-                { label: '千问image-plus', value: 'qwen-image-plus' },
-                { label: '千问image-edit-plus', value: 'qwen-image-edit-plus' },
-                { label: '万象2.5-t2i-preview', value: 'wan2.5-t2i-preview' },
-                { label: '万象2.5-i2i-preview', value: 'wan2.5-i2i-preview' }
+                { label: '白泽知命文生图', value: 'cyzx-image-d-seedream' },
+                { label: '白泽冰晶图像增强', value: 'cyzx-image-q-plus' },
+                { label: '白泽冰晶图像编辑增强版', value: 'cyzx-image-q-edit' },
+                { label: '白泽冰晶文生图预览版', value: 'cyzx-image-q-t2i' },
+                { label: '白泽冰晶图生图预览版', value: 'cyzx-image-q-i2i' }
               ]"
               clearable
               @update:value="handleChangeModel()"
@@ -34,16 +34,16 @@
           <n-form-item label="提示词:" path="msg">
             <n-input v-model:value="form.msg" type="textarea" placeholder="请输入提示词" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="期望生成图片数量:" path="output_image_number">
+          <n-form-item v-if="form.model === 'cyzx-image-d-seedream' || form.model === 'cyzx-image-q-t2i' || form.model === 'cyzx-image-q-edit' || form.model === 'cyzx-image-q-i2i'" label="期望生成图片数量:" path="output_image_number">
             <n-input-number v-model:value="form.output_image_number" :show-button="false" placeholder="请输入期望生成图片数量" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片宽度(像素):" path="output_image_width">
+          <n-form-item v-if="form.model === 'cyzx-image-d-seedream' || form.model === 'cyzx-image-q-t2i' || form.model === 'cyzx-image-q-edit'" label="生成图片宽度(像素):" path="output_image_width">
             <n-input-number v-model:value="form.output_image_width" :show-button="false" placeholder="请输入生成图片宽度" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'wan2.5-t2i-preview' || form.model === 'qwen-image-edit-plus'" label="生成图片高度(像素):" path="output_image_height">
+          <n-form-item v-if="form.model === 'cyzx-image-d-seedream' || form.model === 'cyzx-image-q-t2i' || form.model === 'cyzx-image-q-edit'" label="生成图片高度(像素):" path="output_image_height">
             <n-input-number v-model:value="form.output_image_height" :show-button="false" placeholder="请输入生成图片高度" />
           </n-form-item>
-          <n-form-item v-if="form.model === 'qwen-image-plus'" label="生成图片分辨率:" path="size">
+          <n-form-item v-if="form.model === 'cyzx-image-q-plus'" label="生成图片分辨率:" path="size">
             <n-select
               v-model:value="form.size"
               placeholder="请选择图片分辨率"
@@ -52,7 +52,7 @@
               @update:value="handleChangeSize()"
             />
           </n-form-item>
-          <n-form-item v-if="form.model === 'doubao-seedream-4-0-250828' || form.model === 'qwen-image-edit-plus' || form.model === 'wan2.5-i2i-preview'" label="上传图片:" path="images">
+          <n-form-item v-if="form.model === 'cyzx-image-d-seedream' || form.model === 'cyzx-image-q-edit' || form.model === 'cyzx-image-q-i2i'" label="上传图片:" path="images">
             <UploadObs :accept="suffix_accept" :max="form_rules.input_images_max || 1" :size_max="form_rules.input_image_size_max" :get_file_path="({ file_name }) => `novel/${route.query.id}/scene/${file_name}`" @change="({ resource_path }) => form.images = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
@@ -61,7 +61,7 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSubmit, message, 2000)">提交</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSubmit, message, 2000)">提交</n-button>
       </slot>
     </template>
   </n-modal>
@@ -71,7 +71,7 @@
 import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
-import { createCharacter, getOptions } from "@/apis/index";
+import { createScene, getOptions } from "@/apis/index";
 import UploadObs from '@/components/uploadObs.vue';
 
 const route = useRoute()
@@ -80,7 +80,7 @@ const { visible, hideModal } = useModal('create-modal');
 const message = useMessage()
 const dialog = useDialog()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const formRef = ref<FormInst | null>(null)
 const form: any = ref({
   model: null,
@@ -117,7 +117,7 @@ const rules = computed(() => {
       {min: form_rules.value.output_image_height_min, type: "number", message: `生成图片高度不能小于${form_rules.value.output_image_height_min}`, trigger: ['blur', 'change']},
       {max: form_rules.value.output_image_height_max, type: "number", message: `生成图片高度不能大于${form_rules.value.output_image_height_max}`, trigger: ['blur', 'change']}
     ] : [],
-    images: form.value.model === 'qwen-image-edit-plus' || form.value.model === 'wan2.5-i2i-preview' ? [
+    images: form.value.model === 'cyzx-image-q-edit' || form.value.model === 'cyzx-image-q-i2i' ? [
       {required: true, type: 'array', message: "参考图不能为空", trigger: ['blur', 'change']}
     ] : [],
   }
@@ -156,12 +156,12 @@ const handleChangeSize = async () => {
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      disabled.value = true
+      loading.value = true
       try {
         const params: any = JSON.parse(JSON.stringify(form.value))
         params['novel_id'] = route.query.id
         delete params['size'];
-        const res: any = await createCharacter(params)
+        const res: any = await createScene(params)
         if(res.code == 200 && res?.data && res?.data.length > 0) {
           let current = ref(0)
           dialog.warning({
@@ -193,27 +193,13 @@ const onSubmit = async () => {
       } catch (error) {
         console.log(error)
       }
-      disabled.value = false
+      loading.value = false
     }
   })
 }
 const onClose = () => {
   hideModal();
 }
-watch(visible, (newValue: any) => {
-  if(newValue) {
-  } else {
-    // form.value = {
-    //   model: null,
-    //   msg: '',
-    //   output_image_number: null,
-    //   output_image_width: null,
-    //   output_image_height: null,
-    //   images: [],
-    //   size: null
-    // }
-  }
-});
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,7 @@
       <slot name="header">{{ form.id ? '编辑' : '新增' }}音色</slot>
     </template>
     <slot>
-      <div class="new-content">
+      <div class="new-content" v-loading="loading">
         <n-form
           class="form"
           ref="formRef"
@@ -19,10 +19,10 @@
           <n-form-item label="音色名称:" path="name">
             <n-input v-model:value="form.name" placeholder="请输入音色名称" />
           </n-form-item>
-          <n-form-item label="音色平台:" path="platform">
+          <n-form-item label="音色模型:" path="platform">
             <n-select
               v-model:value="form.platform"
-              placeholder="请选择音色平台"
+              placeholder="请选择音色模型"
               :options="platform_opts"
               clearable
             />
@@ -47,7 +47,7 @@
             />
           </n-form-item>
           <n-form-item label="训练音频:" path="training_path">
-            <UploadObs accept="audio/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `invoice/${form.platform === 1 ? 'doubao' : 'qwen'}/${user_id}/${file_name}`" @change="({ resource_path }) => form.training_path = resource_path.map((item: any) => item.original_url)" />
+            <UploadObs ref="uploadRef" accept="audio/*" :max="1" :size_max="300" :get_file_path="({ user_id, file_name }) => `invoice/${form.platform === 1 ? 'zhiming' : 'bingjing'}/${user_id}/${file_name}`" @change="({ resource_path }) => form.training_path = resource_path.map((item: any) => item.original_url)" />
           </n-form-item>
         </n-form>
       </div>
@@ -55,7 +55,7 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="disabled" :disabled="disabled" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSubmit, message, 2000)">保存</n-button>
       </slot>
     </template>
   </n-modal>
@@ -66,15 +66,16 @@ import { FormInst } from 'naive-ui';
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { language_opts, gender_opts, platform_opts } from '@/constants/index';
-import { getVoiceDetail, postVoice, putVoice } from "@/apis/index";
+import { getTemporaryUrl, getVoiceDetail, postVoice, putVoice } from "@/apis/index";
 import UploadObs from '@/components/uploadObs.vue';
 
 const emit = defineEmits(["save"]);
 const { visible, payload, hideModal } = useModal('new-voice-modal');
 const message = useMessage()
 
-const disabled: any = ref(false)
+const loading: any = ref(false)
 const formRef = ref<FormInst | null>(null)
+const uploadRef: any = ref(null)
 const form: any = ref({
   id: null,
   name: '',
@@ -87,12 +88,12 @@ const form: any = ref({
 });
 const rules = {
   name: {required: true, message: "音色名称不能为空", trigger: ['blur', 'change']},
-  platform: {required: true, type: "number", message: "音色平台不能为空", trigger: ['blur', 'change']}
+  platform: {required: true, type: "number", message: "音色模型不能为空", trigger: ['blur', 'change']}
 };
 const onSubmit = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      disabled.value = true
+      loading.value = true
       let params = {
         name: form.value.name,
         platform: form.value.platform,
@@ -125,7 +126,7 @@ const onSubmit = async () => {
       } catch (error) {
         console.log(error)
       }
-      disabled.value = false
+      loading.value = false
     }
   })
 }
@@ -144,6 +145,13 @@ const getVoiceInfo = async () => {
   form.value.voice_id = res.data.voice_id
   form.value.language = res.data.language
   form.value.training_path = [ res.data.training_path ]
+  const response: any = await getTemporaryUrl({ path: res.data.training_path })
+  if(response.data) {
+    uploadRef.value?.setResource([{
+      original_url: res.data.training_path,
+      sign_path: response.data
+    }])
+  }
 }
 watch(visible, (newValue: any) => {
   if(newValue) {
