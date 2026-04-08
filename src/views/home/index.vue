@@ -6,6 +6,13 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { createSound } from "@/apis/assets";
+createSound({
+  name: 'ai_sound_1',
+  prompt: '宽敞的房车，适合拍摄震撼的电影预告片片段',
+  duration: 5,
+  loop: false
+})
 </script>
 
 <style lang="scss" scoped>

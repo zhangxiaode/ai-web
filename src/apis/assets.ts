@@ -104,6 +104,15 @@ export function postSound(data: any) {
   });
 }
 
+// AI创建音效
+export function createSound(data: any) {
+  return request({
+    url: `/sound/create`,
+    method: "post",
+    data
+  });
+}
+
 // 更新音效
 export function putSound(data: any) {
   return request({
