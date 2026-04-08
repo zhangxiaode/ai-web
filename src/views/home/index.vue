@@ -8,7 +8,7 @@
 <script lang="ts" setup>
 import { createSound } from "@/apis/assets";
 createSound({
-  name: 'ai_sound_2',
+  name: 'ai_sound_3',
   prompt: 'metal sword clash, sharp steel impact, clean ringing sound, suitable for action scenes and fantasy settings',
   duration: 5,
   loop: false
