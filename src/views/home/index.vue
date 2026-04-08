@@ -8,8 +8,8 @@
 <script lang="ts" setup>
 import { createSound } from "@/apis/assets";
 createSound({
-  name: 'ai_sound_1',
-  prompt: '宽敞的房车，适合拍摄震撼的电影预告片片段',
+  name: 'ai_sound_2',
+  prompt: 'metal sword clash, sharp steel impact, clean ringing sound, suitable for action scenes and fantasy settings',
   duration: 5,
   loop: false
 })
