@@ -127,6 +127,7 @@
         <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onTransformSoundAll, message, 2000)">全部转换音效</n-button>
         <AudioPlayer v-if="form.signed_audio_path" :src="form.signed_audio_path" class="mx-6px" />
         <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSave, message, 2000)">保存</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onMerge, message, 2000)">生成有声书</n-button>
       </slot>
     </template>
   </n-modal>
@@ -228,6 +229,16 @@ const onSave = async () => {
       type: 0,
       script: JSON.stringify(form.value.audio_script),
     })
+    message.success('剧本保存成功')
+    onClose()
+  } catch (error) {
+    console.log(error)
+  }
+  loading.value = false
+}
+const onMerge = async () => {
+  loading.value = true
+  try {
     await mergeScriptAudio({
       chapter_id: form.value.id,
       chapter_index: form.value.index,
@@ -251,7 +262,7 @@ const onSave = async () => {
         }
       })
     })
-    message.success('剧本保存成功')
+    message.success('有声书合成成功')
     onClose()
   } catch (error) {
     console.log(error)
