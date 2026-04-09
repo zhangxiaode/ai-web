@@ -65,10 +65,28 @@ export function postScriptAudio(data: any) {
   });
 }
 
+// 剧本内容生成音效
+export function postScriptSound(data: any) {
+  return request({
+    url: `/chapter/script/sound`,
+    method: "post",
+    data
+  });
+}
+
 // 剧本内容根据音色生成全部音频
 export function postScriptAudioAll(data: any) {
   return request({
     url: `/chapter/script/audio/all`,
+    method: "post",
+    data
+  });
+}
+
+// 剧本内容生成全部音效
+export function postScriptSoundAll(data: any) {
+  return request({
+    url: `/chapter/script/sound/all`,
     method: "post",
     data
   });

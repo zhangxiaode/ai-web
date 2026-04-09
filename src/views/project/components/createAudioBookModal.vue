@@ -56,7 +56,7 @@
                 </div>
                 <div v-if="ele.element_type === 'sound_effect'" class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">关联音效: </div>
-                  <div class="flex-1 text-14px c-#fff">
+                  <div class="flex-1 text-14px c-#fff flex items-center">
                     <n-select
                       v-model:value="ele.sound_id"
                       class="w-200px"
@@ -66,6 +66,8 @@
                       label-field="name"
                       clearable
                     />
+                    <n-button type="primary" class="ml-12px" size="small" @click="onTransformSound(ele)">AI生成音效</n-button>
+                    <AudioPlayer v-if="ele.api_key" :src="ele.api_key" class="mx-6px" />
                   </div>
                 </div>
                 <div v-else class="flex items-center justify-between my-5px">
@@ -105,6 +107,14 @@
                 <div class="w-50% text-14px c-#999 my-4px">白泽冰晶企业版: 34尧币/千字符</div>
               </div>
             </div>
+            <div class="w-100% text-16px font-bold c-#a5a5a5 my-4px">音效合成定价规则：</div>
+            <div class="flex w-100% flex flex-wrap">
+              <div class="w-20% text-14px c-#999 my-4px">免费版: 9尧币/秒</div>
+              <div class="w-20% text-14px c-#999 my-4px">标准版: 8尧币/秒</div>
+              <div class="w-20% text-14px c-#999 my-4px">专业版: 7尧币/秒</div>
+              <div class="w-20% text-14px c-#999 my-4px">旗舰版: 6尧币/秒</div>
+              <div class="w-20% text-14px c-#999 my-4px">企业版: 5尧币/秒</div>
+            </div>
             <div class="w-100% text-12px c-#696969 mt-8px">字符数 => 字数计算规则（汉字：2字符、英文字母/数字/标点/空格：1字符、计算文本长度时，SSML标签内容也包含在内）</div>
           </div>
         </div>
@@ -113,7 +123,8 @@
     <template #action>
       <slot name="action">
         <n-button class="btn" size="small" @click="onClose()">取消</n-button>
-        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onTransformAudioAll, message, 2000)">全部转换</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onTransformAudioAll, message, 2000)">全部转换人声</n-button>
+        <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onTransformSoundAll, message, 2000)">全部转换音效</n-button>
         <AudioPlayer v-if="form.signed_audio_path" :src="form.signed_audio_path" class="mx-6px" />
         <n-button class="btn" type="primary" size="small" :loading="loading" :disabled="loading" @click="debouncing(onSave, message, 2000)">保存</n-button>
       </slot>
@@ -125,7 +136,7 @@
 import { useModal } from "@/hooks";
 import { debouncing } from '@/utils/index';
 import { getEmotion } from '@/constants/index';
-import { getCharacterList, getSoundList, getChapterDetail, postScriptAudio, postScriptAudioAll, postChapterLanguage, mergeScriptAudio } from "@/apis/index";
+import { getCharacterList, getSoundList, getChapterDetail, postScriptAudio, postScriptSound, postScriptAudioAll, postScriptSoundAll, postChapterLanguage, mergeScriptAudio } from "@/apis/index";
 import AudioPlayer from '@/components/audioPlayer.vue';
 
 const emit = defineEmits(["save"]);
@@ -165,10 +176,40 @@ const onTransformAudio = async (ele: any) => {
   }
   loading.value = false
 }
+const onTransformSound = async (ele: any) => {
+  loading.value = true
+  try {
+    const res: any = await postScriptSound({
+      chapter_id: form.value.id,
+      chapter_index: form.value.index,
+      content: ele.content,
+      duration: ele.duration,
+    })
+    ele['api_key'] = res.data.api_key
+    ele['signed_url'] = res.data.signed_url
+  } catch (error) {
+    console.log(error)
+  }
+  loading.value = false
+}
 const onTransformAudioAll = async () => {
   loading.value = true
   try {
     const res: any = await postScriptAudioAll({
+      chapter_id: form.value.id,
+      chapter_index: form.value.index,
+      scenes: form.value.audio_script.scenes,
+    })
+    form.value.audio_script.scenes = res.data
+  } catch (error) {
+    console.log(error)
+  }
+  loading.value = false
+}
+const onTransformSoundAll = async () => {
+  loading.value = true
+  try {
+    const res: any = await postScriptSoundAll({
       chapter_id: form.value.id,
       chapter_index: form.value.index,
       scenes: form.value.audio_script.scenes,
