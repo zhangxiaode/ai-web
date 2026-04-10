@@ -63,7 +63,7 @@
           </div>
         </div>
         <div class="flex justify-between items-center">
-          <n-button class="mx-6px" type="primary" size="tiny"  @click="handleEdit(item)">
+          <n-button class="mx-6px" type="primary" size="small"  @click="handleEdit(item)">
             <template #icon>
               <n-icon>
                 <CreateOutline />
@@ -71,7 +71,7 @@
             </template>
             编辑
           </n-button>
-          <n-button v-if="item.voice_id" class="mx-6px" type="primary" size="tiny"  @click="handleTraining(item)">
+          <n-button v-if="item.voice_id" class="mx-6px" type="primary" size="small"  @click="handleTraining(item)">
             <template #icon>
               <n-icon>
                 <HammerOutline />
@@ -79,7 +79,7 @@
             </template>
             训练
           </n-button>
-          <n-button v-if="item.platform === 1 && item.is_payed === 0" class="mx-6px" type="primary" size="tiny"  @click="handlePay(item)">
+          <n-button v-if="item.platform === 1 && item.is_payed === 0" class="mx-6px" type="primary" size="small"  @click="handlePay(item)">
             <template #icon>
               <n-icon>
                 <LogoUsd />
@@ -87,7 +87,7 @@
             </template>
             支付
           </n-button>
-          <n-button class="mx-6px" type="error" size="tiny"  @click="handleDelete(item)">
+          <n-button class="mx-6px" type="error" size="small"  @click="handleDelete(item)">
             <template #icon>
               <n-icon>
                 <TrashOutline />
