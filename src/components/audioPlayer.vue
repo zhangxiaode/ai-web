@@ -25,8 +25,7 @@ const handlePlay = async () => {
   if(audio.value) {
     audio.value.stop()
   }
-  console.log(111, props.src)
-  if(props.src.includes('chengyao.obs.cn')) {
+  if(/^https?:\/\/.+/i.test(props.src)) {
     audio.value = new Audio(props.src);
   } else {
     const response: any = await getTemporaryUrl({ path: props.src })
