@@ -9,8 +9,8 @@
 				:row-key="(row: any) => row.id"
 				:columns="columns"
 				:data="tableData"
+				:max-height="tableHeight"
 				scroll-x
-				class="table-wrapper"
 			/>
 		</div>
 		<n-pagination
@@ -28,11 +28,20 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { FormInst } from 'naive-ui';
 import { getOrderList, getOrderDetail } from "@/apis/index";
 import { Copy } from "@vicons/ionicons5";
 import { copyToClip } from "@/utils/index";
 import { formatTradeStatus } from "@/constants/index";
 
+const tableRef = ref<FormInst | null>(null)
+const tableHeight = computed(() => {
+  const dom: any = tableRef.value;
+  const orderHeight: number = dom ? dom.clientHeight : 500
+  const header = document.getElementsByClassName('n-data-table-base-table-header')[0]
+  const headerHeight: number = header ? header.clientHeight + 2 : 42
+  return orderHeight - headerHeight
+});
 const message = useMessage()
 const dialog = useDialog()
 const loading = ref(false)
