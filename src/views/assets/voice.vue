@@ -60,6 +60,7 @@
             <div class="text-14px c-#fff mx-12px">({{ item.gender === 1 ? "男" : item.gender === 2 ? "女" : "-" }})</div>
             <div class="text-12px c-#ccc mx-12px">({{ item.platform === 1 ? "白泽知命" : item.platform === 2 ? "白泽冰晶" : "-" }})</div>
             <div class="text-12px c-#666 ml-12px">({{ item.language === 'zh' ? "中文" : item.language === 'en' ? "英文" : "" }})</div>
+            <div class="text-12px c-#666 ml-12px">(剩余训练次数：{{ item.training_times }})</div>
           </div>
         </div>
         <div class="flex justify-between items-center">
