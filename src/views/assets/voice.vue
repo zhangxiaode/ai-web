@@ -96,7 +96,7 @@
             </template>
             删除
           </n-button>
-          <AudioPlayer v-if="item.resource_path" :src="item.resource_path" class="mx-6px" />
+          <AudioPlayer v-if="!item.is_public && item.resource_path" :src="item.resource_path" class="mx-6px" />
         </div>
       </div>
     </div>
