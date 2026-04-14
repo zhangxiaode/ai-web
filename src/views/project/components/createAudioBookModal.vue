@@ -52,7 +52,9 @@
                 </div>
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">内容: </div>
-                  <div class="flex-1 text-14px c-#fff">{{ ele.content }}</div>
+                  <div class="flex-1 text-14px c-#fff">
+                    <n-input v-model:value="ele.content" type="textarea" :autosize="{ minRows: 1 }" placeholder="请输入内容" />
+                  </div>
                 </div>
                 <div v-if="ele.element_type === 'sound_effect'" class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">关联音效: </div>
@@ -60,7 +62,7 @@
                     <n-select
                       v-model:value="ele.sound_id"
                       class="w-200px"
-                      placeholder="请选择关联角色"
+                      placeholder="请选择关联音效"
                       :options="sound_options"
                       value-field="id"
                       label-field="name"
