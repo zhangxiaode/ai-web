@@ -58,7 +58,7 @@
                 </div>
                 <div v-if="ele.element_type === 'sound_effect'" class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">关联音效: </div>
-                  <div class="flex-1 text-14px c-#fff flex items-center">
+                  <div class="text-14px c-#fff flex items-center">
                     <n-select
                       v-model:value="ele.sound_id"
                       class="w-200px"
@@ -68,6 +68,14 @@
                       label-field="name"
                       clearable
                     />
+                  </div>
+                  <div class="text-12px c-#fff mr-12px w-80px text-right">音效时长: </div>
+                  <div class="text-14px c-#fff flex items-center">
+                    <n-input-number :bordered="false" :show-button="false" class="ml-12px w-80px" v-model:value="ele.duration" :showClear="false" placeholder="请输入">
+                      <template #suffix>秒</template>
+                    </n-input-number>
+                  </div>
+                  <div class="flex-1 text-14px c-#fff flex items-center">
                     <n-button type="primary" class="ml-12px" size="small" @click="onTransformSound(ele)">AI生成音效</n-button>
                     <AudioPlayer v-if="ele.api_key" :src="ele.api_key" class="mx-6px" />
                   </div>
@@ -84,6 +92,11 @@
                       label-field="name"
                       clearable
                     />
+                    <!-- 情绪："emotion": "从下方情感列表中选择唯一英文标识，贴合角色当下情绪",
+                    happy（开心）、sad（悲伤）、angry（生气）、surprised（惊讶）、fear（恐惧）、hate（厌恶）、excited（激动）、coldness（冷漠）、neutral（中性）、depressed（沮丧）、lovey-dovey（撒娇）、shy（害羞）、comfort（安慰鼓励）、tension（咆哮/焦急）、tender（温柔）、storytelling（讲故事/自然讲述）、radio（情感电台）、magnetic（磁性）、advertising（广告营销）、vocal-fry（气泡音）、ASMR（低语）、news（新闻播报）、entertainment（娱乐八卦）、dialect（方言）
+                    情绪值："emotion_scale": "1~5的整数，不带双引号，情绪越强烈数值越大",
+                    语速："speech_rate": "0~100的整数，不带双引号，100=2倍速，0=1倍速",
+                    音量："loudness_rate": "0~100的整数，不带双引号，100=2倍音量，0=1倍音量", -->
                     <n-button type="primary" class="ml-12px" size="small" @click="onTransformAudio(ele)">转换音频</n-button>
                     <AudioPlayer v-if="ele.api_key" :src="ele.api_key" class="mx-6px" />
                   </div>
