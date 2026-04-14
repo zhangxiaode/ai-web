@@ -53,7 +53,7 @@
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">内容: </div>
                   <div class="flex-1 text-14px c-#fff">
-                    <n-input v-model:value="ele.content" type="textarea" :autosize="{ minRows: 1 }" placeholder="请输入内容" />
+                    <n-input v-model:value="ele.content" type="textarea" :autosize="{ minRows: 1 }" placeholder="拟声词！核心动作/事件场景 + 空间环境属性 + 声学音质细节 + 风格强度定义" />
                   </div>
                 </div>
                 <div v-if="ele.element_type === 'sound_effect'" class="flex items-center justify-between my-5px">
