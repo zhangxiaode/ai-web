@@ -260,6 +260,7 @@ const onSave = async () => {
       await postChapterLanguage({
         chapter_id: form.value.id,
         type: form.value.type,
+        content: form.value.content,
         script: form.value.type === 0 ? JSON.stringify(form.value.audio_script) : JSON.stringify(form.value.movie_script),
       })
       message.success('剧本保存成功')
