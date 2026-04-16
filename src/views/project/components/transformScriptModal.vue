@@ -67,7 +67,7 @@
               <div class="flex items-center justify-between my-5px">
                 <div class="text-12px c-#fff mr-12px w-80px text-right">场景剧本: </div>
               </div>
-              <div v-for="(ele, idx) in scene.elements" :key="idx" class="bg-555 my-5px p-8px">
+              <div v-for="(ele, idx) in scene?.elements" :key="idx" class="bg-555 my-5px p-8px">
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">{{ ele.element_type === 'sound_effect' ? '音效' : ele.element_type === 'narrator' ? '旁白' : ele.role_name }}: </div>
                   <div class="flex-1 text-14px c-#fff">{{ ele.tone }}</div>

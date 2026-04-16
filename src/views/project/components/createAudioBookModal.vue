@@ -53,7 +53,8 @@
                 <div class="flex items-center justify-between my-5px">
                   <div class="text-12px c-#fff mr-12px w-80px text-right">内容: </div>
                   <div class="flex-1 text-14px c-#fff">
-                    <n-input v-model:value="ele.content" type="textarea" :autosize="{ minRows: 1 }" placeholder="拟声词！核心动作/事件场景 + 空间环境属性 + 声学音质细节 + 风格强度定义" />
+                    <n-input v-model:value="ele.content_mark" type="textarea" :autosize="{ minRows: 1 }" placeholder="拟声词！核心动作/事件场景 + 空间环境属性 + 声学音质细节 + 风格强度定义" />
+                    emotion_scale(1~5): {{ ele.emotion_scale }} speech_rate([-50,100]): {{ ele.speech_rate }} loudness_rate([-50,100]): {{ ele.loudness_rate }} pitch([-12,12]): {{ ele.pitch }}
                   </div>
                 </div>
                 <div v-if="ele.element_type === 'sound_effect'" class="flex items-center justify-between my-5px">
