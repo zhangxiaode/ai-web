@@ -7,7 +7,7 @@ import Components from "unplugin-vue-components/vite";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 import UnoCSS from "unocss/vite";
 
-export default ({ mode }) => {
+export default ({ mode }: any) => {
   return defineConfig({
     plugins: [
       vue(),
